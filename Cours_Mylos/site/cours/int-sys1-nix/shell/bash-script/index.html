@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Script Bash</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/bash-script/">Script Bash</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.08.2020 15:55</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#fonctionnement-de-linterprétation-de-commande-fiche-bnf-bash">Fonctionnement de l&rsquo;interprétation de commande (fiche BNF Bash)</a></li>
+    <li><a href="#ordre-de-recherche-de-la-commande">Ordre de recherche de la commande</a></li>
+    <li><a href="#alias">Alias</a></li>
+    <li><a href="#création-dun-alias">Création d&rsquo;un alias</a></li>
+    <li><a href="#afficher-un-alias">Afficher un alias</a></li>
+    <li><a href="#exécuter-lalias">Exécuter l’alias</a></li>
+    <li><a href="#supprimer-lalias">Supprimer l&rsquo;alias</a></li>
+    <li><a href="#type-de-fichier-pour-un-alias">type de fichier pour un alias</a></li>
+    <li><a href="#lister-tous-les-alias">lister tous les alias</a></li>
+    <li><a href="#créer-des-alias-pour-monter-et-démonter-ces-partages-s2">Créer des alias pour monter et démonter ces partages S2</a></li>
+    <li><a href="#expansion---développement">Expansion - Développement</a></li>
+    <li><a href="#exemple-dexpansion">Exemple d&rsquo;expansion</a></li>
+    <li><a href="#développement-des-noms-de-fichiers">Développement des noms de fichiers</a>
+      <ul>
+        <li><a href="#attention-expansion-des-fichiers-dans-la-commande-find">Attention expansion des fichiers dans la commande find</a></li>
+      </ul>
+    </li>
+    <li><a href="#développement--du--tilde">Développement  du  tilde</a></li>
+    <li><a href="#évaluation-arithmétique-expression">Évaluation arithmétique <strong>$((expression))</strong></a>
+      <ul>
+        <li><a href="#exemple">exemple</a></li>
+      </ul>
+    </li>
+    <li><a href="#développement-des-accolades-">Développement des accolades <strong>{}</strong></a>
+      <ul>
+        <li><a href="#exemple-1">Exemple</a></li>
+      </ul>
+    </li>
+    <li><a href="#remplacement--des-paramètres-et-variables-variable-ou-variable">Remplacement des paramètres et variables <strong>$VARIABLE</strong> ou <strong>${VARIABLE}</strong></a></li>
+    <li><a href="#substitution-de-commandes-instruction">Substitution de commandes <strong>$(instruction)</strong></a>
+      <ul>
+        <li><a href="#exemple-1-1">Exemple 1</a></li>
+        <li><a href="#exemple-2">Exemple 2</a></li>
+      </ul>
+    </li>
+    <li><a href="#découpage--des--mots---apostrophe-">Découpage des mots - Apostrophe <strong>’</strong></a></li>
+    <li><a href="#découpage--des--mots---guillemet--">Découpage des mots - Guillemet <strong>&#34;</strong></a>
+      <ul>
+        <li><a href="#exemple-1-2">Exemple 1</a></li>
+        <li><a href="#exemple-2-1">Exemple 2</a></li>
+      </ul>
+    </li>
+    <li><a href="#apostrophe-et-guillemet">Apostrophe et guillemet</a></li>
+    <li><a href="#escaping-characters">Escaping Characters</a></li>
+    <li><a href="#environnements">Environnements</a></li>
+    <li><a href="#variables-denvironnement">Variables d&rsquo;environnement</a></li>
+    <li><a href="#configuration-du-shell-et-personnalisation">Configuration du shell et personnalisation</a></li>
+    <li><a href="#définir-une-variable-denvironnement">Définir une variable d&rsquo;environnement</a></li>
+    <li><a href="#script-bash">Script Bash</a>
+      <ul>
+        <li><a href="#écrire-le-script-fichier-textes">Écrire le script (fichier textes)</a></li>
+        <li><a href="#rendre-exécutable-chmod-x">Rendre exécutable <code>chmod +x</code></a></li>
+        <li><a href="#exécution">Exécution</a></li>
+        <li><a href="#exécution---erreur">Exécution - Erreur</a></li>
+      </ul>
+    </li>
+    <li><a href="#exécution---path">Exécution - PATH</a></li>
+    <li><a href="#exemples-de-script">Exemples de script</a>
+      <ul>
+        <li><a href="#beuseu">Beuseu</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="fonctionnement-de-linterprétation-de-commande-fiche-bnf-bash">Fonctionnement de l&rsquo;interprétation de commande (fiche BNF Bash)</h2>
+<ul>
+<li><a href="../bnf-bash">Notation BNF de bash</a></li>
+</ul>
+<pre tabindex="0"><code>&lt;instruction&gt; :== &lt;commande&gt; {&#34; &#34; &lt;paramètre&gt;}
+&lt;commande&gt; :== &lt;alias&gt; | &lt;commande_interne&gt; | &lt;commande_externe&gt;
+
+&lt;commande_interne&gt; :== &lt;commande_normale&gt; | &lt;commande_algorithmique&gt;
+&lt;commande_normale&gt; : ls, cd, ...
+&lt;commande_algorithmique&gt; : if, for,...
+</code></pre><h2 id="ordre-de-recherche-de-la-commande">Ordre de recherche de la commande</h2>
+<p>Le 1er mot de l&rsquo;instruction (ou ligne de commande ) est la commande. Cette commande est</p>
+<ol>
+<li>une <a href="../bash-builtin">commande bash built-in</a> (man bash retourne les commandes internes) (fiche Bash built-in)</li>
+<li>un alias ou fonction</li>
+<li>un fichier portant ce nom dans l&rsquo;arborescence. La variable d&rsquo;environnement <strong>PATH</strong> contient la liste de dossier où le fichier doit être rechercher</li>
+</ol>
+<blockquote>
+<p>Pour une commande externe, os démarre un nouveau processus</p>
+</blockquote>
+<h2 id="alias">Alias</h2>
+<ul>
+<li>Alias : nom de substitution d&rsquo;une commande</li>
+</ul>
+<pre tabindex="0"><code>alias name=&#39;string&#39;
+</code></pre><pre tabindex="0"><code>$ cd /usr; ls; cd -
+bin  games  include  lib  local  sbin  share  src
+/home/ubuntu
+</code></pre><pre tabindex="0"><code>$ type foo
+-bash: type: foo : non trouvé
+</code></pre><h2 id="création-dun-alias">Création d&rsquo;un alias</h2>
+<ul>
+<li>Création d&rsquo;un alias</li>
+</ul>
+<pre tabindex="0"><code>$ alias foo=&#39;cd /usr; ls; cd -&#39;
+</code></pre><h2 id="afficher-un-alias">Afficher un alias</h2>
+<ul>
+<li>affiche l&rsquo;alias <strong>foo</strong></li>
+</ul>
+<pre tabindex="0"><code>$ alias foo
+alias foo=&#39;cd /usr; ls; cd -&#39;
+</code></pre><h2 id="exécuter-lalias">Exécuter l’alias</h2>
+<pre tabindex="0"><code>$ foo
+bin  games  include  lib  local  sbin  share  src
+/home/ubuntu
+</code></pre><pre tabindex="0"><code>$ type foo
+foo est un alias vers « cd /usr; ls; cd - »
+</code></pre><h2 id="supprimer-lalias">Supprimer l&rsquo;alias</h2>
+<pre tabindex="0"><code>$ unalias foo
+</code></pre><pre tabindex="0"><code>$ type foo
+-bash: type: foo : non trouvé
+</code></pre><h2 id="type-de-fichier-pour-un-alias">type de fichier pour un alias</h2>
+<pre tabindex="0"><code>$ type ls
+ls est un alias vers « ls --color=auto »
+</code></pre><h2 id="lister-tous-les-alias">lister tous les alias</h2>
+<pre tabindex="0"><code>$ alias
+alias egrep=&#39;egrep --color=auto&#39;
+alias fgrep=&#39;fgrep --color=auto&#39;
+alias grep=&#39;grep --color=auto&#39;
+alias l=&#39;ls -CF&#39;
+alias la=&#39;ls -A&#39;
+alias ll=&#39;ls -alF&#39;
+alias ls=&#39;ls --color=auto&#39;
+</code></pre><h2 id="créer-des-alias-pour-monter-et-démonter-ces-partages-s2">Créer des alias pour monter et démonter ces partages S2</h2>
+<pre tabindex="0"><code>alias s2partageEleves=&#39;sudo mount -t cifs //s2msrvelell.s2.rpn.ch/et/Partages ~/S2PartagesEleves -o username=huguenindo,domaine=S2&#39;
+alias us2partageEleves=&#39;sudo umount ~/S2PartagesEleves&#39;      
+</code></pre><p>Pour rendre persistent les alias, ajouter ces définitions dans le fichier <code>~/.bashrc</code> ou <code>~/.bash_aliases</code></p>
+<h2 id="expansion---développement">Expansion - Développement</h2>
+<p>Pour plus de détail voir [<a href="http://linuxcommand.org/tlcl.php">2</a>],[<a href="http://www.gnu.org/software/bash/manual/bashref.html#Shell-Expansions">4</a>] et [<a href="http://www.linux-france.org/article/man-fr/man1/bash-1.html">7</a>]</p>
+<blockquote>
+<p>Les expansions sont appliquées à la ligne  de  commande après  qu&rsquo;elle  ait  été  divisée  en mots. Il existe sept types  de  développements  :</p>
+<ul>
+<li>expansion   des   accolades</li>
+<li>développement  du  tilde</li>
+<li>remplacement  des paramètres et variables</li>
+<li>substitution   de    commandes</li>
+<li>évaluation arithmétique</li>
+<li>découpage  des  mots</li>
+<li>développement des noms de fichiers</li>
+</ul>
+<p>[<a href="http://www.linux-france.org/article/man-fr/man1/bash-1.html">7</a>]</p>
+</blockquote>
+<h2 id="exemple-dexpansion">Exemple d&rsquo;expansion</h2>
+<pre tabindex="0"><code>$ echo this is a      test
+this is a test
+</code></pre><pre tabindex="0"><code>$ cd /
+$ echo *
+bin boot cdrom dev etc home initrd.img initrd.img.old lib
+lost+found media mnt opt proc root sbin selinux srv sys 
+tmp usr var vmlinuz vmlinuz.old
+</code></pre><pre tabindex="0"><code>$ echo &#34;*&#34;
+*
+</code></pre><h2 id="développement-des-noms-de-fichiers">Développement des noms de fichiers</h2>
+<pre tabindex="0"><code>$ cd /
+$ ls
+bin    dev   initrd.img      lost+found  opt   sbin     sys  var
+boot   etc   initrd.img.old  media       proc  selinux  tmp  vmlinuz
+cdrom  home  lib             mnt         root  srv      usr  vmlinuz.old
+</code></pre><pre tabindex="0"><code>$ echo b*
+bin boot
+</code></pre><pre tabindex="0"><code>$ echo *t
+boot mnt opt root
+</code></pre><pre tabindex="0"><code>$ echo /usr/*/share
+/usr/local/share
+</code></pre><h3 id="attention-expansion-des-fichiers-dans-la-commande-find">Attention expansion des fichiers dans la commande find</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ set -x
+huguenindo@lozan:tmp$ find /usr/lib -name a*.h
++ find /usr/lib -name &#39;a*.h&#39;
+/usr/lib/perl/5.18.2/CORE/av.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/avx2intrin.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/avxintrin.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/adxintrin.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/ammintrin.h
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:tmp$ touch a.h
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:tmp$ find /usr/lib -name a*.h
++ find /usr/lib -name a.h
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:tmp$ find /usr/lib -name &#39;a*.h&#39;
++ find /usr/lib -name &#39;a*.h&#39;
+/usr/lib/perl/5.18.2/CORE/av.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/avx2intrin.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/avxintrin.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/adxintrin.h
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/ammintrin.h
+</code></pre><h2 id="développement--du--tilde">Développement  du  tilde</h2>
+<pre tabindex="0"><code>$ echo ~
+/home/ubuntu
+</code></pre><pre tabindex="0"><code>$ echo ~guest
+/home/guest
+</code></pre><p>*Accès au répertoire personnel avec ~</p>
+<pre tabindex="0"><code>ls -l ~         # affiche le contenu du répertoire personnel
+ls -l ~huguenin # affiche le contenu du répertoire personnel de huguenin
+</code></pre><h2 id="évaluation-arithmétique-expression">Évaluation arithmétique <strong>$((expression))</strong></h2>
+<pre tabindex="0"><code>$ echo $((2 + 2))
+4
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>opérateur</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>+</td>
+          <td>addition</td>
+      </tr>
+      <tr>
+          <td>-</td>
+          <td>soustraction</td>
+      </tr>
+      <tr>
+          <td>*</td>
+          <td>multiplication</td>
+      </tr>
+      <tr>
+          <td>/</td>
+          <td>division (but remember, since expansion only supports integer  arithmetic, results are integers.)</td>
+      </tr>
+      <tr>
+          <td>%</td>
+          <td>modulo</td>
+      </tr>
+      <tr>
+          <td>**</td>
+          <td>exponentiel</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="exemple">exemple</h3>
+<pre tabindex="0"><code>$ echo $(($((5**2)) * 3))
+75
+</code></pre><pre tabindex="0"><code>$ echo $(((5**2) * 3))
+75
+</code></pre><pre tabindex="0"><code>$ echo Five divided by two equals $((5/2))
+Five divided by two equals 2
+</code></pre><pre tabindex="0"><code>$ echo with $((5%2)) left over.
+with 1 left over.
+</code></pre><h2 id="développement-des-accolades-">Développement des accolades <strong>{}</strong></h2>
+<pre tabindex="0"><code>$ echo Front-{A,B,C}-Back
+Front-A-Back Front-B-Back Front-C-Back
+</code></pre><pre tabindex="0"><code>$ echo Number_{1..5}
+Number_1 Number_2 Number_3 Number_4 Number_5
+</code></pre><pre tabindex="0"><code>$ echo {Z..A}
+Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+</code></pre><pre tabindex="0"><code>$ echo a{A{1,2},B{3,4}b}
+aA1b aA2b aB3b aB4b
+</code></pre><h3 id="exemple-1">Exemple</h3>
+<pre tabindex="0"><code>$ cd ~
+$ mkdir pics
+$ cd pics
+$ mkdir {2007..2010}-0{1..9} {2007..2009}-{10..12}
+$ ls
+2007-01  2007-06  2007-11  2008-04  2008-09  2009-02  2009-07  2009-12  2010-05
+2007-02  2007-07  2007-12  2008-05  2008-10  2009-03  2009-08  2010-01  2010-06
+2007-03  2007-08  2008-01  2008-06  2008-11  2009-04  2009-09  2010-02  2010-07
+2007-04  2007-09  2008-02  2008-07  2008-12  2009-05  2009-10  2010-03  2010-08
+2007-05  2007-10  2008-03  2008-08  2009-01  2009-06  2009-11  2010-04  2010-09
+</code></pre><h2 id="remplacement--des-paramètres-et-variables-variable-ou-variable">Remplacement  des paramètres et variables <strong>$VARIABLE</strong> ou <strong>${VARIABLE}</strong></h2>
+<pre tabindex="0"><code>$ echo ${USER}
+ubuntu
+</code></pre><ul>
+<li>
+<p>Afficher la liste des variables d&rsquo;environnement</p>
+<pre tabindex="0"><code>$ printenv
+TERM=xterm
+SHELL=/bin/bash
+SSH_CLIENT=192.168.122.1 59183 22
+SSH_TTY=/dev/pts/0
+USER=ubuntu
+...
+</code></pre></li>
+</ul>
+<h2 id="substitution-de-commandes-instruction">Substitution de commandes <strong>$(instruction)</strong></h2>
+<pre tabindex="0"><code>$ cd /
+$ echo $(ls)
+bin boot cdrom dev etc home initrd.img initrd.img.old 
+lib lost+found media mnt opt proc root sbin selinux 
+srv sys tmp usr var vmlinuz vmlinuz.old
+</code></pre><h3 id="exemple-1-1">Exemple 1</h3>
+<pre tabindex="0"><code>$ which cp
+/bin/cp
+</code></pre><pre tabindex="0"><code>$ ls -l $(which cp)
+-rwxr-xr-x 1 root root 96140 2010-09-21 20:33 /bin/cp
+</code></pre><h3 id="exemple-2">Exemple 2</h3>
+<pre tabindex="0"><code>$ file $(ls /usr/bin/* | grep -e \/tra)
+/usr/bin/tracepath:           ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), 
+                              dynamically linked (uses shared libs), for GNU/Linux 2.6.15, stripped
+/usr/bin/tracepath6:          ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), 
+                              dynamically linked (uses shared libs), for GNU/Linux 2.6.15, stripped
+/usr/bin/traceroute6:         symbolic link to `/etc/alternatives/traceroute6&#39;
+/usr/bin/traceroute6.iputils: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV),
+                              dynamically linked (uses shared libs), for GNU/Linux 2.6.15, stripped
+</code></pre><h2 id="découpage--des--mots---apostrophe-">Découpage  des  mots - Apostrophe <strong>&rsquo;</strong></h2>
+<ul>
+<li>Suppression des espaces consécutifs</li>
+</ul>
+<pre tabindex="0"><code>$ echo this is a     test
+this is a test
+</code></pre><pre tabindex="0"><code>$ echo &#39;this is a     test&#39;
+this is a     test
+</code></pre><ul>
+<li>Protection contre la substitution de variable</li>
+</ul>
+<pre tabindex="0"><code>$ echo The total is $100.00
+The total is 00.00
+</code></pre><pre tabindex="0"><code>$ echo &#39;The total is $100.00&#39;
+The total is $100.00
+</code></pre><h2 id="découpage--des--mots---guillemet--">Découpage  des  mots - Guillemet  <strong>&quot;</strong></h2>
+<pre tabindex="0"><code>$ touch &#34;two word.txt&#34;
+</code></pre><pre tabindex="0"><code>$ ls
+pics  two word.txt
+</code></pre><pre tabindex="0"><code>$ ls two word.txt
+ls: impossible d&#39;accéder à two: Aucun fichier ou dossier de ce type
+ls: impossible d&#39;accéder à word.txt: Aucun fichier ou dossier de ce type
+</code></pre><pre tabindex="0"><code>$ ls -l &#34;two word.txt&#34;
+-rw-r--r-- 1 ubuntu ubuntu 0 2011-01-07 16:31 two word.txt
+</code></pre><h3 id="exemple-1-2">Exemple 1</h3>
+<pre tabindex="0"><code>$ echo &#34;$USER $((2+2)) $(cal)&#34;
+ubuntu 4     Janvier 2011
+lu ma me je ve sa di
+                1  2
+ 3  4  5  6  7  8  9
+10 11 12 13 14 15 16
+17 18 19 20 21 22 23
+24 25 26 27 28 29 30
+31
+</code></pre><pre tabindex="0"><code>$ echo &#34;this is a     test&#34;
+this is a     test
+</code></pre><h3 id="exemple-2-1">Exemple 2</h3>
+<pre tabindex="0"><code>$ echo $(cal)
+Janvier 2011 lu ma me je ve sa di 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+</code></pre><pre tabindex="0"><code>$ echo &#34;$(cal)&#34;
+    Janvier 2011
+lu ma me je ve sa di
+                1  2
+ 3  4  5  6  7  8  9
+10 11 12 13 14 15 16
+17 18 19 20 21 22 23
+24 25 26 27 28 29 30
+31
+</code></pre><h2 id="apostrophe-et-guillemet">Apostrophe et guillemet</h2>
+<pre tabindex="0"><code>$ echo text ~/*.txt {a,b} $(echo foo) $((2+2)) ${USER}
+text /home/ubuntu/two word.txt a b foo 4 ubuntu
+</code></pre><pre tabindex="0"><code>$ echo &#34;text ~/*.txt {a,b} $(echo foo) $((2+2)) ${USER}&#34;
+text ~/*.txt {a,b} foo 4 ubuntu
+</code></pre><pre tabindex="0"><code>$ echo &#39;text ~/*.txt {a,b} $(echo foo) $((2+2)) ${USER}&#39;
+text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER
+</code></pre><h2 id="escaping-characters">Escaping Characters</h2>
+<pre tabindex="0"><code>$ echo &#34;The balance for user ${USER} is: \$5.00&#34;
+The balance for user ubuntu is: $5.00
+</code></pre><h2 id="environnements">Environnements</h2>
+<p>Pour plus de détail voir [<a href="http://linuxcommand.org/tlcl.php">5</a>]</p>
+<ul>
+<li>printenv  -  Afficher l&rsquo;ensemble ou une partie des variables d&rsquo;environnement</li>
+<li>set - Set or unset values of shell options and positional parameters.</li>
+<li>export - Set export attribute for shell variables.help s</li>
+<li>alias - Define or display aliases.</li>
+</ul>
+<h2 id="variables-denvironnement">Variables d&rsquo;environnement</h2>
+<pre tabindex="0"><code>$ printenv
+TERM=xterm
+SHELL=/bin/bash
+SSH_CLIENT=192.168.122.1 59183 22
+SSH_TTY=/dev/pts/0
+USER=ubuntu
+...
+</code></pre><pre tabindex="0"><code>$ printenv USER
+ubuntu
+</code></pre><pre tabindex="0"><code>$ set
+</code></pre><pre tabindex="0"><code>$ echo ${HOME}
+/home/ubuntu
+</code></pre><h2 id="configuration-du-shell-et-personnalisation">Configuration du shell et personnalisation</h2>
+<ul>
+<li>
+<p>Startup Files For Login Shell Sessions - Exécuter lors de l&rsquo;authentification de l&rsquo;utilisteur</p>
+<ul>
+<li><code>/etc/profile</code> #géré par l&rsquo;administrateur)</li>
+<li><code>~/.profile</code>   #appartient à l&rsquo;utilisateur</li>
+</ul>
+</li>
+<li>
+<p>Startup Files For Non-Login Shell Sessions - Exécuter lors du démarrage d&rsquo;un shell
+*<code>/etc/bash.bashrc</code>
+*<code>~/.bashrc</code></p>
+</li>
+</ul>
+<h2 id="définir-une-variable-denvironnement">Définir une variable d&rsquo;environnement</h2>
+<pre tabindex="0"><code>$ foo=&#34;This is some &#34;
+$ echo ${foo}
+This is some
+</code></pre><pre tabindex="0"><code>$ foo=${foo}&#34;test.&#34;
+$ echo ${foo}
+This is some test.
+</code></pre><pre tabindex="0"><code>$ PATH=/usr/bin:/usr/X11R6/bin
+</code></pre><h2 id="script-bash">Script Bash</h2>
+<ul>
+<li><a href="../bash-script-langage">Script bash</a> et [<a href="http://linuxcommand.org/tlcl.php">6</a>]</li>
+<li>Tâches
+<ol>
+<li>Écrire le script (fichier textes)</li>
+<li>Rendre exécutable <code>chmod +x</code></li>
+<li>Placer le script dans un dossier se trouvant dans le PATH.</li>
+</ol>
+</li>
+</ul>
+<h3 id="écrire-le-script-fichier-textes">Écrire le script (fichier textes)</h3>
+<pre tabindex="0"><code>$ vim ./hello_world
+</code></pre><pre tabindex="0"><code>#!/bin/bash
+# This is our first script.
+
+echo &#39;Hello World!&#39;
+</code></pre><h3 id="rendre-exécutable-chmod-x">Rendre exécutable <code>chmod +x</code></h3>
+<pre tabindex="0"><code>$ chmod +x ./hello_world
+</code></pre><h3 id="exécution">Exécution</h3>
+<pre tabindex="0"><code>$ ./hello_world 
+Hello World!
+</code></pre><h3 id="exécution---erreur">Exécution - Erreur</h3>
+<ul>
+<li>Le script n&rsquo;a pas été trouvé!</li>
+</ul>
+<pre tabindex="0"><code>$ hello_world 
+hello_world : commande introuvable
+</code></pre><blockquote>
+<p>le script <code>hello_world</code> n&rsquo;est pas trouvé. La variable PATH ne contient pas le dossier courant.</p>
+</blockquote>
+<h2 id="exécution---path">Exécution - PATH</h2>
+<ul>
+<li>Déplace le script dans un dossier présent dans le PATH du système.</li>
+</ul>
+<pre tabindex="0"><code>$ mkdir ~/bin
+$ mv hello_world ~/bin
+</code></pre><pre tabindex="0"><code>$ PATH=~/bin:&#34;${PATH}&#34;
+</code></pre><pre tabindex="0"><code>$ echo ${PATH}
+/home/ubuntu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:\
+/usr/bin:/sbin:/bin:/usr/games
+</code></pre><pre tabindex="0"><code>$ hello_world 
+Hello World!
+</code></pre><h2 id="exemples-de-script">Exemples de script</h2>
+<h3 id="beuseu">Beuseu</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/blob/a56a0cc516d7944d68b6c8274c61e447dc66e497/exercices/beuseu/beuseu.sh">source du script</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>LIMITE_MAX<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>NUMERO_INTERDIT<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>MOT_MAGIQUE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Beuseu&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  LIMITE_MAX<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> VALEUR in <span style="color:#66d9ef">$(</span> seq <span style="color:#ae81ff">1</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>LIMITE_MAX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#66d9ef">$((</span> VALEUR <span style="color:#f92672">%</span> NUMERO_INTERDIT <span style="color:#66d9ef">))</span> -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">${</span>MOT_MAGIQUE<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>VALEUR<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> | grep -q <span style="color:#e6db74">${</span>NUMERO_INTERDIT<span style="color:#e6db74">}</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>MOT_MAGIQUE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>      echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>VALEUR<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><h2 id="références">Références</h2>
+<ol>
+<li>Creating Your Own Commands With alias, 6 – Working With Commands, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>8 – Seeing The World As The Shell Sees It, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>Bash Reference Manual, <a href="http://www.gnu.org/software/bash/manual/bashref.html">http://www.gnu.org/software/bash/manual/bashref.html</a></li>
+<li>3.5 Shell Expansions - Bash Reference Manual, <a href="http://www.gnu.org/software/bash/manual/bashref.html#Shell-Expansions">http://www.gnu.org/software/bash/manual/bashref.html#Shell-Expansions</a></li>
+<li>12 – The Environment, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>25 – Writing Your First Script, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>bash - page de man, <a href="http://www.linux-france.org/article/man-fr/man1/bash-1.html">http://www.linux-france.org/article/man-fr/man1/bash-1.html</a></li>
+<li>The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>bash Pocket Reference, Arnold Robins, O&rsquo;Reilly Media 2014, <a href="http://it-ebooks.info/book/192/">http://it-ebooks.info/book/192/</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

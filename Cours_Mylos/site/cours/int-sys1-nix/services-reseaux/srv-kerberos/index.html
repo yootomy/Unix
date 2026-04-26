@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Service d&#39;authentification Kerberos  </title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-kerberos/">Service réseau - Service d&#39;authentification Kerberos  </a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:25</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#intervenants">Intervenants</a></li>
+        <li><a href="#authentification-du-client">Authentification du client</a></li>
+        <li><a href="#autorisation-du-client-pour-laccès-au-service">Autorisation du client pour l&rsquo;accès au service</a></li>
+        <li><a href="#accès-au-service">Accès au service</a></li>
+      </ul>
+    </li>
+    <li><a href="#serveur-kerberos---installation-et-configuration">Serveur Kerberos - Installation et configuration</a>
+      <ul>
+        <li><a href="#configuration-du-dns">Configuration du DNS</a></li>
+        <li><a href="#installation-et-configuration-du-service-kerberos">Installation et configuration du service kerberos</a></li>
+        <li><a href="#création-du-nouveau-domaine-kerberos">Création du nouveau domaine kerberos</a></li>
+        <li><a href="#création-dun-principal-administrateur">Création d&rsquo;un principal administrateur</a></li>
+        <li><a href="#configuration-des-acl">Configuration des ACL</a></li>
+        <li><a href="#redémarrage-du-service-krb5-admin-server">Redémarrage du service krb5-admin-server</a></li>
+        <li><a href="#test-dobtention-dun-ticket-pour-debianadmin">Test d&rsquo;obtention d&rsquo;un ticket pour debian/admin</a></li>
+        <li><a href="#configuration-du-dns-pour-laccès-au-service-kerberos">Configuration du DNS pour l&rsquo;accès au service KERBEROS</a></li>
+      </ul>
+    </li>
+    <li><a href="#client-kerberos---installation-et-configuration">Client Kerberos - Installation et configuration</a>
+      <ul>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#configuration-du-service-sssd-pour-kerberos">Configuration du service SSSD pour kerberos</a></li>
+      </ul>
+    </li>
+    <li><a href="#création-dun-utilisateur">Création d&rsquo;un utilisateur</a>
+      <ul>
+        <li><a href="#création-dun-principal-kerberos">Création d&rsquo;un principal Kerberos</a></li>
+        <li><a href="#création-dun-utilisateur-local">Création d&rsquo;un utilisateur local</a></li>
+        <li><a href="#vérification-de-lutilisateur">Vérification de l&rsquo;utilisateur</a></li>
+        <li><a href="#test-de-login">Test de login</a></li>
+        <li><a href="#changement-du-mot-de-passe">Changement du mot de passe</a></li>
+      </ul>
+    </li>
+    <li><a href="#commandes">Commandes</a>
+      <ul>
+        <li><a href="#kinit---permet-dobtenir-de-kerberos-un-tgt-ticket-granting-ticket">kinit - permet d&rsquo;obtenir de kerberos un TGT (ticket-granting ticket)</a></li>
+        <li><a href="#klist---afficher-les-tickets-en-cache">klist - afficher les tickets en cache</a></li>
+        <li><a href="#kdestroy---permet-de-supprimer-le-ticket">kdestroy - permet de supprimer le ticket</a></li>
+        <li><a href="#kpasswd---permet-de-changer-le-mot-de-passe-dun-utilisateur-kerberos">kpasswd - permet de changer le mot de passe d&rsquo;un utilisateur Kerberos</a></li>
+        <li><a href="#kadmin---programme-dadministration-de-la-base-de-données-kerberos">kadmin - programme d&rsquo;administration de la base de données Kerberos</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<blockquote>
+<p>Kerberos est un protocole d&rsquo;authentification réseau qui repose sur un mécanisme de clés secrètes (chiffrement symétrique) et l&rsquo;utilisation de tickets, et non de mots de passe en clair, évitant ainsi le risque d&rsquo;interception frauduleuse des mots de passe des utilisateurs. Créé au Massachusetts Institute of Technology (MIT), il porte le nom grec de Cerbère, gardien des Enfers (Κέρϐερος). Kerberos a d&rsquo;abord été mis en œuvre sur des systèmes Unix.[[1]]</p>
+</blockquote>
+<h3 id="intervenants">Intervenants</h3>
+<ul>
+<li>
+<p>Alice, le client, qui désire accéder à un serveur nécessitant une authentification. Le client est identifié via un Principal</p>
+</li>
+<li>
+<p>Bob, un serveur dont les services demandent un utilisateur authentifié</p>
+</li>
+<li>
+<p>Nestor, un centre de distribution de clé (Key Distribution Center). Il est composé du service d’émission de ticket, et du serveur d’authentification</p>
+<ul>
+<li>Le service d&rsquo;émission de ticket (Ticket-Granting Service, TGS), qui a pour tache d&rsquo;émettre des tickets cryptés.</li>
+<li>Le service d’authentification (Authentification Service, AS), chargé de vérifier l’identité des utilisateurs, en le couplant a un annuaire Active Directory ou LDAP</li>
+</ul>
+</li>
+<li>
+<p>TGT, Ticket-Granting Ticket. Il donne un accès, pour la session en cours, au service d’émission de ticket (TGS). Un ticket TGT a une durée de validité, et son contenu est crypté à l’aide de la clé secrète du TGS</p>
+</li>
+<li>
+<p>Client-to-server Ticket. Il permet de certifier que le client a le droit d’accéder au service</p>
+</li>
+</ul>
+<h3 id="authentification-du-client">Authentification du client</h3>
+<p><img src="../../images/kerberos_AS.png" alt="Image" title="Alice s authentifie au service d authentification (AS)"></p>
+<ol>
+<li>les clés secrètes d&rsquo;Alice et de Bob sont générées. Pour cela, leur mot de passe est transformé en empreinte par une fonction de hashage. Nestor, en tant que contrôleur du domaine, est également capable de générer les clés d&rsquo;Alice et Bob</li>
+<li>Alice va envoyer à Nestor un premier message, nommé KRB_AS_REQ (Kerberos Authentication Service Request). Ce message sera en deux parties, l&rsquo;une en claire et l&rsquo;autre cryptée. Cette dernière a été cryptée avec la clé secrète d&rsquo;Alice.\La partie en clair contiendra l&rsquo;identifiant d&rsquo;Alice et le nom du service TGS voulu. Dans l&rsquo;exemple, il s&rsquo;agit de Nestor.\La partie cryptée contient son identifiant et un timestamp</li>
+<li>Nestor reçoit le message. La partie en clair contenant l&rsquo;identifiant d&rsquo;Alice, il va alors utiliser la clé correspondante pour tenter de décrypter le message. Il pourra ensuite vérifier que l&rsquo;identifiant contenu dans le message est bien identique à celui envoyé en clair et que le timestamp est valide (« Qu&rsquo;il a été généré peu de temps avant »)</li>
+<li>Nestor va envoyer un message nommé KRB_AS_REP (Kerberos Authentication Service Reply). Celui-ci va contenir le TGT et la clé de session d&rsquo;Alice-Nestor, crypté avec la clé d&rsquo;Alice.\Le TGT va contenir la clé de session Alice-Nestor et l&rsquo;identifiant d&rsquo;Alice, crypté avec la clé secrète de Nestor. Ainsi, Alice ne sera pas capable de décrypter le TGT</li>
+<li>Alice va recevoir le message de Nestor. Elle va en premier décrypter la clé de session Alice-Nestor à l&rsquo;aide de sa propre clé privée, puis mettre le TGT et la clé de session Alice-Nestor en cache</li>
+</ol>
+<h3 id="autorisation-du-client-pour-laccès-au-service">Autorisation du client pour l&rsquo;accès au service</h3>
+<p><img src="../../images/kerberos_TGS.png" alt="Image" title="Alice demande au TGS l autorisation d accès au service"></p>
+<ol>
+<li>Alice va envoyer au service d&rsquo;émission de ticket de Nestor un message nommé KRB_TGS_REQ (Kerberos Ticket-Granting Service Request). Ce message contiendra trois parties.\La première, en clair, est le nom du serveur de service demandé. Il s&rsquo;agit ici de Bob\La seconde est un authentifiant, c&rsquo;est-à-dire un message crypté avec la clé de session Alice-Nestor, destiné à prouver l&rsquo;identité. L&rsquo;authentifiant contiendra l&rsquo;identifiant d&rsquo;Alice et un timestamp\La troisième partie est le TGT reçu de l&rsquo;AS lors de la pré-authentification</li>
+<li>le service d&rsquo;émission de ticket va recevoir le TGT et le décrypter à l&rsquo;aide de la clé privée de Nestor. Il pourra ainsi récupérer la clé de session Alice-Nestor.</li>
+<li>il va décrypter l&rsquo;authentifiant à l&rsquo;aide de la clé de session Alice-Nestor et récupérer l&rsquo;identifiant. Il contrôlera que celle-ci corresponde à celle contenue dans le TGT et que le timestamp est valide</li>
+<li>si l&rsquo;identité a été prouvée, il enverra à Alice un message nommé KRB_TGS_REP (Kerberos Ticket-Granting Service Reply). Celui-ci contiendra deux choses : \Une clé de session Alice-Bob, cryptée à l&rsquo;aide de la clé de session Alice-Nestor\Un client-to-server ticket, servant de preuve d&rsquo;identité au serveur de service. Il contient la clé de session Alice-Bob et l&rsquo;identifiant d&rsquo;Alice, et est crypté à l&rsquo;aide de la clé secrète de Bob, afin qu&rsquo;il soit le seul en mesure de le décrypter</li>
+<li>Alice va recevoir le message et décrypter la clé de session Alice-Bob à l&rsquo;aide de la clé de session Alice-Nestor. Le client-to-server ticket et la clé de session Alice-Bob vont être mis en cache</li>
+</ol>
+<h3 id="accès-au-service">Accès au service</h3>
+<p><img src="../../images/kerberos_SS.png" alt="Image" title="Authentification sur le SS"></p>
+<ol>
+<li>Alice va envoyer à Bob un message nommé KRB_AP_REQ (Kerberos Application Request). Celui contiendra un authentifiant et le client-to-server ticket.\L&rsquo;authentifiant sera crypté à l&rsquo;aide de la clé de session Alice-Bob, et contiendra l&rsquo;identifiant d&rsquo;Alice et un timestamp</li>
+<li>Bob va recevoir le client-to-server ticket et le décryptera à l&rsquo;aide de sa propre clé secrète. Il obtiendra ainsi la clé de session Alice-Bob</li>
+<li>Bob peut, avec la clé de session Alice-Bob, décrypter l&rsquo;authentifiant, et vérifier que l&rsquo;identifiant qu&rsquo;il contient correspond a celui du client-to-server ticket et que le timestamp est valide.</li>
+<li>Bob va envoyer à Alice un message nommé KRB_AP_REP (Kerberos Application Reply). Celui-ci contiendra un nouvel authentifiant. Celui-ci contiendra l&rsquo;identifiant de Bob et le timestamp envoyé précédemment par Alice, incrémenté de 1. L&rsquo;authentifiant sera crypté avec la clé de session Alice-Bob.</li>
+<li>Alice va recevoir l&rsquo;authentifiant et le décrypter. Elle pourra vérifier que l&rsquo;identifiant retourné correspond bien à l&rsquo;identifiant du service de serveur demandé. Si c&rsquo;est le cas, elle contrôlera le timestamp. S&rsquo;il correspond à celui qu&rsquo;elle avait envoyé, mais incrémenté de 1, cela signifie que Bob a été capable de décrypter son authentifiant, et donc qu&rsquo;il s&rsquo;agit bien du vrai serveur de service et non d&rsquo;un usurpateur.</li>
+</ol>
+<p>À partir de maintenant, Alice et Bob sont chacun en possession de la clé de session Alice-Bob. Ils peuvent donc communiquer de manière sécurisée entre eux</p>
+<h2 id="serveur-kerberos---installation-et-configuration">Serveur Kerberos - Installation et configuration</h2>
+<h3 id="configuration-du-dns">Configuration du DNS</h3>
+<ul>
+<li>Configuration du DNS pour le nom kdc1.antiterre.lan. <strong>Mettre à jour la valeur du numéro de série (serial)</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo vim /etc/bind/db.antiterre.lan 
+</span></span></code></pre></div><pre tabindex="0"><code>...
+galatograd      IN      A       192.168.100.20
+kdc1            IN      CNAME   galatograd
+...
+</code></pre><ul>
+<li>vérification de la base de données DNS</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ named-checkzone antiterre.lan /etc/bind/db.antiterre.lan
+</span></span></code></pre></div><ul>
+<li>redémarrage du service bind</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo service bind9 restart 
+</span></span></code></pre></div><ul>
+<li>test de la résolution du nom</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kdc1.antiterre.lan	canonical name <span style="color:#f92672">=</span> galatograd.antiterre.lan.
+</span></span><span style="display:flex;"><span>Name:	galatograd.antiterre.lan
+</span></span><span style="display:flex;"><span>Address: 192.168.100.20
+</span></span></code></pre></div><h3 id="installation-et-configuration-du-service-kerberos">Installation et configuration du service kerberos</h3>
+<ul>
+<li>installation des paquets sur Galatograd</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install krb5-kdc krb5-admin-server
+</span></span></code></pre></div><ul>
+<li>domaine (« realm ») Kerberos version 5 par défaut :  ANTITERRE.LAN</li>
+<li>Serveur d&rsquo;authentification du domaine Kerberos :  kdc1.antiterre.lan</li>
+<li>Serveur administratif du domaine Kerberos :  kdc1.antiterre.lan</li>
+</ul>
+<blockquote>
+<p><strong>information</strong></p>
+<p>L&rsquo;installation des paquets exécute les configuration suivantes:</p>
+<pre tabindex="0"><code>$ sudo dpkg-reconfigure krb5-config 
+$ sudo dpkg-reconfigure krb5-kdc 
+$ sudo dpkg-reconfigure krb5-user 
+$ sudo dpkg-reconfigure krb5-admin-server 
+</code></pre></blockquote>
+<h3 id="création-du-nouveau-domaine-kerberos">Création du nouveau domaine kerberos</h3>
+<blockquote>
+<p><strong>information</strong></p>
+<p>La commande krb5_newrealm prend énormément de temps !!!</p>
+<p>Ajouter à la machine virtuelle KVM un périphérique &ldquo;Générateur de nombre aléatoire&rdquo; (/dev/random).Ce périphérique accélère la création de la base kerberos</p>
+<p>La configuration ci-dessous montre les lignes à ajouter dans la configuration de libvirt.</p>
+<pre tabindex="0"><code>   &lt;rng model=&#39;virtio&#39;&gt;
+     &lt;backend model=&#39;random&#39;&gt;/dev/random&lt;/backend&gt;
+     &lt;alias name=&#39;rng0&#39;/&gt;
+   &lt;/rng&gt;
+</code></pre></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo krb5_newrealm
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>This script should be run on the master KDC/admin server to initialize
+</span></span><span style="display:flex;"><span>a Kerberos realm.  It will ask you to type in a master key password.
+</span></span><span style="display:flex;"><span>This password will be used to generate a key that is stored in
+</span></span><span style="display:flex;"><span>/etc/krb5kdc/stash.  You should try to remember this password, but it
+</span></span><span style="display:flex;"><span>is much more important that it be a strong password than that it be
+</span></span><span style="display:flex;"><span>remembered.  However, <span style="color:#66d9ef">if</span> you lose the password and /etc/krb5kdc/stash,
+</span></span><span style="display:flex;"><span>you cannot decrypt your Kerberos database.
+</span></span><span style="display:flex;"><span>Loading random data
+</span></span><span style="display:flex;"><span>Initializing database <span style="color:#e6db74">&#39;/var/lib/krb5kdc/principal&#39;</span> <span style="color:#66d9ef">for</span> realm <span style="color:#e6db74">&#39;ANTITERRE.LAN&#39;</span>,
+</span></span><span style="display:flex;"><span>master key name <span style="color:#e6db74">&#39;K/M@ANTITERRE.LAN&#39;</span>
+</span></span><span style="display:flex;"><span>You will be prompted <span style="color:#66d9ef">for</span> the database Master Password.
+</span></span><span style="display:flex;"><span>It is important that you NOT FORGET this password.
+</span></span><span style="display:flex;"><span>Enter KDC database master key: <span style="color:#f92672">[</span>kdcmasterpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Re-enter KDC database master key to verify: <span style="color:#f92672">[</span>kdcmasterpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Now that your realm is set up you may wish to create an administrative
+</span></span><span style="display:flex;"><span>principal using the addprinc subcommand of the kadmin.local program.
+</span></span><span style="display:flex;"><span>Then, this principal can be added to /etc/krb5kdc/kadm5.acl so that
+</span></span><span style="display:flex;"><span>you can use the kadmin program on other computers.  Kerberos admin
+</span></span><span style="display:flex;"><span>principals usually belong to a single user and end in /admin.  For
+</span></span><span style="display:flex;"><span>example, <span style="color:#66d9ef">if</span> jruser is a Kerberos administrator, <span style="color:#66d9ef">then</span> in addition to
+</span></span><span style="display:flex;"><span>the normal jruser principal, a jruser/admin principal should be
+</span></span><span style="display:flex;"><span>created.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Don<span style="color:#960050;background-color:#1e0010">&#39;</span>t forget to set up DNS information so your clients can find your
+</span></span><span style="display:flex;"><span>KDC and admin servers.  Doing so is documented in the administration
+</span></span><span style="display:flex;"><span>guide.
+</span></span></code></pre></div><blockquote>
+<p><strong>information</strong></p>
+<ul>
+<li>
+<p><strong>Problème</strong>:La commande reste bloquer sur &ldquo;Loading random data&rdquo;.</p>
+</li>
+<li>
+<p><strong>Work around</strong>:Stopper la commande et redémarrer la machine.</p>
+</li>
+<li>
+<p>A essayer</p>
+</li>
+</ul>
+<pre tabindex="0"><code># /usr/sbin/kdb5_util create -s
+</code></pre></blockquote>
+<blockquote>
+<p><strong>information</strong></p>
+<ul>
+<li>Emplacement des fichiers de configuration</li>
+</ul>
+<pre tabindex="0"><code>/
+...
+├── etc
+│   ├── krb5.conf # configuration de client kerberos
+│   ...
+│   ├── krb5kdc
+│   │   ├── kadm5.acl
+│   │   ├── kdc.conf # configuration du serveur kerberos
+│   │   └── stash
+</code></pre><ul>
+<li>Emplacement des fichiers de la base de données kerberos</li>
+</ul>
+<pre tabindex="0"><code>...
+├── var
+│   ├── lib
+│   │   ├── krb5kdc
+│   │   │   ├── principal
+│   │   │   ├── principal.kadm5
+│   │   │   ├── principal.kadm5.lock
+│   │   │   └── principal.ok
+</code></pre><ul>
+<li>Contenu du fichier de configuration du client kerberos</li>
+</ul>
+<pre tabindex="0"><code>$ cat /etc/krb5.conf 
+[libdefaults]
+  default_realm = ANTITERRE.LAN
+...
+[realms]
+  ANTITERRE.LAN = {
+  	kdc = kdc1.antiterre.lan
+  	admin_server = kdc1.antiterre.lan
+  }
+...
+</code></pre><ul>
+<li>Contenu du fichier de configuration du serveur kerberos</li>
+</ul>
+<pre tabindex="0"><code>$ sudo cat /etc/krb5kdc/kdc.conf
+[kdcdefaults]
+   kdc_ports = 750,88
+
+[realms]
+   ANTITERRE.LAN = {
+       database_name = /var/lib/krb5kdc/principal
+       admin_keytab = FILE:/etc/krb5kdc/kadm5.keytab
+       acl_file = /etc/krb5kdc/kadm5.acl
+       key_stash_file = /etc/krb5kdc/stash
+       kdc_ports = 750,88
+       max_life = 10h 0m 0s
+       max_renewable_life = 7d 0h 0m 0s
+       master_key_type = des3-hmac-sha1
+       supported_enctypes = aes256-cts:normal arcfour-hmac:normal 
+                            des3-hmac-sha1:normal des-cbc-crc:normal 
+                            des:normal des:v4 des:norealm des:onlyrealm des:afs3
+       default_principal_flags = +preauth
+   }
+</code></pre></blockquote>
+<h3 id="création-dun-principal-administrateur">Création d&rsquo;un principal administrateur</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo kadmin.local 
+</span></span><span style="display:flex;"><span>Authenticating as principal root/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>kadmin.local:  addprinc debian/admin
+</span></span><span style="display:flex;"><span>WARNING: no policy specified <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN; defaulting to no policy
+</span></span><span style="display:flex;"><span>Enter password <span style="color:#66d9ef">for</span> principal <span style="color:#e6db74">&#34;debian/admin@ANTITERRE.LAN&#34;</span>: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Re-enter password <span style="color:#66d9ef">for</span> principal <span style="color:#e6db74">&#34;debian/admin@ANTITERRE.LAN&#34;</span>: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Principal <span style="color:#e6db74">&#34;debian/admin@ANTITERRE.LAN&#34;</span> created.
+</span></span><span style="display:flex;"><span>kadmin.local:  quit
+</span></span></code></pre></div><ul>
+<li>test</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kinit debian/admin
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: debian/admin@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>02/21/11 16:53:50  02/22/11 02:53:50  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>	renew <span style="color:#66d9ef">until</span> 02/22/11 16:53:43
+</span></span></code></pre></div><h3 id="configuration-des-acl">Configuration des ACL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo vim /etc/krb5kdc/kadm5.acl
+</span></span></code></pre></div><pre tabindex="0"><code>*/admin *
+</code></pre><h3 id="redémarrage-du-service-krb5-admin-server">Redémarrage du service krb5-admin-server</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo service krb5-admin-server restart
+</span></span></code></pre></div><h3 id="test-dobtention-dun-ticket-pour-debianadmin">Test d&rsquo;obtention d&rsquo;un ticket pour debian/admin</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kinit debian/admin
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: debian/admin@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>01/03/11 18:51:13  01/04/11 04:51:13  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>	renew <span style="color:#66d9ef">until</span> 01/04/11 18:51:10
+</span></span></code></pre></div><h3 id="configuration-du-dns-pour-laccès-au-service-kerberos">Configuration du DNS pour l&rsquo;accès au service KERBEROS</h3>
+<ul>
+<li>dans <code>/etc/bind/db.antiterre.lan</code> sur le serveur de nom ajouter:</li>
+</ul>
+<pre tabindex="0"><code>...
+_kerberos._udp.ANTITERRE.LAN.     IN SRV 1  0 88  galatograd.antiterre.lan.
+_kerberos._tcp.ANTITERRE.LAN.     IN SRV 1  0 88  galatograd.antiterre.lan.
+_kerberos-adm._tcp.ANTITERRE.LAN. IN SRV 1  0 749 galatograd.antiterre.lan.
+_kpasswd._udp.ANTITERRE.LAN.      IN SRV 1  0 464 galatograd.antiterre.lan.
+...
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ named-checkzone antiterre.lan /etc/bind/db.antiterre.lan
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo service bind9 restart
+</span></span></code></pre></div><h2 id="client-kerberos---installation-et-configuration">Client Kerberos - Installation et configuration</h2>
+<blockquote>
+<p><strong>ATTENTION</strong></p>
+<p>Opérations à réaliser sur le poste client par exemple <a href="mailto:luna@antiterre.lan">luna@antiterre.lan</a></p>
+</blockquote>
+<h3 id="installation">Installation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>as_client$ sudo apt-get install krb5-user sssd-krb5
+</span></span></code></pre></div><ul>
+<li>Royaume (« realm ») Kerberos version 5 par défaut : ANTITERRE.LAN</li>
+<li>Kerberos servers for your realm: kdc1.antiterre.lan</li>
+<li>Administrative server for your Kerberos realm: kdc1.antiterre.lan</li>
+</ul>
+<p>La commande ci-dessous peut être exécuter si les paramètres n&rsquo;ont pas pu être saisi lors de l&rsquo;installation des paquets</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>as_client$ sudo dpkg-reconfigure krb5-config
+</span></span></code></pre></div><blockquote>
+<p><strong>information</strong></p>
+<p>Le service DNS contient les entrées pour trouvé le service KDC!</p>
+<p>Répondre oui dans le cas contraire</p>
+<ul>
+<li>Ajouter les emplacements des serveurs Kerberos par défaut dans /etc/krb5.conf ? <Oui></li>
+<li>Serveurs Kerberos du domaine : kdc1.antiterre.lan</li>
+<li>Serveur administratif du domaine Kerberos : kdc1.antiterre.lan</li>
+</ul>
+<p>la instruction précédente configure le fichier <code>/etc/krb5.conf</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat /etc/krb5.conf 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>libdefaults<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  default_realm <span style="color:#f92672">=</span> ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>realms<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  ANTITERRE.LAN <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  	kdc <span style="color:#f92672">=</span> kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>  	admin_server <span style="color:#f92672">=</span> kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div></blockquote>
+<ul>
+<li>Test</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@luna:~$ kinit debian/admin
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: 
+</span></span><span style="display:flex;"><span>debian@luna:~$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: debian/admin@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>02/21/11 18:24:12  02/22/11 04:24:12  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>       renew <span style="color:#66d9ef">until</span> 02/22/11 18:23:54
+</span></span></code></pre></div><h3 id="configuration-du-service-sssd-pour-kerberos">Configuration du service SSSD pour kerberos</h3>
+<blockquote>
+<p>SSSD signifie System Security Services Daemon et il s&rsquo;agit en fait d&rsquo;un ensemble de service qui gèrent l&rsquo;authentification, l&rsquo;autorisation et les informations sur les utilisateurs et les groupes provenant de diverses sources réseau.</p>
+</blockquote>
+<ul>
+<li>
+<p>Créer le fichier <code>/etc/sssd/sssd.conf</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@luna:~$ sudo vim /etc/sssd/sssd.conf
+</span></span><span style="display:flex;"><span>debian@luna:~$ sudo cat /etc/sssd/sssd.conf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>sssd<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>config_file_version <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>services <span style="color:#f92672">=</span> pam
+</span></span><span style="display:flex;"><span>domains <span style="color:#f92672">=</span> antiterre.lan
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>pam<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>domain/antiterre.lan<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>id_provider <span style="color:#f92672">=</span> proxy
+</span></span><span style="display:flex;"><span>proxy_lib_name <span style="color:#f92672">=</span> files
+</span></span><span style="display:flex;"><span>auth_provider <span style="color:#f92672">=</span> krb5
+</span></span><span style="display:flex;"><span>krb5_server <span style="color:#f92672">=</span> kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>krb5_kpasswd <span style="color:#f92672">=</span> kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>krb5_realm <span style="color:#f92672">=</span> ANTITERRE.LAN
+</span></span></code></pre></div></li>
+<li>
+<p>ajuster les permissions et redémarrer le service sssd</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@luna:~$ sudo chown root:root /etc/sssd/sssd.conf
+</span></span><span style="display:flex;"><span>debian@luna:~$ sudo chmod <span style="color:#ae81ff">0600</span> /etc/sssd/sssd.conf
+</span></span><span style="display:flex;"><span>debian@luna:~$ sudo systemctl start sssd
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="création-dun-utilisateur">Création d&rsquo;un utilisateur</h2>
+<h3 id="création-dun-principal-kerberos">Création d&rsquo;un principal Kerberos</h3>
+<blockquote>
+<p><strong>ATTENTION</strong></p>
+<p>Opérations à réaliser sur galatograd.antiterre.lan</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kadmin
+</span></span><span style="display:flex;"><span>Authenticating as principal debian/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: 
+</span></span><span style="display:flex;"><span>kadmin:  addprinc robick
+</span></span><span style="display:flex;"><span>WARNING: no policy specified <span style="color:#66d9ef">for</span> robick@ANTITERRE.LAN; defaulting to no policy
+</span></span><span style="display:flex;"><span>Enter password <span style="color:#66d9ef">for</span> principal <span style="color:#e6db74">&#34;robick@ANTITERRE.LAN&#34;</span>: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Re-enter password <span style="color:#66d9ef">for</span> principal <span style="color:#e6db74">&#34;robick@ANTITERRE.LAN&#34;</span>: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Principal <span style="color:#e6db74">&#34;robick@ANTITERRE.LAN&#34;</span> created.
+</span></span><span style="display:flex;"><span>kadmin:  quit
+</span></span></code></pre></div><h3 id="création-dun-utilisateur-local">Création d&rsquo;un utilisateur local</h3>
+<blockquote>
+<p><strong>ATTENTION</strong></p>
+<p>Opérations à réaliser sur le poste client par exemple <a href="mailto:luna@antiterre.lan">luna@antiterre.lan</a></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@luna:~$ sudo adduser robick
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Adding user <span style="color:#e6db74">`</span>robick<span style="color:#e6db74">&#39; ...
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Adding new group `robick&#39;</span> <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span> ...
+</span></span><span style="display:flex;"><span>Adding new user <span style="color:#e6db74">`</span>robick<span style="color:#e6db74">&#39; (1001) with group `robick&#39;</span> ...
+</span></span><span style="display:flex;"><span>Creating home directory <span style="color:#e6db74">`</span>/home/robick<span style="color:#e6db74">&#39; ...
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Copying files from `/etc/skel&#39;</span> ...
+</span></span><span style="display:flex;"><span>Current Kerberos password: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Enter new Kerberos password: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Retype new Kerberos password: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>passwd : le mot de passe a été mis à jour avec succès
+</span></span><span style="display:flex;"><span>Modification des informations relatives à l<span style="color:#960050;background-color:#1e0010">&#39;</span>utilisateur robick
+</span></span><span style="display:flex;"><span>Entrez la nouvelle valeur ou « Entrée » pour conserver la valeur proposée
+</span></span><span style="display:flex;"><span>	Nom complet <span style="color:#f92672">[]</span>: Eugen Robick
+</span></span><span style="display:flex;"><span>	N° de bureau <span style="color:#f92672">[]</span>: 
+</span></span><span style="display:flex;"><span>	Téléphone professionnel <span style="color:#f92672">[]</span>: 
+</span></span><span style="display:flex;"><span>	Téléphone personnel <span style="color:#f92672">[]</span>: 
+</span></span><span style="display:flex;"><span>	Autre <span style="color:#f92672">[]</span>: 
+</span></span><span style="display:flex;"><span>Is the information correct? <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span> 
+</span></span></code></pre></div><h3 id="vérification-de-lutilisateur">Vérification de l&rsquo;utilisateur</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kinit robick
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> robick@ANTITERRE.LAN: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: robick@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>01/03/11 20:29:12  01/04/11 06:29:12  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>	renew <span style="color:#66d9ef">until</span> 01/04/11 20:29:09
+</span></span></code></pre></div><h3 id="test-de-login">Test de login</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@luna:~$ su -l robick
+</span></span><span style="display:flex;"><span>Password: 
+</span></span><span style="display:flex;"><span>robick@luna:~$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1001_YF6o51
+</span></span><span style="display:flex;"><span>Default principal: robick@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>02/21/11 18:49:16  02/22/11 04:49:16  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>	renew <span style="color:#66d9ef">until</span> 02/22/11 18:49:15
+</span></span></code></pre></div><h3 id="changement-du-mot-de-passe">Changement du mot de passe</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>robick@luna:~$ kpasswd 
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> robick@ANTITERRE.LAN: <span style="color:#f92672">[</span>robickpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Enter new password: <span style="color:#f92672">[</span>robick<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Enter it again: <span style="color:#f92672">[</span>robick<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Password changed.
+</span></span></code></pre></div><blockquote>
+<p><strong>information</strong>
+La commande <code>passwd</code> permet également de changer le mot de passe kerberos</p>
+<pre tabindex="0"><code>robick@luna:~$ passwd
+Current Kerberos password: 
+Enter new Kerberos password: 
+Retype new Kerberos password: 
+passwd: password updated successfully
+</code></pre></blockquote>
+<blockquote>
+<p><strong>ATTENTION</strong>
+Le serveur Kerberos permet uniquement d&rsquo;authentifier un utilisateur.
+Cette utilisateur doit exister sur la machine local ainsi que dans la base de données kerberos</p>
+</blockquote>
+<h2 id="commandes">Commandes</h2>
+<h3 id="kinit---permet-dobtenir-de-kerberos-un-tgt-ticket-granting-ticket">kinit - permet d&rsquo;obtenir de kerberos un TGT (ticket-granting ticket)</h3>
+<pre tabindex="0"><code>KINIT(1)
+
+NAME
+       kinit - obtain and cache Kerberos ticket-granting ticket
+
+SYNOPSIS
+       kinit  [-V] [-l lifetime] [-s start_time] [-r renewable_life] 
+              [-p | -P] [-f | -F] [-a] [-A] [-C] [-E] [-v] [-R] [-k [-t
+              keytab_file]] [-c cache_name] [-n] [-S service_name][-T armor_ccache] 
+              [-X attribute[=value]] [principal]
+</code></pre><h3 id="klist---afficher-les-tickets-en-cache">klist - afficher les tickets en cache</h3>
+<pre tabindex="0"><code>KLIST(1)
+
+NAME
+       klist - list cached Kerberos tickets
+
+SYNOPSIS
+       klist [-e] [[-c] [-f] [-s] [-a  [-n]]] [-k [-t] [-K]] 
+       [cache_name | keytab_name]
+</code></pre><h3 id="kdestroy---permet-de-supprimer-le-ticket">kdestroy - permet de supprimer le ticket</h3>
+<pre tabindex="0"><code>KDESTROY(1)
+
+NAME
+       kdestroy - destroy Kerberos tickets
+
+SYNOPSIS
+       kdestroy [-q] [-c cache_name]
+</code></pre><h3 id="kpasswd---permet-de-changer-le-mot-de-passe-dun-utilisateur-kerberos">kpasswd - permet de changer le mot de passe d&rsquo;un utilisateur Kerberos</h3>
+<pre tabindex="0"><code>KPASSWD(1)
+
+NAME
+       kpasswd - change a user&#39;s Kerberos password
+
+SYNOPSIS
+       kpasswd [principal]
+</code></pre><h3 id="kadmin---programme-dadministration-de-la-base-de-données-kerberos">kadmin - programme d&rsquo;administration de la base de données Kerberos</h3>
+<pre tabindex="0"><code>KADMIN(1)
+
+NAME
+       kadmin - Kerberos V5 database administration program
+
+SYNOPSYS
+       kadmin [-O | -N] [-r realm] [-p principal] [-q query]
+              [[-c cache_name] | [-k [-t keytab]] | -n] [-w password] [-s admin_server[:port]
+
+       kadmin.local    [-r realm] [-p principal] [-q query]
+                       [-d dbname] [-e &#34;enc:salt ...&#34;] [-m] [-x db_args]
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://fr.wikipedia.org/wiki/Kerberos_%28protocole%29">Kerberos (protocole) — Wikipédia</a></li>
+<li><a href="http://tools.ietf.org/html/rfc4120">The Kerberos Network Authentication Service (V5) (rfc4120)</a></li>
+<li><a href="http://web.mit.edu/kerberos/www/">Kerberos: The Network Authentication Protocol</a></li>
+<li><a href="https://ubuntu.com/server/docs/kerberos-introduction">Kerberos - Introduction | Ubuntu</a></li>
+<li><a href="https://ubuntu.com/server/docs/service-kerberos">Kerberos Server | Ubuntu</a></li>
+<li><a href="http://web.mit.edu/Kerberos/krb5-1.8/#documentation">Documentation for the krb5-1.8.3 release</a></li>
+<li><a href="https://ubuntu.com/server/docs/service-sssd-ldap-krb">Service - SSSD | Ubuntu</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Accéder à un serveur distant à travers un tunnel SSH</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/tunnel-ssh/">Accéder à un serveur distant à travers un tunnel SSH</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 13:55</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#schéma">Schéma</a></li>
+    <li><a href="#création-du-tunnel-ssh-à-travers-serveurtunnel">Création du tunnel ssh à travers serveurTunnel</a>
+      <ul>
+        <li><a href="#sur-le-client">Sur le client</a></li>
+        <li><a href="#mise-en-tâche-de-fond">Mise en tâche de fond</a></li>
+      </ul>
+    </li>
+    <li><a href="#connexion-au-serveurdistant-ssh-via-le-tunnel-ssh">Connexion au serveurdistant ssh via le tunnel ssh</a>
+      <ul>
+        <li><a href="#sur-le-client-1">Sur le client</a></li>
+      </ul>
+    </li>
+    <li><a href="#exemple---accès-à-lapplication-web-dadministration-du-switch-mc0-0315-sw1lan2labodhu">Exemple - Accès à l&rsquo;application web d&rsquo;administration du switch mc0-0315-sw1.lan2.labo.dhu</a>
+      <ul>
+        <li><a href="#création-du-tunnel">Création du tunnel</a></li>
+        <li><a href="#accès-à-lapplication-dadministration">Accès à l&rsquo;application d&rsquo;administration</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="schéma">Schéma</h2>
+<pre tabindex="0"><code>.--------.          .---------------------.           .-----------------.
+|       2222                                          22
+| client |=========&gt;| serveurTunnel       |==========&gt;| serveurDistant  |
+|        |          |                     |           |                 |
+`--------´          `---------------------´           `-----------------´
+</code></pre><h2 id="création-du-tunnel-ssh-à-travers-serveurtunnel">Création du tunnel ssh à travers serveurTunnel</h2>
+<h3 id="sur-le-client">Sur le client</h3>
+<pre tabindex="0"><code>client:~$ ssh -N -L2222:serveurDistant:22 user1@serveurTunnel
+user1@serveurTunnel&#39;s password: 
+</code></pre><ul>
+<li>-L [[bind_address:]port:host:hostport\Specifies that the given port on the local (client) host is to be forwarded to the given host and port on the remote side.</li>
+<li>-N\Do not execute a remote command.  This is useful for just forwarding ports (protocol version 2 only).</li>
+</ul>
+<h3 id="mise-en-tâche-de-fond">Mise en tâche de fond</h3>
+<pre tabindex="0"><code>CTRL-Z
+$ bg
+$ jobs
+[1]+  En cours d&#39;exécution   ssh -N -L2222:serveurDistant:22 user1@serveurTunnel &amp;
+</code></pre><h2 id="connexion-au-serveurdistant-ssh-via-le-tunnel-ssh">Connexion au serveurdistant ssh via le tunnel ssh</h2>
+<h3 id="sur-le-client-1">Sur le client</h3>
+<pre tabindex="0"><code>client:~$ ssh user2@localhost -p 2222
+...
+user2@serveurDistant:~$
+</code></pre><h2 id="exemple---accès-à-lapplication-web-dadministration-du-switch-mc0-0315-sw1lan2labodhu">Exemple - Accès à l&rsquo;application web d&rsquo;administration du switch mc0-0315-sw1.lan2.labo.dhu</h2>
+<pre tabindex="0"><code>.--------.          .---------------------.           .----------------------------.
+| client |=========&gt;| brusel.labo.dhu     |==========&gt;| mc0-0315-sw1.lan2.labo.dhu |
+|        |          | eth0: 157.26.229.80 |           | 172.16.1.2                 |
+|        |          | eth1: 172.16.1.5    |           |                            |
+`--------´          `---------------------´           `----------------------------´
+</code></pre><h3 id="création-du-tunnel">Création du tunnel</h3>
+<pre tabindex="0"><code>client:~$ ssh -N -L8443:mc0-0315-sw1.lan2.labo.dhu:443 ubuntu@brusel.labo.dhu
+</code></pre><h3 id="accès-à-lapplication-dadministration">Accès à l&rsquo;application d&rsquo;administration</h3>
+<p>De puis le navigateur internet : <a href="https://localhost:8443">https://localhost:8443</a></p>
+<h2 id="références">Références</h2>
+<ul>
+<li><a href="https://www.youtube.com/playlist?list=PLn6POgpklwWp0emQkznjREGn0SEkQYA6p">xavki - TUTORIALS ET FORMATION SSH</a>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=xb2duWYFOyo&amp;list=PLn6POgpklwWp0emQkznjREGn0SEkQYA6p&amp;index=7">SSH - 7. ASTUCE : LOCAL PORT FORWARDING</a></li>
+</ul>
+</li>
+</ul>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

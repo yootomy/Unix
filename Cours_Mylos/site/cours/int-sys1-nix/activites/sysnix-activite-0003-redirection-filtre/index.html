@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Activités, série 0003 - Redirection et filtre</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/sysnix-activite-0003-redirection-filtre/">Activités, série 0003 - Redirection et filtre</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 17:11</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#objectifs">Objectifs</a></li>
+    <li><a href="#exercices">Exercices</a>
+      <ul>
+        <li><a href="#1">1</a></li>
+        <li><a href="#2">2</a></li>
+        <li><a href="#3">3</a></li>
+        <li><a href="#4">4</a></li>
+        <li><a href="#5">5</a></li>
+        <li><a href="#6">6</a></li>
+        <li><a href="#7">7</a></li>
+        <li><a href="#8">8</a></li>
+        <li><a href="#9">9</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="objectifs">Objectifs</h2>
+<ul>
+<li>Redirections et filtres</li>
+</ul>
+<blockquote>
+<ul>
+<li>Résoudre chaque problème suivant en un minimum d&rsquo;instructions. Généralement une instruction suffit</li>
+<li>Écrire la commande permettant de vérifier le résultat</li>
+</ul>
+</blockquote>
+<h2 id="exercices">Exercices</h2>
+<h3 id="1">1</h3>
+<p>Exercer les commandes cat, head, tail, less et more. Pour less exercer ses propres sous-commandes.</p>
+<h3 id="2">2</h3>
+<p>Prendre deux fichiers texte identiques, en modifier un et lister les différences ( diff et cmp ).</p>
+<h3 id="3">3</h3>
+<p>Que fournissent les commandes suivantes ? Écrire une phrase compréhensible par une personne extérieure du domaine.</p>
+<pre tabindex="0"><code>wc -l /etc/passwd
+more /etc/passwd
+grep li /etc/passwd
+grep ^li /etc/passwd
+grep 0 /etc/passwd
+cut -d: -f1,4 /etc/passwd 
+more /etc/group
+cut -d: -f1,3 /etc/group
+</code></pre><h3 id="4">4</h3>
+<p>Exécuter les commandes ci-dessous, comprendre ce qu&rsquo;il se passe. Écrire une phrase compréhensible par une personne extérieure du domaine.</p>
+<pre tabindex="0"><code>cat /etc/passwd | cut -d: -f1
+cat /etc/passwd | cut -d: -f1,6
+cat /etc/passwd | cut -d: -f1,6 | less
+cat /etc/passwd | cut -d: -f1,4 | grep &#39;:101$&#39;
+cat /etc/group | grep ^user
+cat /etc/passwd | cut -d: -f1,6 | tee ./liste_comptes 
+sort &lt; ./liste_comptes &gt; ./liste_comptes.triee 
+cat /etc/passwd | cut -d: -f1,6 | tee ./liste_comptes | less
+cat /etc/passwd | cut -d: -f1,4 &gt;&gt; ./liste_comptes
+</code></pre><h3 id="5">5</h3>
+<p>Écrire/Construire les commandes fournissant:</p>
+<ol>
+<li>la liste des noms d&rsquo;utilisateurs locaux avec leurs UID et GID (sur écran et sur fichier)</li>
+<li>la liste des noms des groupes locaux</li>
+<li>le nombre de comptes locaux</li>
+<li>le nombre de groupes locaux</li>
+</ol>
+<h3 id="6">6</h3>
+<p>Exercer la commande <code>find</code> dans les 4 cas suivants:</p>
+<ol>
+<li>recherche selon le nom du fichier</li>
+<li>recherche selon le code de permission</li>
+<li>recherche selon la date de modification</li>
+<li>recherche selon un code de permission et le modifier</li>
+</ol>
+<h3 id="7">7</h3>
+<ol>
+<li>Créez une instruction qui permet de compter le nombre de fichiers et de répertoires contenus dans un répertoire et ses descendants.</li>
+<li>Modifiez l&rsquo;instruction sous 1) pour ne compter que les fichiers ordinaires.</li>
+<li>Modifiez l&rsquo;instruction sous 1) pour ne compter que les répertoires.</li>
+</ol>
+<h3 id="8">8</h3>
+<p>Construire la commande qui</p>
+<ul>
+<li>permet de compter le nombre d’utilisateurs qui possède un GID compris entre 100 et 199.</li>
+<li>indique le nom de l&rsquo;utilisateur et l&rsquo;IP de sa machine connectés au système sur le terminal 4 (/dev/pts/4)</li>
+</ul>
+<p>aide : utiliser la commande tr (translate) : <code>tr –s ' ' ':' file(s)</code></p>
+<h3 id="9">9</h3>
+<p>Analyser les commandes suivantes</p>
+<pre tabindex="0"><code>find / -user &#34;$USER&#34;
+find / -user &#34;$USER&#34; 2&gt;/dev/null
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0003-redirection-filtre">Éléments de solution</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Service d&#39;annuaire LDAP avec authentification kerberos (GSSAPI)</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-ldap-gssapi/">Service réseau - Service d&#39;annuaire LDAP avec authentification kerberos (GSSAPI)</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>17.03.2022 09:11</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#mise-en-place-de-lauthentification">Mise en place de l&rsquo;authentification</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<p>Le but de cette configuration consiste à utiliser kerberos comme méthode d&rsquo;authentification pour l&rsquo;accès à l&rsquo;annaire LDAP.</p>
+<h2 id="mise-en-place-de-lauthentification">Mise en place de l&rsquo;authentification</h2>
+<blockquote>
+<p><strong>ATTENTION</strong></p>
+<p>A CONFIGURER APRÈS L&rsquo;UTILISATION DE LDAP PAR KERBEROS</p>
+</blockquote>
+<ul>
+<li>Dans kadmin</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ kadmin
+</span></span><span style="display:flex;"><span>Authenticating as principal ubuntu/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> ubuntu/admin@ANTITERRE.LAN: 
+</span></span></code></pre></div><ul>
+<li>Création d&rsquo;un principal pour galatograd.antiterre.lan</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kadmin:  addprinc -randkey ldap/galatograd.antiterre.lan@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>WARNING: no policy specified <span style="color:#66d9ef">for</span> ldap/galatograd.antiterre.lan@ANTITERRE.LAN; defaulting to no policy
+</span></span><span style="display:flex;"><span>Principal <span style="color:#e6db74">&#34;ldap/galatograd.antiterre.lan@ANTITERRE.LAN&#34;</span> created.
+</span></span></code></pre></div><ul>
+<li>Extraire la clé pour le serveur ldap1.antiterre.lan</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kadmin:  ktadd -k galatograd.antiterre.lan.keytab ldap/galatograd.antiterre.lan@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>Entry <span style="color:#66d9ef">for</span> principal ldap/galatograd.antiterre.lan@ANTITERRE.LAN with kvno 2, encryption type aes256-cts-hmac-sha1-96 added to keytab WRFILE:galatograd.antiterre.lan.keytab.
+</span></span><span style="display:flex;"><span>Entry <span style="color:#66d9ef">for</span> principal ldap/galatograd.antiterre.lan@ANTITERRE.LAN with kvno 2, encryption type aes128-cts-hmac-sha1-96 added to keytab WRFILE:galatograd.antiterre.lan.keytab.
+</span></span></code></pre></div><ul>
+<li>Déplacer la clé dans le dossier /etc/ldap</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ chmod <span style="color:#ae81ff">640</span> galatograd.antiterre.lan.keytab 
+</span></span><span style="display:flex;"><span>ubuntu@galatograd:~$ sudo chown openldap:openldap galatograd.antiterre.lan.keytab 
+</span></span><span style="display:flex;"><span>ubuntu@galatograd:~$ sudo mv galatograd.antiterre.lan.keytab /etc/ldap/
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ ls -l /etc/ldap/galatograd.antiterre.lan.keytab 
+</span></span><span style="display:flex;"><span>-rw-r----- <span style="color:#ae81ff">1</span> openldap openldap <span style="color:#ae81ff">190</span> mai  <span style="color:#ae81ff">7</span> 13:40 /etc/ldap/galatograd.antiterre.lan.keytab
+</span></span></code></pre></div><ul>
+<li>configuration de openldap pour l&rsquo;utilisation de la clé, ajouter la ligne ci-dessous dans le fichier <code>/etc/default/slapd</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export KRB5_KTNAME<span style="color:#f92672">=</span>/etc/ldap/galatograd.antiterre.lan.keytab
+</span></span></code></pre></div><ul>
+<li>Installation des paquets sasl</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ sudo apt-get install sasl2-bin libsasl2-2 libsasl2-modules libsasl2-modules-gssapi-mit
+</span></span></code></pre></div><ul>
+<li>configuration de openldap</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ cat sasl.ldif 
+</span></span><span style="display:flex;"><span>dn: cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>add: olcSaslHost
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#The FQDN of the Kerberos KDC.</span>
+</span></span><span style="display:flex;"><span>olcSaslHost: kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>-
+</span></span><span style="display:flex;"><span>add: olcSaslRealm
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#The Kerberos realm name</span>
+</span></span><span style="display:flex;"><span>olcSaslRealm: ANTITERRE.LAN
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#-</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#add: olcSaslSecProps</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#disallow insecure authentication mechanisms such as plain passwords</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#olcSaslSecProps: noplain,noactive,noanonymous,minssf=56</span>
+</span></span><span style="display:flex;"><span>-
+</span></span><span style="display:flex;"><span>add: olcAuthzRegexp
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#by default, the DN of an authorized Kerberos client takes the form</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#uid=&lt;Kerberos principal name&gt;,cn=&lt;Kerberos Realm&gt;,cn=GSSAPI,cn=auth</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adjust the following mappings to match the local configuration as necessary</span>
+</span></span><span style="display:flex;"><span>olcAuthzRegexp: <span style="color:#f92672">{</span>0<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;uid=([^/]*),cn=antiterre.lan,cn=GSSAPI,cn=auth&#34;</span> <span style="color:#e6db74">&#34;uid=</span>$1<span style="color:#e6db74">,ou=people,dc=antiterre,dc=lan&#34;</span>
+</span></span><span style="display:flex;"><span>-
+</span></span><span style="display:flex;"><span>add: olcAuthzRegexp
+</span></span><span style="display:flex;"><span>olcAuthzRegexp: <span style="color:#f92672">{</span>1<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;uid=host/([^/]*).antiterre.lan,cn=antiterre.lan,cn=gssapi,cn=auth&#34;</span> <span style="color:#e6db74">&#34;cn=</span>$1<span style="color:#e6db74">,ou=hosts,dc=antiterre,dc=lan&#34;</span>
+</span></span><span style="display:flex;"><span>-
+</span></span><span style="display:flex;"><span>add: olcAuthzRegexp
+</span></span><span style="display:flex;"><span>olcAuthzRegexp: <span style="color:#f92672">{</span>2<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;uid=ldap/admin,cn=antiterre.lan,cn=gssapi,cn=auth&#34;</span> <span style="color:#e6db74">&#34;cn=admin,cn=config&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f sasl.ldif 
+</span></span><span style="display:flex;"><span>SASL/EXTERNAL authentication started
+</span></span><span style="display:flex;"><span>SASL username: gidNumber<span style="color:#f92672">=</span>0+uidNumber<span style="color:#f92672">=</span>0,cn<span style="color:#f92672">=</span>peercred,cn<span style="color:#f92672">=</span>external,cn<span style="color:#f92672">=</span>auth
+</span></span><span style="display:flex;"><span>SASL SSF: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>modifying entry <span style="color:#e6db74">&#34;cn=config&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ sudo ldapsearch  -LLL -Y EXTERNAL -H ldapi:/// -b cn<span style="color:#f92672">=</span>config cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>SASL/EXTERNAL authentication started
+</span></span><span style="display:flex;"><span>SASL username: gidNumber<span style="color:#f92672">=</span>0+uidNumber<span style="color:#f92672">=</span>0,cn<span style="color:#f92672">=</span>peercred,cn<span style="color:#f92672">=</span>external,cn<span style="color:#f92672">=</span>auth
+</span></span><span style="display:flex;"><span>SASL SSF: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>dn: cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>objectClass: olcGlobal
+</span></span><span style="display:flex;"><span>cn: config
+</span></span><span style="display:flex;"><span>olcArgsFile: /var/run/slapd/slapd.args
+</span></span><span style="display:flex;"><span>olcLogLevel: stats
+</span></span><span style="display:flex;"><span>olcPidFile: /var/run/slapd/slapd.pid
+</span></span><span style="display:flex;"><span>olcToolThreads: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>olcSaslHost: kdc1.antiterre.lan
+</span></span><span style="display:flex;"><span>olcSaslRealm: ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>olcAuthzRegexp: <span style="color:#f92672">{</span>0<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;uid=([^/]*),cn=antiterre.lan,cn=GSSAPI,cn=auth&#34;</span> <span style="color:#e6db74">&#34;uid=</span>$1<span style="color:#e6db74">,ou=people,dc=antiterre,dc=lan&#34;</span>
+</span></span><span style="display:flex;"><span>olcAuthzRegexp: <span style="color:#f92672">{</span>1<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;uid=host/([^/]*).antiterre.lan,cn=antiterre.lan,cn=gssapi,cn=auth&#34;</span> <span style="color:#e6db74">&#34;cn=</span>$1<span style="color:#e6db74">,ou=hosts,dc=antiterre,dc=lan&#34;</span>
+</span></span><span style="display:flex;"><span>olcAuthzRegexp: <span style="color:#f92672">{</span>2<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;uid=ldap/admin,cn=antiterre.lan,cn=gssapi,cn=auth&#34;</span> <span style="color:#e6db74">&#34;cn=admin,cn=config&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ cat /etc/ldap/ldap.conf 
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>SASL_MECH GSSAPI
+</span></span><span style="display:flex;"><span>SASL_REALM ANTITERRE.LAN
+</span></span></code></pre></div><ul>
+<li>redémarer le service ldap</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ sudo systemctl restart slapd.service 
+</span></span></code></pre></div><ul>
+<li>vérification</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ kinit robick
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> robick@ANTITERRE.LAN: 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: robick@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>06/01/21 09:45:55  06/01/21 19:45:55  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>	renew <span style="color:#66d9ef">until</span> 06/02/21 09:45:52
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ ldapsearch -Y GSSAPI
+</span></span><span style="display:flex;"><span>SASL/GSSAPI authentication started
+</span></span><span style="display:flex;"><span>SASL username: robick@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>SASL SSF: <span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>SASL data security layer installed.
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extended LDIF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAPv3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># base &lt;&gt; (default) with scope subtree</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># filter: (objectclass=*)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># requesting: ALL</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># search result</span>
+</span></span><span style="display:flex;"><span>search: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>result: <span style="color:#ae81ff">32</span> No such object
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numResponses: 1</span>
+</span></span></code></pre></div><pre tabindex="0"><code>ubuntu@galatograd:~$ klist
+Ticket cache: FILE:/tmp/krb5cc_1000
+Default principal: robick@ANTITERRE.LAN
+
+Valid starting     Expires            Service principal
+06/01/21 09:45:55  06/01/21 19:45:55  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+	renew until 06/02/21 09:45:52
+06/01/21 10:00:50  06/01/21 19:45:55  ldap/galatograd.antiterre.lan@ANTITERRE.LAN
+	renew until 06/02/21 09:45:52
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://ubuntu.com/server/docs/service-sssd">Ubuntu Documentation - SSSD</a></li>
+<li><a href="https://ubuntu.com/server/docs/service-ldap">Ubuntu Documentation - OpenLDAP Server</a></li>
+<li><a href="https://help.ubuntu.com/community/OpenLDAPServer">OpenLDAPServer - Community Help Wiki</a></li>
+<li><a href="http://www.openldap.org/doc/admin24/">OpenLDAP Software 2.4 Administrator&rsquo;s Guide</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

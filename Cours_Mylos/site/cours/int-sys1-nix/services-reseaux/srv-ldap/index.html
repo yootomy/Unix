@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Service d&#39;annuaire LDAP</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-ldap/">Service réseau - Service d&#39;annuaire LDAP</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:25</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#annuaire">Annuaire</a></li>
+        <li><a href="#ldap">LDAP</a></li>
+        <li><a href="#ldif">LDIF</a></li>
+      </ul>
+    </li>
+    <li><a href="#serveur-openldap---installation-et-configuration">Serveur OpenLDAP - Installation et configuration</a>
+      <ul>
+        <li><a href="#préalable">Préalable</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#configuration-du-backend---administration-des-acl">Configuration du backend - administration des ACL</a></li>
+        <li><a href="#configuration-du-frontend---annuaire">Configuration du frontend - annuaire</a></li>
+      </ul>
+    </li>
+    <li><a href="#utilitaires-ldap">Utilitaires ldap</a>
+      <ul>
+        <li><a href="#configuration-du-dns">Configuration du DNS</a></li>
+        <li><a href="#installation-et-configuration">Installation et configuration</a></li>
+        <li><a href="#test">Test</a></li>
+      </ul>
+    </li>
+    <li><a href="#modification-du-niveau-de-journalisation">Modification du niveau de journalisation</a></li>
+    <li><a href="#accès-au-backend-avec-un-mot-de-passe">Accès au backend avec un mot de passe</a></li>
+    <li><a href="#commandes">Commandes</a>
+      <ul>
+        <li><a href="#ldapsearch---outil-de-recherche-en-ligne-de-commande">ldapsearch - outil de recherche en ligne de commande</a></li>
+        <li><a href="#ldapmodify-ldapadd---outil-permettant-dajouter-ou-modifier-une-entrée-dans-lannuaire">ldapmodify, ldapadd - outil permettant d&rsquo;ajouter ou modifier une entrée dans l&rsquo;annuaire</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<h3 id="annuaire">Annuaire</h3>
+<blockquote>
+<p>Un <strong>annuaire</strong> est une bibliothèque (imprimée ou électronique) mise à jour régulièrement qui regroupe des informations (nom, adresse, coordonnées, etc.) sur les membres d’une association, d&rsquo;une entreprise ou d&rsquo;un organisme professionnel, ou sur les abonnés à un service.[<a href="http://fr.wikipedia.org/wiki/Annuaire">2</a>]</p>
+</blockquote>
+<h3 id="ldap">LDAP</h3>
+<blockquote>
+<p><strong>Lightweight Directory Access Protocol (LDAP)</strong> est à l&rsquo;origine un protocole permettant l&rsquo;interrogation et la modification des services d&rsquo;annuaire. Ce protocole repose sur TCP/IP. Il a cependant évolué pour représenter une norme pour les systèmes d&rsquo;annuaires, incluant :</p>
+<ul>
+<li><strong>un modèle de données</strong>; il définit la forme et le type d&rsquo;informations stockées dans l&rsquo;annuaire;</li>
+<li><strong>un modèle de nommage</strong>; il définit l&rsquo;organisation, le référencement et l&rsquo;accessibilité de l&rsquo;information dans l&rsquo;annuaire;</li>
+<li><strong>un modèle fonctionnel basé sur le protocole LDAP</strong>; Il définit l&rsquo;ensemble des opérations permettant d&rsquo;accéder à l&rsquo;information dans l&rsquo;annuaire, que ce soit en lecture ou en écriture;</li>
+<li><strong>un modèle de sécurité</strong>; il définit les mécanismes d&rsquo;authentification auprès de l&rsquo;annuaire;</li>
+<li><strong>un modèle de réplication</strong>; il définit comment un annuaire peut être réparti entre plusieurs serveurs;</li>
+<li><strong>des méthodes d&rsquo;extensions</strong>;la norme définit des méthodes pour pouvoir d&rsquo;une part ajouter de nouvelles opérations à celles définies dans le modèle fonctionnel, et d&rsquo;autre part pour modifier le comportement des fonctions du modèle.</li>
+</ul>
+<p>Un annuaire LDAP respecte généralement le modèle X.500 édicté par l&rsquo;UIT-T : c&rsquo;est une structure arborescente dont chacun des nœuds est constitué d&rsquo;attributs associés à leurs valeurs.</p>
+<p>Le nommage des éléments constituant l&rsquo;arbre (racine, branches, feuilles) reflète souvent le modèle politique, géographique ou organisationnel de la structure représentée. La tendance actuelle est d&rsquo;utiliser le nommage DNS pour les éléments de base de l&rsquo;annuaire (racine et premières branches, domain components ou dc=…). Les branches plus profondes de l&rsquo;annuaire peuvent représenter des &gt;unités organisationnelles ou des groupes (organizational units ou ou=…), des personnes (common &gt;name ou cn=… voire user identifier uid=…), … L&rsquo;assemblage de tous les composants (du plus précis au plus général) d&rsquo;un nom forme son distinguished name, l&rsquo;exemple suivant en présente deux :</p>
+<ul>
+<li>cn=ordinateur,ou=machines,dc=EXEMPLE,dc=FR</li>
+<li>cn=Jean,ou=gens,dc=EXEMPLE,dc=FR</li>
+</ul>
+<pre tabindex="0"><code>           dc=FR
+             |
+         dc=EXEMPLE
+        /          \
+  ou=machines    ou=gens
+      /              \
+cn=ordinateur       cn=Jean
+</code></pre><p>La dernière version en date du protocole est LDAPv3. Cette version est définie par l&rsquo;IETF dans &gt;plusieurs RFC en commençant par la RFC 4510.[<a href="http://fr.wikipedia.org/wiki/Ldap">1</a>]</p>
+</blockquote>
+<h3 id="ldif">LDIF</h3>
+<blockquote>
+<p><strong>LDIF (LDAP Data Interchange Format)</strong> est un format standardisé d&rsquo;échange de données, qui permet la représentation des données contenues dans un annuaire LDAP. Il permet également la représentation d&rsquo;opérations sur les données de l&rsquo;annuaire (ajout, suppression, modification). Le contenu d&rsquo;un annuaire est représenté comme un ensemble d&rsquo;enregistrements (un enregistrement par objet de l&rsquo;annuaire). Les opérations de mise à jour sont représentées comme un ensemble de requêtes. Dans tous les cas, les données sont sous forme d&rsquo;un fichier texte.</p>
+<p>Les enregistrements sont représentés comme un groupe de couples attributs-valeurs. Chaque enregistrement est séparé d&rsquo;un autre par une ligne vide. La fin du fichier LDIF doit contenir deux lignes vides.</p>
+<p>Les attributs d&rsquo;un enregistrement sont représentés sur une seule ligne logique par un couple &ldquo;nom: valeur&rdquo;. Il est possible de représenter un attribut sur plusieurs lignes en faisant précéder les lignes supplémentaires par un espace.</p>
+<p>voir [<a href="http://fr.wikipedia.org/wiki/Ldif">11</a>]</p>
+</blockquote>
+<h2 id="serveur-openldap---installation-et-configuration">Serveur OpenLDAP - Installation et configuration</h2>
+<h3 id="préalable">Préalable</h3>
+<p>Pour que l&rsquo;installation crée le domaine <strong>dc=antiterre,dc=lan</strong> dans l&rsquo;annuaire, vérifier que le fichier <code>/etc/hosts</code> de galatograd contienne la configuration ci-dessous:</p>
+<pre tabindex="0"><code>debian@galatograd:~$ cat /etc/hosts
+...
+127.0.1.1 	galatograd.antiterre.lan galatograd
+...
+</code></pre><h3 id="installation">Installation</h3>
+<ul>
+<li>installation</li>
+</ul>
+<pre tabindex="0"><code>sudo apt-get install slapd ldap-utils
+</code></pre><ul>
+<li>Configuration de slapd
+<ul>
+<li>Mot de passe de l&rsquo;administrateur : [adminpass]</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>information</strong></p>
+<p>la commande ci-dessous permet de reconfigurer le service slapd (openldap)</p>
+<pre tabindex="0"><code>sudo dpkg-reconfigure slapd
+</code></pre><ul>
+<li>Voulez-vous omettre la configuration d&rsquo;OpenLDAP ? non</li>
+<li>Nom de domaine : antiterre.lan</li>
+<li>Nom d&rsquo;entité (« organization ») :  antiterre.lan</li>
+<li>Mot de passe de l&rsquo;administrateur : [adminpass]</li>
+<li>Module de base de données à utiliser : MDB</li>
+<li>Faut-il supprimer la base de données à la purge du paquet ? <Yes></li>
+<li>Faut-il déplacer l&rsquo;ancienne base de données ? <No></li>
+<li>Faut-il autoriser le protocole LDAPv2 ? <No></li>
+</ul>
+</blockquote>
+<ul>
+<li>base de données de la DIT (directory information tree) slapd-config</li>
+</ul>
+<pre tabindex="0"><code>debian@galatograd:~$ sudo tree /etc/ldap/slapd.d/
+/etc/ldap/slapd.d/
+├── cn=config
+│   ├── cn=module{0}.ldif
+│   ├── cn=schema
+│   │   ├── cn={0}core.ldif
+│   │   ├── cn={1}cosine.ldif
+│   │   ├── cn={2}nis.ldif
+│   │   └── cn={3}inetorgperson.ldif
+│   ├── cn=schema.ldif
+│   ├── olcBackend={0}mdb.ldif
+│   ├── olcDatabase={0}config.ldif
+│   ├── olcDatabase={-1}frontend.ldif
+│   └── olcDatabase={1}mdb.ldif
+└── cn=config.ldif
+</code></pre><ul>
+<li>DIT slapd-config</li>
+</ul>
+<pre tabindex="0"><code>$ sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=config dn
+dn: cn=config
+
+dn: cn=module{0},cn=config
+
+dn: cn=schema,cn=config
+
+dn: cn={0}core,cn=schema,cn=config
+
+dn: cn={1}cosine,cn=schema,cn=config
+
+dn: cn={2}nis,cn=schema,cn=config
+
+dn: cn={3}inetorgperson,cn=schema,cn=config
+
+dn: olcBackend={0}mdb,cn=config
+
+dn: olcDatabase={-1}frontend,cn=config
+
+dn: olcDatabase={0}config,cn=config
+
+dn: olcDatabase={1}mdb,cn=config
+</code></pre><ul>
+<li>DIT antiterre.lan</li>
+</ul>
+<pre tabindex="0"><code>$ ldapsearch -x -LLL -H ldap:/// -b dc=antiterre,dc=lan dn
+dn: dc=antiterre,dc=lan
+
+dn: cn=admin,dc=antiterre,dc=lan
+</code></pre><h3 id="configuration-du-backend---administration-des-acl">Configuration du backend - administration des ACL</h3>
+<ul>
+<li>vérification de la configuration des ACL</li>
+</ul>
+<pre tabindex="0"><code>debian@galatograd:~$ sudo ldapsearch  -LLL -Y EXTERNAL \
+                   -H ldapi:/// -b olcDatabase={1}mdb,cn=config
+</code></pre><pre tabindex="0"><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+dn: olcDatabase={1}mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: {1}mdb
+olcDbDirectory: /var/lib/ldap
+olcSuffix: dc=antiterre,dc=lan
+olcAccess: {0}to attrs=userPassword by self write by anonymous auth by * none
+olcAccess: {1}to attrs=shadowLastChange by self write by * read
+olcAccess: {2}to * by * read
+olcLastMod: TRUE
+olcRootDN: cn=admin,dc=antiterre,dc=lan
+olcRootPW: {SSHA}nYwhXnE7m7P1veieLjodEjU/3VXAR/ns
+olcDbCheckpoint: 512 30
+olcDbIndex: objectClass eq
+olcDbIndex: cn,uid eq
+olcDbIndex: uidNumber,gidNumber eq
+olcDbIndex: member,memberUid eq
+olcDbMaxSize: 1073741824
+</code></pre><h3 id="configuration-du-frontend---annuaire">Configuration du frontend - annuaire</h3>
+<ul>
+<li>Création d&rsquo;un fichier de configuration de l&rsquo;annuaire</li>
+</ul>
+<pre tabindex="0"><code>vim frontend.antiterre.lan.ldif
+</code></pre><pre tabindex="0"><code># Create top-level object in domain
+#
+#objet crée durant l&#39;installation
+#
+#dn: dc=antiterre,dc=lan
+#objectClass: top
+#objectClass: dcObject
+#objectclass: organization
+#o: Antiterre federation
+#dc: Antiterre
+
+dn: ou=people,dc=antiterre,dc=lan
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=antiterre,dc=lan
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=robick,ou=people,dc=antiterre,dc=lan
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: robick
+sn: Robick
+givenName: Eugen
+cn: Eugen Robick
+displayName: Eugen Robick
+uidNumber: 10000
+gidNumber: 10000
+userPassword: password
+gecos: Eugen Robick
+loginShell: /bin/bash
+homeDirectory: /home/robick
+shadowExpire: -1
+shadowFlag: 0
+shadowWarning: 7
+shadowMin: 8
+shadowMax: 999999
+shadowLastChange: 10877
+mail: eugen.robick@antiterre.lan
+postalCode: 31000
+l: Urbicande
+o: Antiterre
+mobile: +33 (0)6 xx xx xx xx
+homePhone: +33 (0)5 xx xx xx xx
+title: System Administrator
+postalAddress:
+initials: ER
+
+dn: cn=robick,ou=groups,dc=antiterre,dc=lan
+objectClass: posixGroup
+cn: robick
+gidNumber: 10000
+</code></pre><ul>
+<li>Application de la configuration</li>
+</ul>
+<pre tabindex="0"><code>ldapadd -x -D cn=admin,dc=antiterre,dc=lan -W -f frontend.antiterre.lan.ldif
+</code></pre><pre tabindex="0"><code>Enter LDAP Password: [adminpass]
+adding new entry &#34;ou=people,dc=antiterre,dc=lan&#34;
+
+adding new entry &#34;ou=groups,dc=antiterre,dc=lan&#34;
+
+adding new entry &#34;uid=robick,ou=people,dc=antiterre,dc=lan&#34;
+
+adding new entry &#34;cn=robick,ou=groups,dc=antiterre,dc=lan&#34;
+</code></pre><ul>
+<li>Recherche dans l&rsquo;annuaire de la personne Eugen Robick</li>
+</ul>
+<pre tabindex="0"><code>ldapsearch -xLLL -b &#34;dc=antiterre,dc=lan&#34; uid=robick sn givenName cn
+</code></pre><pre tabindex="0"><code>dn: uid=robick,ou=people,dc=antiterre,dc=lan
+sn: Robick
+givenName: Eugen
+cn: Eugen Robick
+</code></pre><h2 id="utilitaires-ldap">Utilitaires ldap</h2>
+<h3 id="configuration-du-dns">Configuration du DNS</h3>
+<ul>
+<li>Configuration du DNS pour le nom ldap1.antiterre.lan</li>
+</ul>
+<pre tabindex="0"><code>$ sudo vim /etc/bind/db.antiterre.lan 
+</code></pre><pre tabindex="0"><code>...
+galatograd      IN      A       192.168.100.20
+kdc1            IN      CNAME   galatograd
+ldap1           IN      CNAME   galatograd
+...
+</code></pre><pre tabindex="0"><code>$ sudo service bind9 restart 
+</code></pre><pre tabindex="0"><code>$ nslookup ldap1.antiterre.lan
+</code></pre><ul>
+<li>test</li>
+</ul>
+<pre tabindex="0"><code>$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan -b &#34;dc=antiterre,dc=lan&#34; \
+      uid=robick sn givenName cn 
+dn: uid=robick,ou=people,dc=antiterre,dc=lan
+sn: Robick
+givenName: Eugen
+cn: Eugen Robick
+</code></pre><h3 id="installation-et-configuration">Installation et configuration</h3>
+<ul>
+<li>Le paquet ldap-utils est livré avec plusieurs utilitaires pour gérer le répertoire LDAP, mais la longue chaîne d&rsquo;options nécessaire peut les rendre difficiles à utiliser. Le paquet ldapscripts contient des scripts configurables pour gérer facilement les utilisateurs et groupes LDAP. Pour installer le paquet, à partir d&rsquo;un terminal il faut taper :</li>
+</ul>
+<pre tabindex="0"><code>sudo apt-get install ldapscripts
+</code></pre><ul>
+<li>Dans le fichier de configuration <code>/etc/ldapscripts/ldapscripts.conf</code>, modifier les valeurs des propriétés ci-dessous :</li>
+</ul>
+<pre tabindex="0"><code>SERVER=&#34;ldap://ldap1.antiterre.lan&#34;
+BINDDN=&#34;cn=admin,dc=antiterre,dc=lan&#34;
+BINDPWDFILE=&#34;/etc/ldapscripts/ldapscripts.passwd&#34;
+SUFFIX=&#34;dc=antiterre,dc=lan&#34;
+GSUFFIX=&#34;ou=groups&#34;
+USUFFIX=&#34;ou=people&#34;
+GIDSTART=10000
+UIDSTART=10000
+MIDSTART=10000
+</code></pre><ul>
+<li>Création du fichier ldapscripts.passwd pour permettre un accès authentifié à l&rsquo;annuaire :</li>
+</ul>
+<pre tabindex="0"><code>sudo sh -c &#34;echo -n &#39;adminpass&#39; &gt; /etc/ldapscripts/ldapscripts.passwd&#34;
+sudo chmod 400 /etc/ldapscripts/ldapscripts.passwd
+</code></pre><h3 id="test">Test</h3>
+<ul>
+<li>ajout d&rsquo;un nouveau groupe</li>
+</ul>
+<pre tabindex="0"><code>$ sudo ldapaddgroup vonrathen
+Successfully added group vonrathen to LDAP
+</code></pre><ul>
+<li>ajout d&rsquo;un utilisateur</li>
+</ul>
+<pre tabindex="0"><code>$ sudo ldapadduser vonrathen vonrathen
+Successfully added user vonrathen to LDAP
+</code></pre><ul>
+<li>affichage de la liste des utilisateurs</li>
+</ul>
+<pre tabindex="0"><code>$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan -D cn=admin,dc=antiterre,dc=lan \
+             -W -b ou=people,dc=antiterre,dc=lan uid
+Enter LDAP Password: [adminpass]
+dn: ou=people,dc=labdhu
+
+dn: uid=robick,ou=people,dc=labdhu
+uid: robick
+
+dn: uid=vonrathen,ou=people,dc=labdhu
+uid: vonrathen
+</code></pre><blockquote>
+<p>L&rsquo;utilitaire <code>ldapscripts</code> crée le journal d&rsquo;exécution <code>/var/log/ldapscripts.log</code>.</p>
+</blockquote>
+<h2 id="modification-du-niveau-de-journalisation">Modification du niveau de journalisation</h2>
+<pre tabindex="0"><code>debian@galatograd:~$ cat logging.ldif 
+dn: cn=config
+changetype: modify
+replace: olcLogLevel
+olcLogLevel: stats
+</code></pre><pre tabindex="0"><code>debian@galatograd:~$ sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f logging.ldif
+modifying entry &#34;cn=config&#34;
+</code></pre><pre tabindex="0"><code>debian@galatograd:~$ sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=config cn=config
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+olcArgsFile: /var/run/slapd/slapd.args
+olcPidFile: /var/run/slapd/slapd.pid
+olcToolThreads: 1
+olcLogLevel: stats
+</code></pre><h2 id="accès-au-backend-avec-un-mot-de-passe">Accès au backend avec un mot de passe</h2>
+<p>En ajoutant l&rsquo;attribut olcRootDN au noeud &ldquo;olcDatabase={0}config,cn=config&rdquo;, le backend pourra être accessible via le protocole ldap.</p>
+<blockquote>
+<ul>
+<li>Vérifier la configuration existante
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>admin@galatograd:~$ sudo ldapsearch -LLL -Y EXTERNAL -H ldapi:/// -b olcDatabase<span style="color:#f92672">={</span>0<span style="color:#f92672">}</span>config,cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>SASL/EXTERNAL authentication started
+</span></span><span style="display:flex;"><span>SASL username: gidNumber<span style="color:#f92672">=</span>0+uidNumber<span style="color:#f92672">=</span>0,cn<span style="color:#f92672">=</span>peercred,cn<span style="color:#f92672">=</span>external,cn<span style="color:#f92672">=</span>auth
+</span></span><span style="display:flex;"><span>SASL SSF: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>dn: olcDatabase<span style="color:#f92672">={</span>0<span style="color:#f92672">}</span>config,cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>objectClass: olcDatabaseConfig
+</span></span><span style="display:flex;"><span>olcDatabase: <span style="color:#f92672">{</span>0<span style="color:#f92672">}</span>config
+</span></span><span style="display:flex;"><span>olcAccess: <span style="color:#f92672">{</span>0<span style="color:#f92672">}</span>to * by dn.exact<span style="color:#f92672">=</span>gidNumber<span style="color:#f92672">=</span>0+uidNumber<span style="color:#f92672">=</span>0,cn<span style="color:#f92672">=</span>peercred,cn<span style="color:#f92672">=</span>external
+</span></span><span style="display:flex;"><span> ,cn<span style="color:#f92672">=</span>auth manage by * break
+</span></span><span style="display:flex;"><span>olcRootDN: cn<span style="color:#f92672">=</span>admin,cn<span style="color:#f92672">=</span>config    &lt;---- configuration déjà existance
+</span></span></code></pre></div></li>
+</ul>
+</blockquote>
+<ul>
+<li>
+<p>Créer un fichier ldif pour ajouter l&rsquo;attribut olcRootDN au noeud &ldquo;olcDatabase={0}config,cn=config&rdquo;</p>
+<ol>
+<li>L&rsquo;attribut olcRootDN <em><strong>n&rsquo;existe pas</strong></em>, utiliser la configuration ci-dessous
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@galatograd:~$ cat rootdn.ldif 
+</span></span><span style="display:flex;"><span>dn: olcDatabase<span style="color:#f92672">={</span>0<span style="color:#f92672">}</span>config,cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>add: olcRootDN
+</span></span><span style="display:flex;"><span>olcRootDN: cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span></code></pre></div></li>
+<li>L&rsquo;attribut olcRootDN <strong>existe déjà</strong>, utiliser la configuration ci-dessous
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@galatograd:~$ cat rootdn.ldif 
+</span></span><span style="display:flex;"><span>dn: olcDatabase<span style="color:#f92672">={</span>0<span style="color:#f92672">}</span>config,cn<span style="color:#f92672">=</span>config
+</span></span><span style="display:flex;"><span>changetype: modify
+</span></span><span style="display:flex;"><span>replace: olcRootDN
+</span></span><span style="display:flex;"><span>olcRootDN: cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span></code></pre></div></li>
+</ol>
+</li>
+<li>
+<p>Exécuter la modification</p>
+</li>
+</ul>
+<pre tabindex="0"><code>debian@galatograd:~$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f rootdn.ldif 
+SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &#34;olcDatabase={0}config,cn=config&#34;
+</code></pre><ul>
+<li>Vérification de la configuration</li>
+</ul>
+<pre tabindex="0"><code>debian@galatograd:~$ sudo ldapsearch -LLL -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase={0}config
+SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+dn: olcDatabase={0}config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: {0}config
+olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external
+ ,cn=auth manage by * break
+olcRootDN: cn=admin,dc=antiterre,dc=lan
+</code></pre><ul>
+<li>Vérification de l&rsquo;accès</li>
+</ul>
+<pre tabindex="0"><code>debian@galatograd:~$ ldapsearch -LLL -H ldap://ldap1.antiterre.lan -D cn=admin,dc=antiterre,dc=lan -W -b cn=config dn
+Enter LDAP Password: [adminpass]
+dn: cn=config
+
+dn: cn=module{0},cn=config
+
+dn: cn=schema,cn=config
+
+dn: cn={0}core,cn=schema,cn=config
+
+dn: cn={1}cosine,cn=schema,cn=config
+
+dn: cn={2}nis,cn=schema,cn=config
+
+dn: cn={3}inetorgperson,cn=schema,cn=config
+
+dn: cn={4}kerberos,cn=schema,cn=config
+
+dn: olcBackend={0}mdb,cn=config
+
+dn: olcDatabase={-1}frontend,cn=config
+
+dn: olcDatabase={0}config,cn=config
+
+dn: olcDatabase={1}mdb,cn=config
+</code></pre><blockquote>
+<p>Avec cette configuration, le backend est accessible avec Apache Directory Studio!</p>
+</blockquote>
+<h2 id="commandes">Commandes</h2>
+<h3 id="ldapsearch---outil-de-recherche-en-ligne-de-commande">ldapsearch - outil de recherche en ligne de commande</h3>
+<pre tabindex="0"><code>LDAPSEARCH(1)
+
+NAME
+       ldapsearch - LDAP search tool
+
+SYNOPSIS
+       ldapsearch  [-n]  [-c] [-u] [-v] [-t[t]] [-T path] [-F prefix] [-A] [-L[L[L]]] [-M[M]] 
+       [-S attribute] [-d debuglevel] [-f file] [-x]
+       [-D binddn] [-W] [-w passwd] [-y passwdfile] [-H ldapuri] [-h ldaphost] [-p ldapport]  
+       [-b searchbase]  [-s {base|one|sub|children}]
+       [-a {never|always|search|find}] [-P {2|3}] [-e [!]ext[=extparam]] [-E [!]ext[=extparam]] 
+       [-l timelimit] [-z sizelimit] [-O security-
+       properties] [-I] [-Q] [-U authcid] [-R realm] [-X authzid] [-Y mech] [-Z[Z]] filter [attrs...]
+</code></pre><h3 id="ldapmodify-ldapadd---outil-permettant-dajouter-ou-modifier-une-entrée-dans-lannuaire">ldapmodify, ldapadd - outil permettant d&rsquo;ajouter ou modifier une entrée dans l&rsquo;annuaire</h3>
+<pre tabindex="0"><code>LDAPMODIFY(1)
+
+NAME
+       ldapmodify, ldapadd - LDAP modify entry and LDAP add entry tools
+
+SYNOPSIS
+       ldapmodify  [-a]  [-c]  [-S file]  [-n]  [-v]  [-M[M]]  [-d debuglevel]  [-D binddn]  [-W]  
+       [-w passwd] [-y passwdfile] [-H ldapuri]
+       [-h ldaphost] [-p ldapport] [-P {2|3}] [-e [!]ext[=extparam]] [-E [!]ext[=extparam]] 
+       [-O security-properties] [-I] [-Q] [-U authcid]
+       [-R realm] [-x] [-X authzid] [-Y mech] [-Z[Z]] [-f file]
+
+       ldapadd  [-c]  [-S file]  [-n]  [-v] [-M[M]] [-d debuglevel] [-D binddn] [-W] [-w passwd] 
+       [-y passwdfile] [-H ldapuri] [-h ldaphost]
+       [-p ldapport] [-P {2|3}] [-O security-properties] [-I] [-Q] [-U authcid] [-R realm] [-x] 
+       [-X authzid] [-Y mech] [-Z[Z]] [-f file]
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://wiki.debian.org/LDAP/OpenLDAPSetup">LDAP/OpenLDAPSetup - Debian Wiki</a></li>
+<li>Wikipedia - Lightweight Directory Access Protocol, <a href="http://fr.wikipedia.org/wiki/Ldap">http://fr.wikipedia.org/wiki/Ldap</a></li>
+<li>Wikipedia - Annuaire, <a href="http://fr.wikipedia.org/wiki/Annuaire">http://fr.wikipedia.org/wiki/Annuaire</a></li>
+<li>Ubuntu Documentation - SSSD, <a href="https://ubuntu.com/server/docs/service-sssd">https://ubuntu.com/server/docs/service-sssd</a></li>
+<li>Apache Directory Studio, <a href="http://directory.apache.org/studio/">http://directory.apache.org/studio/</a></li>
+<li>OpenLDAP Software 2.4 Administrator&rsquo;s Guide, <a href="http://www.openldap.org/doc/admin24/">http://www.openldap.org/doc/admin24/</a></li>
+<li>Lightweight Directory Access Protocol (LDAP): String Representation of Search Filters, <a href="http://tools.ietf.org/html/rfc4515">http://tools.ietf.org/html/rfc4515</a></li>
+<li>La représentation des filtres de recherche LDAP, <a href="http://abcdrfc.free.fr/rfc-vf/rfc2254.html">http://abcdrfc.free.fr/rfc-vf/rfc2254.html</a></li>
+<li>Annuaires LDAP avec OpenLDAP, par Michaël Parienti Maire, <a href="https://cyberzoide.developpez.com/unix/openldap/">https://cyberzoide.developpez.com/unix/openldap/</a></li>
+<li>Wikipedia -  LDAP Data Interchange Format (ldif) ,<a href="http://fr.wikipedia.org/wiki/Ldif">http://fr.wikipedia.org/wiki/Ldif</a></li>
+<li>The LDAP Data Interchange Format (LDIF) - Technical Specification - <a href="http://tools.ietf.org/html/rfc2849">http://tools.ietf.org/html/rfc2849</a></li>
+<li>How To Change Account Passwords on an OpenLDAP Server | DigitalOcean, <a href="https://www.digitalocean.com/community/tutorials/how-to-change-account-passwords-on-an-openldap-server">https://www.digitalocean.com/community/tutorials/how-to-change-account-passwords-on-an-openldap-server</a></li>
+<li>OpenLDAP Software 2.4 Administrator&rsquo;s Guide: Configuring slapd, <a href="https://www.openldap.org/doc/admin24/slapdconf2.html">https://www.openldap.org/doc/admin24/slapdconf2.html</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

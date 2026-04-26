@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation, LXC Configuration d&#39;un conteneur</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-lxc-config/">Virtualisation, LXC Configuration d&#39;un conteneur</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:09</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#configuration">Configuration</a></li>
+    <li><a href="#démarrage-automatique-du-conteneur">Démarrage automatique du conteneur</a></li>
+    <li><a href="#configuration-réseau">Configuration réseau</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="configuration">Configuration</h2>
+<p>La configuration  du conteneur s’effectue dans le fichier <code>/var/lib/lxc/CN/config</code></p>
+<pre tabindex="0"><code>$ sudo cat /var/lib/lxc/CN/config
+</code></pre><pre tabindex="0"><code># Template used to create this container: /usr/share/lxc/templates/lxc-download
+# Parameters passed to the template: -d ubuntu -r bionic -a amd64
+# Template script checksum (SHA-1): 273c51343604eb85f7e294c8da0a5eb769d648f3
+# For additional config options, please look at lxc.container.conf(5)
+
+# Uncomment the following line to support nesting containers:
+#lxc.include = /usr/share/lxc/config/nesting.conf
+# (Be aware this has security implications)
+
+
+# Distribution configuration
+lxc.include = /usr/share/lxc/config/common.conf
+
+# For Ubuntu 14.04
+lxc.mount.entry = /sys/kernel/debug sys/kernel/debug none bind,optional 0 0
+lxc.mount.entry = /sys/kernel/security sys/kernel/security none bind,optional 0 0
+lxc.mount.entry = /sys/fs/pstore sys/fs/pstore none bind,optional 0 0
+lxc.mount.entry = mqueue dev/mqueue mqueue rw,relatime,create=dir,optional 0 0
+lxc.arch = linux64
+
+# Container specific configuration
+lxc.rootfs.path = dir:/var/lib/lxc/CN/rootfs
+lxc.uts.name = CN
+
+# Network configuration
+lxc.net.0.type = veth
+lxc.net.0.link = lxcbr0
+lxc.net.0.flags = up
+lxc.net.0.hwaddr = 00:16:3e:7b:a9:62
+</code></pre><h2 id="démarrage-automatique-du-conteneur">Démarrage automatique du conteneur</h2>
+<p>Ajouter dans le fichier de configuration</p>
+<pre tabindex="0"><code>lxc.start.auto = 1
+</code></pre><p>Pour plus de détail voir [<a href="https://www.stgraber.org/2013/12/21/lxc-1-0-your-second-container/">14</a>] ou <code>man lxc.container.conf</code> d&rsquo;autres options permettent de définir:</p>
+<ul>
+<li>un ordre de démarrage : <code>lxc.start.order</code></li>
+<li>un délai avant le démarrage : <code>lxc.start.delay</code></li>
+<li>un groupe de conteneur : <code>lxc.group</code></li>
+</ul>
+<p>La commande <code>lxc-autostart</code> permet de démarrer les conteneurs marqués avec <code>lxc.start.auto = 1</code></p>
+<h2 id="configuration-réseau">Configuration réseau</h2>
+<p>Les options <code>lxc.networking</code> permettent de configurer le périphérique réseau</p>
+<pre tabindex="0"><code>lxc.net.0.type = veth                 # type de périphérique réseau veth (virtuel) 
+                                          phys (physique)
+lxc.net.0.hwaddr = 00:16:3e:3a:f1:c1  # adresse mac
+lxc.net.0.flags = up                  # périphérique actif
+lxc.net.0.link = lxcbr0               # lien vers le périphérique réseau de l&#39;host 
+lxc.net.0.name = eth0                 # nom du périphérique du conteneur
+</code></pre><p>Pour plus de détail voir [<a href="https://www.stgraber.org/2013/12/21/lxc-1-0-your-second-container/">14</a>] ou <code>man lxc.container.conf</code></p>
+<h2 id="références">Références</h2>
+<ol start="3">
+<li>LXC — Wikipédia, <a href="https://fr.wikipedia.org/wiki/LXC">https://fr.wikipedia.org/wiki/LXC</a></li>
+<li>Ubuntu Documentation - Virtualisation, <a href="https://help.ubuntu.com/14.04/serverguide/virtualization.html">https://help.ubuntu.com/14.04/serverguide/virtualization.html</a></li>
+<li>LXC - Linux Containers, <a href="https://linuxcontainers.org/">https://linuxcontainers.org/</a></li>
+<li>LXC 1.0: Blog post series 0/10 | Stéphane Graber&rsquo;s website, <a href="https://www.stgraber.org/2013/12/20/lxc-1-0-blog-post-series/">https://www.stgraber.org/2013/12/20/lxc-1-0-blog-post-series/</a></li>
+<li>LXC 1.0: Your second container 2/10 | Stéphane Graber&rsquo;s website, <a href="https://www.stgraber.org/2013/12/21/lxc-1-0-your-second-container/">https://www.stgraber.org/2013/12/21/lxc-1-0-your-second-container/</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

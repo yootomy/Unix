@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - machine virtuelle versus conteneur</title>
+	<meta name="description" content="Impact sur les ressources de la machine hôte d&#39;une machine virtuelle ou un conteneur système."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/sysnix/">Sysnix</a></li>
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/virtualisation/">Virtualisation</a></li>
+            
+            <li><a href="/cours/tags/incus/">Incus</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/virtualisation-vm-conteneur/">Virtualisation - machine virtuelle versus conteneur</a></h1>
+    <p>Impact sur les ressources de la machine hôte d&#39;une machine virtuelle ou un conteneur système.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.04.2024 00:00</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#provisionnement-des-machines">Provisionnement des machines</a></li>
+    <li><a href="#installation-et-configuration-du-service-httpd">installation et configuration du service httpd</a></li>
+    <li><a href="#accès-à-la-page-daccueil-par-défaut">Accès à la page d&rsquo;accueil par défaut</a></li>
+    <li><a href="#impact-sur-les-ressources">Impact sur les ressources</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <blockquote>
+<p>Le projet <a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/activites/sysnix.vm-vs-conteneur.infra">sysnix.vm-vs-conteneur.infra</a> provisionne et configure automatique l&rsquo;infrastructure de cette fiche.</p>
+</blockquote>
+<h2 id="provisionnement-des-machines">Provisionnement des machines</h2>
+<ol>
+<li>Création du projet
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:21:26 
+</span></span><span style="display:flex;"><span>╰─ incus project create nix -c features.profiles<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>Project nix created
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:21:48 
+</span></span><span style="display:flex;"><span>╰─ incus project list
+</span></span><span style="display:flex;"><span>+-------------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span><span style="display:flex;"><span>|        NOM        | IMAGES | PROFILS | STORAGE VOLUMES | STORAGE BUCKETS | NETWORKS | NETWORK ZONES |                       DESCRIPTION                       | UTILISÉ PAR |
+</span></span><span style="display:flex;"><span>+-------------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span><span style="display:flex;"><span>| default <span style="color:#f92672">(</span>current<span style="color:#f92672">)</span> | OUI    | OUI     | OUI             | OUI             | OUI      | OUI           | Default Incus project                                   | <span style="color:#ae81ff">6</span>           |
+</span></span><span style="display:flex;"><span>+-------------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span><span style="display:flex;"><span>| nix               | OUI    | NON     | OUI             | OUI             | NON      | NON           |                                                         | <span style="color:#ae81ff">0</span>           |
+</span></span><span style="display:flex;"><span>+-------------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span></code></pre></div></li>
+<li>Changement du projet par défaut
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  <span style="color:#ae81ff">1</span> ✘  dom@domp14s  14:22:07 
+</span></span><span style="display:flex;"><span>╰─ incus project switch nix
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:22:11 
+</span></span><span style="display:flex;"><span>╰─ incus project list      
+</span></span><span style="display:flex;"><span>+---------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span><span style="display:flex;"><span>|      NOM      | IMAGES | PROFILS | STORAGE VOLUMES | STORAGE BUCKETS | NETWORKS | NETWORK ZONES |                       DESCRIPTION                       | UTILISÉ PAR |
+</span></span><span style="display:flex;"><span>+---------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span><span style="display:flex;"><span>| default       | OUI    | OUI     | OUI             | OUI             | OUI      | OUI           | Default Incus project                                   | <span style="color:#ae81ff">6</span>           |
+</span></span><span style="display:flex;"><span>+---------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span><span style="display:flex;"><span>| nix <span style="color:#f92672">(</span>current<span style="color:#f92672">)</span> | OUI    | NON     | OUI             | OUI             | NON      | NON           |                                                         | <span style="color:#ae81ff">0</span>           |
+</span></span><span style="display:flex;"><span>+---------------+--------+---------+-----------------+-----------------+----------+---------------+---------------------------------------------------------+-------------+
+</span></span></code></pre></div></li>
+<li>Affichage de profile par défaut
+<pre tabindex="0"><code>╭─ ~/tmp  ✔  dom@domp14s  14:22:13 
+╰─ incus profile list
++---------+-----------------------+-------------+
+|   NOM   |      DESCRIPTION      | UTILISÉ PAR |
++---------+-----------------------+-------------+
+| default | Default Incus profile | 0           |
++---------+-----------------------+-------------+
+
+╭─ ~/tmp  ✔  dom@domp14s  14:22:24 
+╰─ incus profile show default
+config: {}
+description: Default Incus profile
+devices:
+  eth0:
+    name: eth0
+    network: incusbr0
+    type: nic
+  root:
+    path: /
+    pool: default
+    type: disk
+name: default
+used_by: []
+</code></pre></li>
+<li>Création du conteneur c1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:22:51 
+</span></span><span style="display:flex;"><span>╰─ incus launch images:debian/bookworm/cloud c1
+</span></span><span style="display:flex;"><span>Launching c1
+</span></span></code></pre></div></li>
+<li>Création de la machine virtuelle v1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:24:12 
+</span></span><span style="display:flex;"><span>╰─ incus launch images:debian/bookworm/cloud v1 --vm                  
+</span></span><span style="display:flex;"><span>Launching v1
+</span></span></code></pre></div></li>
+<li>Affichage des machines
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:24:47 
+</span></span><span style="display:flex;"><span>╰─ incus list
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span><span style="display:flex;"><span>| NOM |  ÉTAT   |         IPV4          | IPV6 |      TYPE       | INSTANTANÉS |
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span><span style="display:flex;"><span>| c1  | RUNNING | 10.97.190.34 <span style="color:#f92672">(</span>eth0<span style="color:#f92672">)</span>   |      | CONTAINER       | <span style="color:#ae81ff">0</span>           |
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span><span style="display:flex;"><span>| v1  | RUNNING | 10.97.190.78 <span style="color:#f92672">(</span>enp5s0<span style="color:#f92672">)</span> |      | VIRTUAL-MACHINE | <span style="color:#ae81ff">0</span>           |
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="installation-et-configuration-du-service-httpd">installation et configuration du service httpd</h2>
+<ol>
+<li>
+<p>installation du service httpd sur c1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  <span style="color:#ae81ff">127</span> ✘  dom@domp14s  14:34:01 
+</span></span><span style="display:flex;"><span>╰─ incus shell c1
+</span></span><span style="display:flex;"><span>root@c1:~# apt install apache2
+</span></span><span style="display:flex;"><span>Reading package lists... Done
+</span></span><span style="display:flex;"><span>Building dependency tree... Done
+</span></span><span style="display:flex;"><span>Reading state information... Done
+</span></span><span style="display:flex;"><span>The following additional packages will be installed:
+</span></span><span style="display:flex;"><span>  apache2-bin apache2-data apache2-utils libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libbrotli1 libcurl4 libicu72 libjansson4 liblua5.3-0 libnghttp2-14 libpsl5 librtmp1 libssh2-1 libxml2 publicsuffix ssl-cert
+</span></span><span style="display:flex;"><span>Suggested packages:
+</span></span><span style="display:flex;"><span>  apache2-doc apache2-suexec-pristine | apache2-suexec-custom www-browser
+</span></span><span style="display:flex;"><span>The following NEW packages will be installed:
+</span></span><span style="display:flex;"><span>  apache2 apache2-bin apache2-data apache2-utils libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libbrotli1 libcurl4 libicu72 libjansson4 liblua5.3-0 libnghttp2-14 libpsl5 librtmp1 libssh2-1 libxml2 publicsuffix ssl-cert
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> upgraded, <span style="color:#ae81ff">20</span> newly installed, <span style="color:#ae81ff">0</span> to remove and <span style="color:#ae81ff">0</span> not upgraded.
+</span></span><span style="display:flex;"><span>Need to get 13.6 MB of archives.
+</span></span><span style="display:flex;"><span>After this operation, 50.2 MB of additional disk space will be used.
+</span></span><span style="display:flex;"><span>Do you want to <span style="color:#66d9ef">continue</span>? <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span> y
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@c1:~# exit
+</span></span><span style="display:flex;"><span>logout
+</span></span></code></pre></div></li>
+<li>
+<p>installation du service httpd sur c1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  1m 20s  dom@domp14s  14:35:26 
+</span></span><span style="display:flex;"><span>╰─ incus shell v1
+</span></span><span style="display:flex;"><span>root@v1:~# apt install apache2
+</span></span><span style="display:flex;"><span>Reading package lists... Done
+</span></span><span style="display:flex;"><span>Building dependency tree... Done
+</span></span><span style="display:flex;"><span>Reading state information... Done
+</span></span><span style="display:flex;"><span>The following additional packages will be installed:
+</span></span><span style="display:flex;"><span>  apache2-bin apache2-data apache2-utils libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libcurl4 libjansson4 liblua5.3-0 libnghttp2-14 libpsl5 librtmp1 libssh2-1 publicsuffix ssl-cert
+</span></span><span style="display:flex;"><span>Suggested packages:
+</span></span><span style="display:flex;"><span>  apache2-doc apache2-suexec-pristine | apache2-suexec-custom www-browser
+</span></span><span style="display:flex;"><span>The following NEW packages will be installed:
+</span></span><span style="display:flex;"><span>  apache2 apache2-bin apache2-data apache2-utils libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libcurl4 libjansson4 liblua5.3-0 libnghttp2-14 libpsl5 librtmp1 libssh2-1 publicsuffix ssl-cert
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> upgraded, <span style="color:#ae81ff">17</span> newly installed, <span style="color:#ae81ff">0</span> to remove and <span style="color:#ae81ff">0</span> not upgraded.
+</span></span><span style="display:flex;"><span>Need to get 3,228 kB of archives.
+</span></span><span style="display:flex;"><span>After this operation, 10.4 MB of additional disk space will be used.
+</span></span><span style="display:flex;"><span>Do you want to <span style="color:#66d9ef">continue</span>? <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span> y
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@c1:~# exit
+</span></span><span style="display:flex;"><span>logout
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="accès-à-la-page-daccueil-par-défaut">Accès à la page d&rsquo;accueil par défaut</h2>
+<ol>
+<li>Affichage de ip des machines
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  1m 43s  dom@domp14s  14:37:31 
+</span></span><span style="display:flex;"><span>╰─ incus list
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span><span style="display:flex;"><span>| NOM |  ÉTAT   |         IPV4          | IPV6 |      TYPE       | INSTANTANÉS |
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span><span style="display:flex;"><span>| c1  | RUNNING | 10.97.190.34 <span style="color:#f92672">(</span>eth0<span style="color:#f92672">)</span>   |      | CONTAINER       | <span style="color:#ae81ff">0</span>           |
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span><span style="display:flex;"><span>| v1  | RUNNING | 10.97.190.78 <span style="color:#f92672">(</span>enp5s0<span style="color:#f92672">)</span> |      | VIRTUAL-MACHINE | <span style="color:#ae81ff">0</span>           |
+</span></span><span style="display:flex;"><span>+-----+---------+-----------------------+------+-----------------+-------------+
+</span></span></code></pre></div></li>
+<li>Accès à la page d&rsquo;accueil de la machine c1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:37:33 
+</span></span><span style="display:flex;"><span>╰─ curl http://10.97.190.34
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;!DOCTYPE html PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD XHTML 1.0 Transitional//EN&#34;</span> <span style="color:#e6db74">&#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;html xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/1999/xhtml&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;head&gt;
+</span></span><span style="display:flex;"><span>    &lt;meta http-equiv<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-Type&#34;</span> content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/html; charset=UTF-8&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;title&gt;Apache2 Debian Default Page: It works&lt;/title&gt;
+</span></span><span style="display:flex;"><span>    &lt;style type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/css&#34;</span> media<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;screen&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>    &lt;/style&gt;
+</span></span><span style="display:flex;"><span>  &lt;/head&gt;
+</span></span><span style="display:flex;"><span>  &lt;body&gt;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>  &lt;/body&gt;
+</span></span><span style="display:flex;"><span>&lt;/html&gt;
+</span></span></code></pre></div></li>
+<li>Accès à la page d&rsquo;accueil de la machine v1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:37:45 
+</span></span><span style="display:flex;"><span>╰─ curl http://10.97.190.78
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;!DOCTYPE html PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD XHTML 1.0 Transitional//EN&#34;</span> <span style="color:#e6db74">&#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;html xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/1999/xhtml&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;head&gt;
+</span></span><span style="display:flex;"><span>    &lt;meta http-equiv<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-Type&#34;</span> content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/html; charset=UTF-8&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;title&gt;Apache2 Debian Default Page: It works&lt;/title&gt;
+</span></span><span style="display:flex;"><span>    &lt;style type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/css&#34;</span> media<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;screen&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>    &lt;/style&gt;
+</span></span><span style="display:flex;"><span>  &lt;/head&gt;
+</span></span><span style="display:flex;"><span>  &lt;body&gt;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>  &lt;/body&gt;
+</span></span><span style="display:flex;"><span>&lt;/html&gt;
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="impact-sur-les-ressources">Impact sur les ressources</h2>
+<ol>
+<li>Processus vue par la machine hôte
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  INT ✘  dom@domp14s  14:42:00 
+</span></span><span style="display:flex;"><span>╰─ ps faux
+</span></span><span style="display:flex;"><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span>root      <span style="color:#ae81ff">353586</span>  0.0  0.0 <span style="color:#ae81ff">5943088</span> <span style="color:#ae81ff">16304</span> ?       Ss   14:23   0:00 <span style="color:#f92672">[</span>lxc monitor<span style="color:#f92672">]</span> /var/lib/incus/containers nix_c1  <span style="color:#75715e">#&lt;-- processus du conteneur c1</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span>   <span style="color:#ae81ff">353597</span>  0.0  0.0 <span style="color:#ae81ff">168520</span>  <span style="color:#ae81ff">9472</span> ?        Ss   14:23   0:01  <span style="color:#ae81ff">\_</span> /sbin/init
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span>   <span style="color:#ae81ff">353742</span>  0.0  0.0  <span style="color:#ae81ff">32980</span>  <span style="color:#ae81ff">9728</span> ?        Ss   14:23   0:00      <span style="color:#ae81ff">\_</span> /lib/systemd/systemd-journald
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span>   <span style="color:#ae81ff">353750</span>  0.0  0.0  <span style="color:#ae81ff">22812</span>  <span style="color:#ae81ff">3712</span> ?        Ss   14:23   0:00      <span style="color:#ae81ff">\_</span> /lib/systemd/systemd-udevd
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000997</span>   <span style="color:#ae81ff">353758</span>  0.0  0.0  <span style="color:#ae81ff">20576</span>  <span style="color:#ae81ff">8320</span> ?        Ss   14:23   0:00      <span style="color:#ae81ff">\_</span> /lib/systemd/systemd-resolved
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000998</span>   <span style="color:#ae81ff">353775</span>  0.0  0.0  <span style="color:#ae81ff">17992</span>  <span style="color:#ae81ff">6528</span> ?        Ss   14:23   0:00      <span style="color:#ae81ff">\_</span> /lib/systemd/systemd-networkd
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000100</span>   <span style="color:#ae81ff">353811</span>  0.0  0.0   <span style="color:#ae81ff">9128</span>  <span style="color:#ae81ff">3072</span> ?        Ss   14:23   0:00      <span style="color:#ae81ff">\_</span> /usr/bin/dbus-daemon --system --address<span style="color:#f92672">=</span>systemd: --nofork --nopidfile --systemd-activation --syslog-only
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span>   <span style="color:#ae81ff">353813</span>  0.0  0.0  <span style="color:#ae81ff">17112</span>  <span style="color:#ae81ff">6144</span> ?        Ss   14:23   0:00      <span style="color:#ae81ff">\_</span> /lib/systemd/systemd-logind
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span>   <span style="color:#ae81ff">353815</span>  0.0  0.0   <span style="color:#ae81ff">5496</span>  <span style="color:#ae81ff">1024</span> pts/0    Ss+  14:23   0:00      <span style="color:#ae81ff">\_</span> /sbin/agetty -o -p -- <span style="color:#ae81ff">\u</span> --noclear --keep-baud - 115200,38400,9600 linux
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span>   <span style="color:#ae81ff">356784</span>  0.0  0.0   <span style="color:#ae81ff">6720</span>  <span style="color:#ae81ff">3564</span> ?        Ss   14:34   0:00      <span style="color:#ae81ff">\_</span> /usr/sbin/apache2 -k start
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000033</span>   <span style="color:#ae81ff">356785</span>  0.0  0.0 <span style="color:#ae81ff">1999104</span> <span style="color:#ae81ff">3956</span> ?        Sl   14:34   0:00      |   <span style="color:#ae81ff">\_</span> /usr/sbin/apache2 -k start
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000033</span>   <span style="color:#ae81ff">356786</span>  0.0  0.0 <span style="color:#ae81ff">1999160</span> <span style="color:#ae81ff">4340</span> ?        Sl   14:34   0:00      |   <span style="color:#ae81ff">\_</span> /usr/sbin/apache2 -k start
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000033</span>   <span style="color:#ae81ff">356950</span>  0.0  0.0   <span style="color:#ae81ff">3408</span>  <span style="color:#ae81ff">1152</span> ?        Ss   14:34   0:00      <span style="color:#ae81ff">\_</span> /usr/bin/htcacheclean -d <span style="color:#ae81ff">120</span> -p /var/cache/apache2/mod_cache_disk -l 300M -n
+</span></span><span style="display:flex;"><span>incus     <span style="color:#ae81ff">354163</span>  3.0  1.9 <span style="color:#ae81ff">1699300</span> <span style="color:#ae81ff">893676</span> ?      Sl   14:24   0:34 /opt/incus/bin/qemu-system-x86_64 -S -name v1 <span style="color:#75715e">#&lt;-- processus du la machine virtuelle v1</span>
+</span></span><span style="display:flex;"><span>                                                                        -uuid 07c22ada-35db-4ee6-ad02-b0ae97897f9e 
+</span></span><span style="display:flex;"><span>                                                                        -daemonize -cpu host,hv_passthrough -nographic -serial chardev:console 
+</span></span><span style="display:flex;"><span>                                                                        -nodefaults -no-user-config 
+</span></span></code></pre></div></li>
+<li>Stockage vus par la machine hôte
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  14:43:29 
+</span></span><span style="display:flex;"><span>╰─ sudo zfs list
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>sudo<span style="color:#f92672">]</span> Mot de passe de dom : 
+</span></span><span style="display:flex;"><span>NAME                                                                                         USED  AVAIL     REFER  MOUNTPOINT
+</span></span><span style="display:flex;"><span>tank                                                                                         370G  79.8G       96K  none
+</span></span><span style="display:flex;"><span>tank/incus                                                                                  6.89G  79.8G       96K  legacy
+</span></span><span style="display:flex;"><span>tank/incus/containers                                                                       4.84G  79.8G       96K  legacy
+</span></span><span style="display:flex;"><span>tank/incus/containers/nix_c1                                                                78.0M  79.8G      385M  legacy
+</span></span><span style="display:flex;"><span>tank/incus/virtual-machines                                                                 83.5M  79.8G       96K  legacy
+</span></span><span style="display:flex;"><span>tank/incus/virtual-machines/nix_v1                                                           208K   500M      252K  legacy
+</span></span><span style="display:flex;"><span>tank/incus/virtual-machines/nix_v1.block                                                    83.2M  79.8G      773M  -
+</span></span></code></pre></div></li>
+<li>Stockage vus par la machine c1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  6s  dom@domp14s  14:48:24 
+</span></span><span style="display:flex;"><span>╰─ incus shell c1
+</span></span><span style="display:flex;"><span>root@c1:~# df -h
+</span></span><span style="display:flex;"><span>Filesystem                    Size  Used Avail Use% Mounted on
+</span></span><span style="display:flex;"><span>tank/incus/containers/nix_c1   81G  385M   80G   1% /
+</span></span><span style="display:flex;"><span>none                          492K  4.0K  488K   1% /dev
+</span></span><span style="display:flex;"><span>udev                           23G     <span style="color:#ae81ff">0</span>   23G   0% /dev/tty
+</span></span><span style="display:flex;"><span>efivarfs                      154K   61K   89K  41% /sys/firmware/efi/efivars
+</span></span><span style="display:flex;"><span>tmpfs                         100K     <span style="color:#ae81ff">0</span>  100K   0% /dev/incus
+</span></span><span style="display:flex;"><span>tmpfs                         100K     <span style="color:#ae81ff">0</span>  100K   0% /dev/.incus-mounts
+</span></span><span style="display:flex;"><span>tmpfs                          23G     <span style="color:#ae81ff">0</span>   23G   0% /dev/shm
+</span></span><span style="display:flex;"><span>tmpfs                         9.0G  140K  9.0G   1% /run
+</span></span><span style="display:flex;"><span>tmpfs                         5.0M     <span style="color:#ae81ff">0</span>  5.0M   0% /run/lock
+</span></span><span style="display:flex;"><span>tmpfs                         4.5G     <span style="color:#ae81ff">0</span>  4.5G   0% /run/user/0
+</span></span><span style="display:flex;"><span>root@c1:~# exit
+</span></span><span style="display:flex;"><span>logout
+</span></span></code></pre></div></li>
+<li>Stockage vus par la machine v1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  6s  dom@domp14s  14:50:03 
+</span></span><span style="display:flex;"><span>╰─ incus shell v1
+</span></span><span style="display:flex;"><span>root@v1:~# df -h
+</span></span><span style="display:flex;"><span>Filesystem      Size  Used Avail Use% Mounted on
+</span></span><span style="display:flex;"><span>udev            458M     <span style="color:#ae81ff">0</span>  458M   0% /dev
+</span></span><span style="display:flex;"><span>tmpfs            96M  660K   95M   1% /run
+</span></span><span style="display:flex;"><span>/dev/sda2       9.6G  1.2G  8.4G  13% /
+</span></span><span style="display:flex;"><span>tmpfs           477M     <span style="color:#ae81ff">0</span>  477M   0% /dev/shm
+</span></span><span style="display:flex;"><span>tmpfs           5.0M     <span style="color:#ae81ff">0</span>  5.0M   0% /run/lock
+</span></span><span style="display:flex;"><span>tmpfs            50M   18M   33M  36% /run/incus_agent
+</span></span><span style="display:flex;"><span>/dev/sda1        99M   12M   87M  12% /boot/efi
+</span></span><span style="display:flex;"><span>tmpfs            96M     <span style="color:#ae81ff">0</span>   96M   0% /run/user/0
+</span></span><span style="display:flex;"><span>root@v1:~# exit
+</span></span><span style="display:flex;"><span>logout
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/activites/sysnix.vm-vs-conteneur.infra">sysnix.vm-vs-conteneur.infra</a> - provisionnement et configuration automatique de l&rsquo;infrastructure pour ce document.</li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

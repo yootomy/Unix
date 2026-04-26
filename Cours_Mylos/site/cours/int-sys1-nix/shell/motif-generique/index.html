@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Motif Générique</title>
+	<meta name="description" content="Les motifs générique *, ?, []"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/motif-generique/">Motif Générique</a></h1>
+    <p>Les motifs générique *, ?, []</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 15:44</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents"></nav>
+    
+
+    <h1 id="motifs-générique-de-base">Motifs générique de base</h1>
+<ul>
+<li>&ldquo;*&rdquo; Correspond à n’importe quelle chaîne, y compris la chaîne vide.</li>
+<li>&ldquo;?&rdquo; Correspond à n’importe quel caractère.</li>
+<li>&ldquo;[&hellip;]&rdquo; Correspond à l’un des caractères entre crochets.</li>
+</ul>
+<p>Extrait du manuel de bash [<a href="http://www.linux-france.org/article/man-fr/man1/bash-1.html">1</a>]</p>
+<p>Tout caractère apparaissant dans un motif, hormis les caractères spéciaux décrits ci-après correspond à lui-même. Le caractère NUL ne peut pas se trouver dans un motif. Les caractères spéciaux doivent être protégés si ils doivent se correspondre littéralement.</p>
+<h1 id="exemple---">Exemple - <code>*</code></h1>
+<p><code>*</code> Correspond à n&rsquo;importe quelle chaîne, y compris la chaîne vide.</p>
+<pre tabindex="0"><code>ls l* # liste tous les nom de fichier commençant par l
+</code></pre><h1 id="exemple----1">Exemple - <code>?</code></h1>
+<p><code>?</code> Correspond à n&rsquo;importe quel caractère.</p>
+<pre tabindex="0"><code>ls ?l* # liste tous les noms de fichiers contenant 
+       # un l en 2ème position
+</code></pre><h1 id="exemple----2">Exemple - <code>[...]</code></h1>
+<p><code>[...]</code> Correspond à l&rsquo;un des caractères entre crochets. Une paire de caractères séparés par un signe &ldquo;moins&rdquo; (-) indique un intervalle; qui correspond à n&rsquo;importe quel caractère situé entre les deux bornes incluses.</p>
+<pre tabindex="0"><code>ls [l-n]* # liste tous les noms de fichiers commençant 
+           # par une lettre compris entre l et n (l,m,n)
+</code></pre><h1 id="exemple----3">Exemple - <code>[!...]</code></h1>
+<p>Si le premier caractère suivant le [ est un ! ou un ^ alors la correspondance se fait sur les caractères non-inclus. Un - peut être mis en correspondance en l&rsquo;incluant en premier ou dernier caractère de l&rsquo;ensemble. Un ] peut être mis en correspondance en l&rsquo;incluant en premier caractère de l&rsquo;ensemble.</p>
+<pre tabindex="0"><code>ls [!l]* # liste tous les noms de fichiers ne commençant 
+          # pas par la lettre l
+</code></pre><pre tabindex="0"><code>ls [!l-n]* # liste tous les noms de fichiers ne commençant 
+            # pas par les lettres l,m et n
+</code></pre><h1 id="références">Références</h1>
+<ol>
+<li>manuel de bash ($ man bash). <a href="http://www.linux-france.org/article/man-fr/man1/bash-1.html">http://www.linux-france.org/article/man-fr/man1/bash-1.html</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

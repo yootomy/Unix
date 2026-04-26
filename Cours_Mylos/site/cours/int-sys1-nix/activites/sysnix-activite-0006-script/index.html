@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Activités, série 0006 - Script</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/sysnix-activite-0006-script/">Activités, série 0006 - Script</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.08.2020 15:58</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#objectifs">Objectifs</a></li>
+    <li><a href="#exercices">Exercices</a>
+      <ul>
+        <li><a href="#1">1</a></li>
+        <li><a href="#2">2</a></li>
+        <li><a href="#3">3</a></li>
+        <li><a href="#4">4</a></li>
+        <li><a href="#5">5</a></li>
+        <li><a href="#6">6</a></li>
+        <li><a href="#7">7</a></li>
+        <li><a href="#8">8</a></li>
+        <li><a href="#9">9</a></li>
+      </ul>
+    </li>
+    <li><a href="#scripts">Scripts</a>
+      <ul>
+        <li><a href="#table-de-multiplication">Table de multiplication</a></li>
+        <li><a href="#carré-de-multiplication">Carré de multiplication</a></li>
+        <li><a href="#beuseu">Beuseu</a></li>
+        <li><a href="#compilation-en-c-et-génération-dun-projet-c">Compilation en C et génération d&rsquo;un projet C</a></li>
+        <li><a href="#génération-dun-projet-en-java">Génération d&rsquo;un projet en java</a></li>
+        <li><a href="#télécharger-le-support-de-cours">Télécharger le support de cours</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="objectifs">Objectifs</h2>
+<blockquote>
+<ul>
+<li>script bash</li>
+<li>Résoudre chaque problème suivant en un minimum d&rsquo;instructions. Généralement une instruction suffit!</li>
+<li>Écrire la commande permettant de vérifier le résultat</li>
+</ul>
+</blockquote>
+<h2 id="exercices">Exercices</h2>
+<h3 id="1">1</h3>
+<ul>
+<li>Copiez les fichiers <strong>.bashrc</strong> et <strong>.profile</strong> de votre répertoire principal en <strong>*.save</strong></li>
+<li>Créez un répertoire <strong>~/test</strong>
+Dans le répertoire test, à l&rsquo;aide de la commande de redirection (&gt;) créez un fichier <strong>liste.lis</strong> qui contient la liste détaillée des fichiers (fichiers &ldquo;cachés&rdquo; inclus) contenu de votre répertoire principale.</li>
+<li>Créez  l&rsquo;alias <strong>fin</strong> qui permet d&rsquo;afficher les 2 dernières lignes d&rsquo;un  fichier.</li>
+<li>Vérifiez le fonctionnement de votre alias sur le fichier <strong>liste.lis</strong></li>
+</ul>
+<h3 id="2">2</h3>
+<ul>
+<li>Créez l&rsquo;alias <strong>up</strong> qui permet de remonter d&rsquo;un niveau de répertoire</li>
+<li>Créez l&rsquo;alias <strong>user</strong> qui permet d&rsquo;afficher votre nom d&rsquo;utilisateur</li>
+<li>Affichez la liste complète des alias définis dans votre environnement</li>
+<li>Affichez la définition de l&rsquo;alias <strong>fin</strong></li>
+</ul>
+<h3 id="3">3</h3>
+<ul>
+<li>Créez un alias <strong>ls</strong> qui exécute la commande <strong>ls –la</strong> puis exécutez la commande <strong>ls</strong> sans paramètre. Quelle constatation ?</li>
+<li>Supprimez l&rsquo;alias <strong>ls</strong> et vérifiez que ce dernier n&rsquo;existe plus</li>
+</ul>
+<h3 id="4">4</h3>
+<ul>
+<li>Créez la variable d&rsquo;environnement <strong>workdir</strong> qui contient le nom du répertoire de <strong>~/test</strong> (chemin complet) que vous avez créé à l&rsquo;exercice 1. Si ce répertoire n&rsquo;existe pas recréez-le d&rsquo;abord</li>
+<li>Affichez le contenu de la variable <strong>workdir</strong></li>
+<li>Affichez le contenu de toutes les variables d&rsquo;environnement définies</li>
+</ul>
+<h3 id="5">5</h3>
+<p>Dans le répertoire <strong>~/test</strong>, créez un fichier <strong>monScript.sh</strong> dans lequel vous définissez la variable d&rsquo;environnement  <code>moninvite</code> avec un texte de votre choix.</p>
+<p>exemple: &ldquo;Bienvenue au cours Unix&rdquo;</p>
+<p>Dans ce même script et après la définition de cette variable, insérez la commande qui permet de visualiser le contenu de la variable <code>moninvite</code></p>
+<p>Faites le nécessaire pour que vous puissiez exécuter ce script.</p>
+<p>Lancez ce script et vérifier le résultat.</p>
+<p>Après avoir exécuté le script, vérifiez si la variable d&rsquo;environnement <code>moninvite</code> existe. Constatation ?</p>
+<h3 id="6">6</h3>
+<p>Dans le répertoire <strong>~/test</strong> créez un fichier script <strong>demo</strong> qui contient la commande</p>
+<pre tabindex="0"><code>ls –l
+</code></pre><p>Vérifiez le fonctionnement de votre script
+Tapez la commande <code>cd</code> sans paramètre pour retourner sur votre répertoire de home
+Faites le nécessaire pour que le fichier <code>demo</code> puisse s&rsquo;exécuter depuis votre répertoire de <code>home</code> en tapant simplement la commande</p>
+<pre tabindex="0"><code>$ demo
+</code></pre><h3 id="7">7</h3>
+<p>Lorsque vous vous connecté au système, vous désirez toujours disposer de l&rsquo;alias <code>fin</code> (voir exercice 1).</p>
+<p>Faites le nécessaire pour réaliser cette fonctionnalité. Vérifiez le fonctionnement en vous reconnectant au système.</p>
+<p>Lorsque vous vous connecté au système, vous désirez toujours disposer d&rsquo;un environnement de commande qui permettent d&rsquo;exécuter les scripts placés sur le répertoire <code>~/test</code> et ceci sans taper le chemin complet du fichier (voir exercice 6).</p>
+<p>Faites le nécessaire pour réaliser cette fonctionnalité. Vérifiez le fonctionnement en vous reconnectant au système et en lançant le script <code>demo</code> par la commande</p>
+<pre tabindex="0"><code>$ demo
+</code></pre><h3 id="8">8</h3>
+<p>Script et variable d’environnements</p>
+<ul>
+<li>Définissez un script, se nommant <code>AffVar</code>, qui permet de d&rsquo;afficher une variable nommée <code>ma_var</code>.</li>
+<li>Définissez dans le shell la variable <code>ma_var=&quot;ma variable est accessible&quot;</code></li>
+<li>Exécuter votre script <code>AffVar</code>. Constatation.</li>
+<li>Recommencer en exportant <code>ma_var</code>. : <code>export ma_var</code></li>
+<li>Exécuter votre script <code>AffVar</code>. Constatations et conclusions.</li>
+</ul>
+<h3 id="9">9</h3>
+<p>Coder le script suivant :</p>
+<pre tabindex="0"><code>
+!/bin/bash
+
+clear
+message=&#34;Le traitements des arguments !&#34;
+
+echo 
+echo &#34;$message&#34;
+echo
+echo &#34;$0 $1 $2 $3&#34;
+echo
+echo &#34;Les 3 premiers arguments sont: $1 $2 $3 !&#34;
+
+echo
+echo &#34;Tous les arguments sont : $@&#34;
+echo 
+echo &#34;$# arguments&#34;
+
+echo
+echo -n &#34;Vous êtes &#34;; whoami ; echo  &#34;Votre UID est $UID&#34;
+</code></pre><p>Nommé ce script <code>ligneCmd</code> et faire les appels suivants :</p>
+<pre tabindex="0"><code>./ligneCmd analyser ce script
+./ligneCmd je comprends comment ca marche
+</code></pre><p>Constatations ?</p>
+<h2 id="scripts">Scripts</h2>
+<h3 id="table-de-multiplication">Table de multiplication</h3>
+<ul>
+<li>Écrire un script qui affiche la table de multiplication d&rsquo;un nombre passer en paramètres pour les valeurs de 1 à 12.</li>
+</ul>
+<pre tabindex="0"><code>$ ./tableMult.sh 6
+1x6=6
+2x6=12
+...
+12x6=72
+</code></pre><h3 id="carré-de-multiplication">Carré de multiplication</h3>
+<ul>
+<li>Écrire un script qui affiche toutes les tables de multiplications de 1 à 12 sous forme d&rsquo;un carré. L&rsquo;instruction <code>printf</code> permet de formater.</li>
+</ul>
+<pre tabindex="0"><code>$ ./carreTableMult.sh
+      1   2   3   4   5   6   7   8   9  10  11  12
+   ------------------------------------------------
+ 1:   1   2   3   4   5   6   7   8   9  10  11  12
+ 2:   2   4   6   8  10  12  14  16  18  20  22  24
+ 3:   3   6   9  12  15  18  21  24  27  30  33  36
+ 4:   4   8  12  16  20  24  28  32  36  40  44  48
+ 5:   5  10  15  20  25  30  35  40  45  50  55  60
+ 6:   6  12  18  24  30  36  42  48  54  60  66  72
+ 7:   7  14  21  28  35  42  49  56  63  70  77  84
+ 8:   8  16  24  32  40  48  56  64  72  80  88  96
+ 9:   9  18  27  36  45  54  63  72  81  90  99 108
+10:  10  20  30  40  50  60  70  80  90 100 110 120
+11:  11  22  33  44  55  66  77  88  99 110 121 132
+12:  12  24  36  48  60  72  84  96 108 120 132 144
+</code></pre><h3 id="beuseu">Beuseu</h3>
+<p>Écrire un script bash qui affiche dans la console tout les nombres compris entre 0 et un nombre saisi par l&rsquo;utilisateur.</p>
+<ul>
+<li>Si le nombre est un multiple du chiffre 7 afficher le mot <strong>Beuseu</strong> à sa place.</li>
+<li>Si le nombre contient le chiffre 7 afficher également le mot <strong>Beuseu</strong> à la place.</li>
+</ul>
+<pre tabindex="0"><code>$ ./beuseu.sh 20
+1
+2
+3
+4
+5
+6
+Beuseu
+8
+9
+10
+11
+12
+13
+Beuseu
+15
+16
+Beuseu
+18
+19
+20
+</code></pre><h3 id="compilation-en-c-et-génération-dun-projet-c">Compilation en C et génération d&rsquo;un projet C</h3>
+<blockquote>
+<p>Pour avoir les outils de programmation C, installer le paquet ci-dessous</p>
+<pre tabindex="0"><code>sudo apt-get install build-essential
+</code></pre></blockquote>
+<ul>
+<li>structure de projet</li>
+</ul>
+<pre tabindex="0"><code>-projet
+ +-src
+ | `-helloworld.c
+ |
+ +-build         ! dossier créé par build.sh
+ | +-* .o        ! fichiers objet
+ | `-helloworld  ! exécutable
+ |
+ +-build.sh
+ `-clean.sh
+</code></pre><ul>
+<li>Script de construction des programmes C</li>
+<li>Écrire un script <code>./build.sh</code> permettant de compiler le programme <code>helloworld.c</code></li>
+<li>Écrire un script <code>./clean.sh</code> permettant de supprimer les fichiers généré lors de la compilation.</li>
+<li>Écrire un script <strong>creerProjet.sh</strong> permettant de créer l&rsquo;arborescence de projet ci-dessous.</li>
+</ul>
+<pre tabindex="0"><code>$ ./creerProjet.sh &lt;nom du projet&gt;
+./&lt;nom du projet&gt;
+ +-src
+ | `-&lt;nom du projet&gt;.c
+ |
+ +-build.sh
+ `-clean
+ .sh
+</code></pre><ul>
+<li>opération de compilation</li>
+</ul>
+<pre tabindex="0"><code>cd ./build
+gcc -ansi -c ../src/helloworld.c
+gcc -o helloworld * .o
+cd -
+</code></pre><blockquote>
+<p>Pour les étudiants avancés, refaire le même exercice en utilisant <strong>make</strong> en écrivant un <strong>makefile</strong>!</p>
+</blockquote>
+<h3 id="génération-dun-projet-en-java">Génération d&rsquo;un projet en java</h3>
+<p>Écrire un script permettant de créer une arborescence de base d&rsquo;un projet java.</p>
+<ul>
+<li>Affiche la syntax de la commande</li>
+</ul>
+<pre tabindex="0"><code>$ ./creerProjetJava.sh
+   
+usage : creerProjetJava.sh [--type=(ant|bash|maven)] --projet=&lt;nomProjet&gt;
+        --type=bash par défaut.
+</code></pre><ul>
+<li>Génère un projet java avec les scripts bash</li>
+</ul>
+<pre tabindex="0"><code>$ ./creerProjetJava.sh --type=bash --projet=test
+$ tree
+.
+└── test
+    ├── build.sh
+    ├── clean.sh
+    ├── run.sh
+    └── src
+        └── test
+            └── Main.java
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>dom<span style="color:#a6e22e">@domx1</span>:scripts$ cat test<span style="color:#f92672">/</span>src<span style="color:#f92672">/</span>test<span style="color:#f92672">/</span>Main.<span style="color:#a6e22e">java</span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author dominique huguenin (dominique.huguenin@rpn.ch)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">package</span> test;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>( String<span style="color:#f92672">[]</span> args ) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Hello world!&#34;</span>);
+</span></span><span style="display:flex;"><span>    }      
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dom@domx1:scripts$ cat test/build.sh 
+</span></span><span style="display:flex;"><span>!/bin/bash
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auteur : dominique huguenin (dominique.huguenin@rpn.ch)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BUILD_PATH<span style="color:#f92672">=</span>build
+</span></span><span style="display:flex;"><span>SRC_PATH<span style="color:#f92672">=</span>src
+</span></span><span style="display:flex;"><span>CLASS_DEST<span style="color:#f92672">=</span>$BUILD_PATH/classes
+</span></span><span style="display:flex;"><span>CLASS_PATH<span style="color:#f92672">=</span>$CLASS_DEST
+</span></span><span style="display:flex;"><span>DOC_DEST<span style="color:#f92672">=</span>$BUILD_PATH/doc
+</span></span><span style="display:flex;"><span>API_DEST<span style="color:#f92672">=</span>$DOC_DEST/api
+</span></span><span style="display:flex;"><span>API_PACKAGE<span style="color:#f92672">=</span>test
+</span></span><span style="display:flex;"><span>LIB_DEST<span style="color:#f92672">=</span>$BUILD_PATH/lib
+</span></span><span style="display:flex;"><span>JAR_NAME<span style="color:#f92672">=</span>test.jar
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MAIN_FILE<span style="color:#f92672">=</span>$SRC_PATH/test/Main.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># compilation du programme</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mkdir -p $CLASS_DEST
+</span></span><span style="display:flex;"><span>javac -d $CLASS_DEST -sourcepath $SRC_PATH -classpath $CLASS_PATH $MAIN_FILE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># création de l&#39;archive</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mkdir $LIB_DEST
+</span></span><span style="display:flex;"><span>jar cf $LIB_DEST/$JAR_NAME -C $CLASS_DEST .
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># génération de la documention technique</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>javadoc -sourcepath $SRC_PATH -subpackages $API_PACKAGE -d $API_DEST
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dom@domx1:scripts$ cat test/clean.sh 
+</span></span><span style="display:flex;"><span>!/bin/bash
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auteur : dominique huguenin (dominique.huguenin@rpn.ch)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -d <span style="color:#e6db74">&#34;build&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  rm -r build
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dom@domx1:scripts$ cat test/run.sh 
+</span></span><span style="display:flex;"><span>!/bin/bash
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auteur : dominique huguenin (dominique.huguenin@rpn.ch)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CLASS_PATH<span style="color:#f92672">=</span>build/lib/test.jar
+</span></span><span style="display:flex;"><span>java -classpath $CLASS_PATH test.Main
+</span></span></code></pre></div><ul>
+<li>Génère un projet java avec le fichier build.xml pour ant</li>
+</ul>
+<pre tabindex="0"><code>dom@domx1:scripts$ ./creerProjetJava.sh --type=ant --projet=test
+dom@domx1:scripts$ tree
+.
+└── test
+    ├── build.xml
+    └── src
+        └── test
+            └── Main.java
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>dom@domx1:scripts$ cat test/build.xml 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    auteur : dominique huguenin (dominique.huguenin@rpn.ch)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;project</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;test&#34;</span> <span style="color:#a6e22e">default=</span><span style="color:#e6db74">&#34;core&#34;</span> <span style="color:#a6e22e">basedir=</span><span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;jar.name&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;${ant.project.name}.jar&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;javadoc.packagenames&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;test.* &#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dist.name&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;${ant.project.name}&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;src.dir&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;src&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;build.dir&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;build&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;build.classes&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;${build.dir}/classes&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;build.lib&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;${build.dir}/lib&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;build.docs&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;${build.dir}/docs&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;build.javadocs&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;${build.docs}/api&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dist.dir&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;dist&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;main.class&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;test.Main&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    compile des fichiers java
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;compile&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mkdir</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.dir}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mkdir</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.classes}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;javac</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">srcdir=</span><span style="color:#e6db74">&#34;${src.dir}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">destdir=</span><span style="color:#e6db74">&#34;${build.classes}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">debug=</span><span style="color:#e6db74">&#34;on&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/javac&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    construit les archives jar du projet
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;jar&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mkdir</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.lib}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;jar</span> <span style="color:#a6e22e">jarfile=</span><span style="color:#e6db74">&#34;${build.lib}/${jar.name}&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">basedir=</span><span style="color:#e6db74">&#34;${build.classes}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    construit la documentation du projet
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;javadoc&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mkdir</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.docs}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mkdir</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.javadocs}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;javadoc</span> <span style="color:#a6e22e">sourcepath=</span><span style="color:#e6db74">&#34;${src.dir}&#34;</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#a6e22e">destdir=</span><span style="color:#e6db74">&#34;${build.javadocs}&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">packagenames=</span><span style="color:#e6db74">&#34;${javadoc.packagenames}&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">version=</span><span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">protected=</span><span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">author=</span><span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">use=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/javadoc&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    construit tous les fichiers du projet
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;core&#34;</span> <span style="color:#a6e22e">depends=</span><span style="color:#e6db74">&#34;compile,jar,javadoc&#34;</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;construit tous les fichiers du projet&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    détruit des dossiers et fichiers générés
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   --&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;clean&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;efface les dossiers et fichiers générés&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;tstamp</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;delete</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.dir}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;delete</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${dist.dir}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;delete</span> <span style="color:#a6e22e">file=</span><span style="color:#e6db74">&#34;${dist.name}-bin.zip&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;delete</span> <span style="color:#a6e22e">file=</span><span style="color:#e6db74">&#34;${dist.name}-src.zip&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!-- détruit les fichiers avec les extensions log, 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         bak et comprenant un ~ dans l\&#39;extension --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;delete&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;fileset</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${src.dir}&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;include</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;* * /* .log&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;include</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;* * /* .bak&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;include</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;* * /* .* ~&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/fileset&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/delete&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    création des archive de distribution
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dist-bin&#34;</span> <span style="color:#a6e22e">depends=</span><span style="color:#e6db74">&#34;clean, dist&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;crée l&#39;archive contenant l&#39;application&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;zip</span> <span style="color:#a6e22e">destfile=</span><span style="color:#e6db74">&#34;${dist.name}-bin.zip&#34;</span> <span style="color:#a6e22e">basedir=</span><span style="color:#e6db74">&#34;${dist.dir}&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/zip&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    création des archive des sources
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dist-src&#34;</span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;Crée un archive pour la distribution des sources&#34;</span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">depends=</span><span style="color:#e6db74">&#34;clean&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;echo&gt;</span>${ant.project.name}<span style="color:#f92672">&lt;/echo&gt;</span>
+</span></span><span style="display:flex;"><span>			
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;mkdir</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${ant.project.name}&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>			
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;copy</span> <span style="color:#a6e22e">todir=</span><span style="color:#e6db74">&#34;${ant.project.name}&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;fileset</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${basedir}&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;include</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;* * &#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;exclude</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;${ant.project.name}&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/fileset&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/copy&gt;</span>                
+</span></span><span style="display:flex;"><span>			
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;zip</span> <span style="color:#a6e22e">destfile=</span><span style="color:#e6db74">&#34;${ant.project.name}-src.zip&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;fileset</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${basedir}&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;include</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;${ant.project.name}/&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/fileset&gt;</span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/zip&gt;</span>    
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;delete</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${ant.project.name}&#34;</span><span style="color:#f92672">/&gt;</span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/target&gt;</span>        
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    création d\&#39;un dossier contenant uniquement les fichiers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    d\&#39;une distribution de l\&#39;application
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dist&#34;</span> <span style="color:#a6e22e">depends=</span><span style="color:#e6db74">&#34;core&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;construit un dossier contenant uniquement les fichiers pour la distribution&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;copy</span> <span style="color:#a6e22e">todir=</span><span style="color:#e6db74">&#34;${dist.dir}/doc&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;fileset</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.docs}&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/copy&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;copy</span> <span style="color:#a6e22e">todir=</span><span style="color:#e6db74">&#34;${dist.dir}/lib&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;fileset</span> <span style="color:#a6e22e">dir=</span><span style="color:#e6db74">&#34;${build.lib}&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/copy&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;echo</span> <span style="color:#a6e22e">file=</span><span style="color:#e6db74">&#34;${dist.dir}/run.sh&#34;</span> <span style="color:#a6e22e">append=</span><span style="color:#e6db74">&#34;false&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>!/bin/bash
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CLASS_PATH=./lib/${jar.name}
+</span></span><span style="display:flex;"><span>java -classpath $CLASS_PATH ${main.class}
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/echo&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">&lt;!-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    Exécution du programme
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ==========================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  --&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;run&#34;</span> <span style="color:#a6e22e">depends=</span><span style="color:#e6db74">&#34;compile&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;execute le programme&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">&lt;java</span> <span style="color:#a6e22e">classname=</span><span style="color:#e6db74">&#34;${main.class}&#34;</span> <span style="color:#a6e22e">fork=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&lt;classpath&gt;</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#f92672">&lt;pathelement</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;${build.classes}&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&lt;/classpath&gt;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">&lt;/java&gt;</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;target</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;run-jar&#34;</span> <span style="color:#a6e22e">depends=</span><span style="color:#e6db74">&#34;compile&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">description=</span><span style="color:#e6db74">&#34;execute le programme dans l&#39;archive&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">&lt;java</span> <span style="color:#a6e22e">classname=</span><span style="color:#e6db74">&#34;${main.class}&#34;</span> <span style="color:#a6e22e">fork=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&lt;classpath&gt;</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#f92672">&lt;pathelement</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;${build.lib}/${jar.name}&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&lt;/classpath&gt;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">&lt;/java&gt;</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;/project&gt;</span>
+</span></span></code></pre></div><ul>
+<li>Génère un projet java avec maven</li>
+</ul>
+<pre tabindex="0"><code>dom@domx1:scripts$ ./creerProjetJava.sh --type=maven --projet=test
+dom@domx1:scripts$ tree
+.
+└── test
+    ├── pom.xml
+    └── src
+        └── main
+            └── java
+                └── test
+                    └── Main.java
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>dom@domx1:scripts$ cat test/pom.xml 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;project</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> 
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;modelVersion&gt;</span>4.0.0<span style="color:#f92672">&lt;/modelVersion&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>test<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;name&gt;</span>test<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>1.0-SNAPSHOT<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;packaging&gt;</span>jar<span style="color:#f92672">&lt;/packaging&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>junit<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>junit<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;version&gt;</span>4.13<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span style="color:#f92672">&lt;/project.build.sourceEncoding&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;maven.compiler.source&gt;</span>11<span style="color:#f92672">&lt;/maven.compiler.source&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;maven.compiler.target&gt;</span>11<span style="color:#f92672">&lt;/maven.compiler.target&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/properties&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/project&gt;</span>
+</span></span></code></pre></div><h3 id="télécharger-le-support-de-cours">Télécharger le support de cours</h3>
+<p>Écrire une script permettant de télécharger une page du support avec toutes les pages référencées.
+Ces pages téléchargés sont envoyés dans la sortie standard.</p>
+<blockquote>
+<p>la commande <code>wget</code> permet de</p>
+</blockquote>
+<pre tabindex="0"><code>WGET(1)                            GNU Wget
+NAME
+       Wget - The non-interactive network downloader.
+SYNOPSIS
+       wget [option]... [URL]...
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0006-script">Éléments de solution</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

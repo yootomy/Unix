@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - Création d&#39;une VM KVM avec libvirt</title>
+	<meta name="description" content="Création d&#39;une VM libvirt&#43;kvm en ligne de commande."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-creation-kvm-libvirt/">Virtualisation - Création d&#39;une VM KVM avec libvirt</a></h1>
+    <p>Création d&#39;une VM libvirt&#43;kvm en ligne de commande.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>15.08.2020 15:14</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#rappel">Rappel</a></li>
+    <li><a href="#création-dune-vm-kvm-avec-libvirt">Création d&rsquo;une VM KVM avec libvirt</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="rappel">Rappel</h2>
+<blockquote>
+<p><strong>information</strong></p>
+<p>Une machine virtuelle VM est composé de :</p>
+<ol>
+<li>une description de matériel</li>
+<li>stockages</li>
+</ol>
+</blockquote>
+<h2 id="création-dune-vm-kvm-avec-libvirt">Création d&rsquo;une VM KVM avec libvirt</h2>
+<ul>
+<li>Commande de création de la vm</li>
+</ul>
+<pre tabindex="0"><code>hote-$ virt-install --connect qemu:///system\
+    -n vm2\
+    -r 1024\
+    --disk path=./vm2disk.img,format=raw,bus=virtio,size=4\
+    -c ~/iso/debian-12.9.0-amd64-netinst.iso\
+    --network network=default,model=virtio\
+    --osinfo name=debian11
+</code></pre><ul>
+<li>Liste des vm gérer par libvirt</li>
+</ul>
+<pre tabindex="0"><code>hote:~$ virsh list --all
+ ID    Nom                            État
+----------------------------------------------------
+ -     vm1                            fermé
+ -     vmLvm1                         fermé
+</code></pre><ul>
+<li>Description de la VM <code>vm1</code>. <code>vm1</code> est un serveur ubuntu</li>
+</ul>
+<pre tabindex="0"><code>hote:~$ virsh dumpxml vm1
+&lt;domain type=&#39;kvm&#39;&gt;
+  &lt;name&gt;vm1&lt;/name&gt;
+  &lt;uuid&gt;27ee2d39-a6f5-426d-8f07-99ccf6fe1975&lt;/uuid&gt;
+  &lt;memory unit=&#39;KiB&#39;&gt;524288&lt;/memory&gt;
+  &lt;currentMemory unit=&#39;KiB&#39;&gt;524288&lt;/currentMemory&gt;
+  &lt;vcpu placement=&#39;static&#39;&gt;1&lt;/vcpu&gt;
+  &lt;os&gt;
+    &lt;type arch=&#39;x86_64&#39; 
+            machine=&#39;pc-i440fx-xenial&#39;&gt;hvm&lt;/type&gt;
+    &lt;boot dev=&#39;hd&#39;/&gt;
+  &lt;/os&gt;
+  &lt;features&gt;
+    &lt;acpi/&gt;
+    &lt;apic/&gt;
+  &lt;/features&gt;
+  &lt;cpu mode=&#39;custom&#39; match=&#39;exact&#39;&gt;
+    &lt;model fallback=&#39;allow&#39;&gt;Haswell&lt;/model&gt;
+  &lt;/cpu&gt;
+  &lt;clock offset=&#39;utc&#39;&gt;
+    &lt;timer name=&#39;rtc&#39; tickpolicy=&#39;catchup&#39;/&gt;
+    &lt;timer name=&#39;pit&#39; tickpolicy=&#39;delay&#39;/&gt;
+    &lt;timer name=&#39;hpet&#39; present=&#39;no&#39;/&gt;
+  &lt;/clock&gt;
+  &lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;
+  &lt;on_reboot&gt;restart&lt;/on_reboot&gt;
+  &lt;on_crash&gt;restart&lt;/on_crash&gt;
+  &lt;pm&gt;
+    &lt;suspend-to-mem enabled=&#39;no&#39;/&gt;
+    &lt;suspend-to-disk enabled=&#39;no&#39;/&gt;
+  &lt;/pm&gt;
+  &lt;devices&gt;
+    &lt;emulator&gt;/usr/bin/kvm-spice&lt;/emulator&gt;
+    &lt;disk type=&#39;file&#39; device=&#39;disk&#39;&gt;
+      &lt;driver name=&#39;qemu&#39; type=&#39;raw&#39;/&gt;
+      &lt;source file=&#39;/home/dhu/VM/vm1disk.img&#39;/&gt;
+      &lt;target dev=&#39;vda&#39; bus=&#39;virtio&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x07&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/disk&gt;
+    &lt;disk type=&#39;file&#39; device=&#39;cdrom&#39;&gt;
+      &lt;driver name=&#39;qemu&#39; type=&#39;raw&#39;/&gt;
+      &lt;target dev=&#39;hda&#39; bus=&#39;ide&#39;/&gt;
+      &lt;readonly/&gt;
+      &lt;address type=&#39;drive&#39; controller=&#39;0&#39; bus=&#39;0&#39; 
+          target=&#39;0&#39; unit=&#39;0&#39;/&gt;
+    &lt;/disk&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-ehci1&#39;&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x7&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-uhci1&#39;&gt;
+      &lt;master startport=&#39;0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x0&#39; multifunction=&#39;on&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-uhci2&#39;&gt;
+      &lt;master startport=&#39;2&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x1&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-uhci3&#39;&gt;
+      &lt;master startport=&#39;4&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x2&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;pci&#39; index=&#39;0&#39; model=&#39;pci-root&#39;/&gt;
+    &lt;controller type=&#39;ide&#39; index=&#39;0&#39;&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x01&#39; function=&#39;0x1&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;virtio-serial&#39; index=&#39;0&#39;&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x05&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;interface type=&#39;network&#39;&gt;
+      &lt;mac address=&#39;52:54:00:c7:ae:97&#39;/&gt;
+      &lt;source network=&#39;default&#39;/&gt;
+      &lt;model type=&#39;virtio&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x03&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/interface&gt;
+    &lt;serial type=&#39;pty&#39;&gt;
+      &lt;target port=&#39;0&#39;/&gt;
+    &lt;/serial&gt;
+    &lt;console type=&#39;pty&#39;&gt;
+      &lt;target type=&#39;serial&#39; port=&#39;0&#39;/&gt;
+    &lt;/console&gt;
+    &lt;channel type=&#39;spicevmc&#39;&gt;
+      &lt;target type=&#39;virtio&#39; name=&#39;com.redhat.spice.0&#39;/&gt;
+      &lt;address type=&#39;virtio-serial&#39; controller=&#39;0&#39; 
+              bus=&#39;0&#39; port=&#39;1&#39;/&gt;
+    &lt;/channel&gt;
+    &lt;input type=&#39;mouse&#39; bus=&#39;ps2&#39;/&gt;
+    &lt;input type=&#39;keyboard&#39; bus=&#39;ps2&#39;/&gt;
+    &lt;graphics type=&#39;spice&#39; autoport=&#39;yes&#39;&gt;
+      &lt;image compression=&#39;off&#39;/&gt;
+    &lt;/graphics&gt;
+    &lt;sound model=&#39;ich6&#39;&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x04&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/sound&gt;
+    &lt;video&gt;
+      &lt;model type=&#39;qxl&#39; ram=&#39;65536&#39; vram=&#39;65536&#39; 
+              vgamem=&#39;16384&#39; heads=&#39;1&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x02&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/video&gt;
+    &lt;redirdev bus=&#39;usb&#39; type=&#39;spicevmc&#39;&gt;
+    &lt;/redirdev&gt;
+    &lt;redirdev bus=&#39;usb&#39; type=&#39;spicevmc&#39;&gt;
+    &lt;/redirdev&gt;
+    &lt;memballoon model=&#39;virtio&#39;&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x08&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/memballoon&gt;
+  &lt;/devices&gt;
+&lt;/domain&gt;
+</code></pre><ul>
+<li>Description de la VM <code>vmLvm1</code>. <code>vmLvm1</code> est un serveur ubuntu utilisant le gestion lvm comme stockage dans le fichier vmLvm1Disk.img</li>
+</ul>
+<pre tabindex="0"><code>hote:~$ virsh dumpxml vmLvm1
+&lt;domain type=&#39;kvm&#39; id=&#39;5&#39;&gt;
+  &lt;name&gt;vmLvm1&lt;/name&gt;
+  &lt;uuid&gt;ce4bb8db-9867-41e9-9173-2471f5ae540e&lt;/uuid&gt;
+  &lt;memory unit=&#39;KiB&#39;&gt;524288&lt;/memory&gt;
+  &lt;currentMemory unit=&#39;KiB&#39;&gt;524288&lt;/currentMemory&gt;
+  &lt;vcpu placement=&#39;static&#39;&gt;1&lt;/vcpu&gt;
+  &lt;resource&gt;
+    &lt;partition&gt;/machine&lt;/partition&gt;
+  &lt;/resource&gt;
+  &lt;os&gt;
+    &lt;type arch=&#39;x86_64&#39; 
+            machine=&#39;pc-i440fx-xenial&#39;&gt;hvm&lt;/type&gt;
+    &lt;boot dev=&#39;hd&#39;/&gt;
+  &lt;/os&gt;
+  &lt;features&gt;
+    &lt;acpi/&gt;
+    &lt;apic/&gt;
+  &lt;/features&gt;
+  &lt;cpu mode=&#39;custom&#39; match=&#39;exact&#39;&gt;
+    &lt;model fallback=&#39;allow&#39;&gt;Haswell&lt;/model&gt;
+  &lt;/cpu&gt;
+  &lt;clock offset=&#39;utc&#39;&gt;
+    &lt;timer name=&#39;rtc&#39; tickpolicy=&#39;catchup&#39;/&gt;
+    &lt;timer name=&#39;pit&#39; tickpolicy=&#39;delay&#39;/&gt;
+    &lt;timer name=&#39;hpet&#39; present=&#39;no&#39;/&gt;
+  &lt;/clock&gt;
+  &lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;
+  &lt;on_reboot&gt;restart&lt;/on_reboot&gt;
+  &lt;on_crash&gt;restart&lt;/on_crash&gt;
+  &lt;pm&gt;
+    &lt;suspend-to-mem enabled=&#39;no&#39;/&gt;
+    &lt;suspend-to-disk enabled=&#39;no&#39;/&gt;
+  &lt;/pm&gt;
+  &lt;devices&gt;
+    &lt;emulator&gt;/usr/bin/kvm-spice&lt;/emulator&gt;
+    &lt;disk type=&#39;file&#39; device=&#39;disk&#39;&gt;
+      &lt;driver name=&#39;qemu&#39; type=&#39;raw&#39;/&gt;
+      &lt;source file=&#39;/home/dhu/VM/vmLvm1disk.img&#39;/&gt;
+      &lt;backingStore/&gt;
+      &lt;target dev=&#39;vda&#39; bus=&#39;virtio&#39;/&gt;
+      &lt;alias name=&#39;virtio-disk0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x07&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/disk&gt;
+    &lt;disk type=&#39;file&#39; device=&#39;cdrom&#39;&gt;
+      &lt;driver name=&#39;qemu&#39; type=&#39;raw&#39;/&gt;
+      &lt;backingStore/&gt;
+      &lt;target dev=&#39;hda&#39; bus=&#39;ide&#39;/&gt;
+      &lt;readonly/&gt;
+      &lt;alias name=&#39;ide0-0-0&#39;/&gt;
+      &lt;address type=&#39;drive&#39; controller=&#39;0&#39; bus=&#39;0&#39; 
+              target=&#39;0&#39; unit=&#39;0&#39;/&gt;
+    &lt;/disk&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-ehci1&#39;&gt;
+      &lt;alias name=&#39;usb&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x7&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-uhci1&#39;&gt;
+      &lt;alias name=&#39;usb&#39;/&gt;
+      &lt;master startport=&#39;0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x0&#39; multifunction=&#39;on&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-uhci2&#39;&gt;
+      &lt;alias name=&#39;usb&#39;/&gt;
+      &lt;master startport=&#39;2&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x1&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;usb&#39; index=&#39;0&#39; model=&#39;ich9-uhci3&#39;&gt;
+      &lt;alias name=&#39;usb&#39;/&gt;
+      &lt;master startport=&#39;4&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x06&#39; function=&#39;0x2&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;pci&#39; index=&#39;0&#39; model=&#39;pci-root&#39;&gt;
+      &lt;alias name=&#39;pci.0&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;ide&#39; index=&#39;0&#39;&gt;
+      &lt;alias name=&#39;ide&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x01&#39; function=&#39;0x1&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;controller type=&#39;virtio-serial&#39; index=&#39;0&#39;&gt;
+      &lt;alias name=&#39;virtio-serial0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x05&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/controller&gt;
+    &lt;interface type=&#39;network&#39;&gt;
+      &lt;mac address=&#39;52:54:00:14:25:e4&#39;/&gt;
+      &lt;source network=&#39;default&#39; bridge=&#39;virbr0&#39;/&gt;
+      &lt;target dev=&#39;vnet0&#39;/&gt;
+      &lt;model type=&#39;virtio&#39;/&gt;
+      &lt;alias name=&#39;net0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x03&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/interface&gt;
+    &lt;serial type=&#39;pty&#39;&gt;
+      &lt;source path=&#39;/dev/pts/2&#39;/&gt;
+      &lt;target port=&#39;0&#39;/&gt;
+      &lt;alias name=&#39;serial0&#39;/&gt;
+    &lt;/serial&gt;
+    &lt;console type=&#39;pty&#39; tty=&#39;/dev/pts/2&#39;&gt;
+      &lt;source path=&#39;/dev/pts/2&#39;/&gt;
+      &lt;target type=&#39;serial&#39; port=&#39;0&#39;/&gt;
+      &lt;alias name=&#39;serial0&#39;/&gt;
+    &lt;/console&gt;
+    &lt;channel type=&#39;spicevmc&#39;&gt;
+      &lt;target type=&#39;virtio&#39; name=&#39;com.redhat.spice.0&#39; 
+              state=&#39;disconnected&#39;/&gt;
+      &lt;alias name=&#39;channel0&#39;/&gt;
+      &lt;address type=&#39;virtio-serial&#39; controller=&#39;0&#39; 
+              bus=&#39;0&#39; port=&#39;1&#39;/&gt;
+    &lt;/channel&gt;
+    &lt;input type=&#39;mouse&#39; bus=&#39;ps2&#39;/&gt;
+    &lt;input type=&#39;keyboard&#39; bus=&#39;ps2&#39;/&gt;
+    &lt;graphics type=&#39;spice&#39; port=&#39;5900&#39; autoport=&#39;yes&#39; 
+            listen=&#39;127.0.0.1&#39;&gt;
+      &lt;listen type=&#39;address&#39; address=&#39;127.0.0.1&#39;/&gt;
+      &lt;image compression=&#39;off&#39;/&gt;
+    &lt;/graphics&gt;
+    &lt;sound model=&#39;ich6&#39;&gt;
+      &lt;alias name=&#39;sound0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x04&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/sound&gt;
+    &lt;video&gt;
+      &lt;model type=&#39;qxl&#39; ram=&#39;65536&#39; vram=&#39;65536&#39; 
+              vgamem=&#39;16384&#39; heads=&#39;1&#39;/&gt;
+      &lt;alias name=&#39;video0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x02&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/video&gt;
+    &lt;redirdev bus=&#39;usb&#39; type=&#39;spicevmc&#39;&gt;
+      &lt;alias name=&#39;redir0&#39;/&gt;
+    &lt;/redirdev&gt;
+    &lt;redirdev bus=&#39;usb&#39; type=&#39;spicevmc&#39;&gt;
+      &lt;alias name=&#39;redir1&#39;/&gt;
+    &lt;/redirdev&gt;
+    &lt;memballoon model=&#39;virtio&#39;&gt;
+      &lt;alias name=&#39;balloon0&#39;/&gt;
+      &lt;address type=&#39;pci&#39; domain=&#39;0x0000&#39; bus=&#39;0x00&#39; 
+              slot=&#39;0x08&#39; function=&#39;0x0&#39;/&gt;
+    &lt;/memballoon&gt;
+  &lt;/devices&gt;
+  &lt;seclabel type=&#39;dynamic&#39; model=&#39;apparmor&#39; relabel=&#39;yes&#39;&gt;
+    &lt;label&gt;libvirt-ce4bb8db-9867-41e9-9173-2471f5ae540e&lt;/label&gt;
+    &lt;imagelabel&gt;libvirt-ce4bb8db-9867-41e9-9173-2471f5ae540e&lt;/imagelabel&gt;
+  &lt;/seclabel&gt;
+&lt;/domain&gt;
+</code></pre>
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

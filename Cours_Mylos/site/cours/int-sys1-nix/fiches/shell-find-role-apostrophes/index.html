@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Shell - Rôle de l&#39;apostrophe dans la commande find</title>
+	<meta name="description" content="Exemples montrant l&#39;importance de protéger les patterns de recherche par des apostrophes."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/shell-find-role-apostrophes/">Shell - Rôle de l&#39;apostrophe dans la commande find</a></h1>
+    <p>Exemples montrant l&#39;importance de protéger les patterns de recherche par des apostrophes.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.08.2020 16:02</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#cas-1">Cas 1</a>
+      <ul>
+        <li><a href="#recherche-sans-protection">Recherche sans protection</a></li>
+        <li><a href="#recherche-avec-protection">Recherche avec protection</a></li>
+      </ul>
+    </li>
+    <li><a href="#cas-2">Cas 2</a>
+      <ul>
+        <li><a href="#création-dun-fichier-avec-le-même-pattern-rechercher">Création d&rsquo;un fichier avec le même pattern rechercher</a></li>
+        <li><a href="#recherche-sans-protection-1">recherche sans protection</a></li>
+        <li><a href="#recherche-avec-protection-1">recherche avec protection</a></li>
+      </ul>
+    </li>
+    <li><a href="#cas-3">Cas 3</a>
+      <ul>
+        <li><a href="#activation-de-laffichage-des-substitutions-du-bash">Activation de l&rsquo;affichage des substitutions du bash</a></li>
+        <li><a href="#recherche-sans-protection-2">Recherche sans protection</a></li>
+        <li><a href="#recherche-avec-protection-2">Recherche avec protection.</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+
+    <h2 id="cas-1">Cas 1</h2>
+<blockquote>
+<p>Le dossier courant ne contient pas de fichier répondant au pattern recherché</p>
+</blockquote>
+<h3 id="recherche-sans-protection">Recherche sans protection</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ find  /usr/include -name al*.h
+/usr/include/c++/4.8/ext/alloc_traits.h
+/usr/include/c++/4.8/bits/alloc_traits.h
+/usr/include/c++/4.8/bits/algorithmfwd.h
+/usr/include/c++/4.8/bits/allocator.h
+/usr/include/c++/4.8/parallel/algorithmfwd.h
+/usr/include/c++/4.8/parallel/algobase.h
+/usr/include/c++/4.8/parallel/algo.h
+/usr/include/aliases.h
+/usr/include/alloca.h
+</code></pre><h3 id="recherche-avec-protection">Recherche avec protection</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ find  /usr/include -name &#39;al*.h&#39;
+/usr/include/c++/4.8/ext/alloc_traits.h
+/usr/include/c++/4.8/bits/alloc_traits.h
+/usr/include/c++/4.8/bits/algorithmfwd.h
+/usr/include/c++/4.8/bits/allocator.h
+/usr/include/c++/4.8/parallel/algorithmfwd.h
+/usr/include/c++/4.8/parallel/algobase.h
+/usr/include/c++/4.8/parallel/algo.h
+/usr/include/aliases.h
+/usr/include/alloca.h
+</code></pre><h2 id="cas-2">Cas 2</h2>
+<blockquote>
+<p>Si le dossier local contient une fichier avec le même pattern que la rechercher.
+Le comportement du <code>find</code> est différent avec ou sans apostrophe.</p>
+</blockquote>
+<h3 id="création-dun-fichier-avec-le-même-pattern-rechercher">Création d&rsquo;un fichier avec le même pattern rechercher</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ touch ./al12345.h
+</code></pre><h3 id="recherche-sans-protection-1">recherche sans protection</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ find  /usr/include -name al*.h
+</code></pre><blockquote>
+<p>La recherche ne trouve aucun fichier.</p>
+</blockquote>
+<h3 id="recherche-avec-protection-1">recherche avec protection</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ find  /usr/include -name &#39;al*.h&#39;
+/usr/include/c++/4.8/ext/alloc_traits.h
+/usr/include/c++/4.8/bits/alloc_traits.h
+/usr/include/c++/4.8/bits/algorithmfwd.h
+/usr/include/c++/4.8/bits/allocator.h
+/usr/include/c++/4.8/parallel/algorithmfwd.h
+/usr/include/c++/4.8/parallel/algobase.h
+/usr/include/c++/4.8/parallel/algo.h
+/usr/include/aliases.h
+/usr/include/alloca.h
+</code></pre><h2 id="cas-3">Cas 3</h2>
+<blockquote>
+<p>L&rsquo;instruction <code>set -x</code> permet d&rsquo;afficher les substitutions effectués par bash.</p>
+</blockquote>
+<h3 id="activation-de-laffichage-des-substitutions-du-bash">Activation de l&rsquo;affichage des substitutions du bash</h3>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ set -x
+</code></pre><h3 id="recherche-sans-protection-2">Recherche sans protection</h3>
+<blockquote>
+<p>Bash substitue le caractère générique par le nom de fichier trouvé dans le dossier courant. L&rsquo;instruction <code>find</code> ne reçoit plus le pattern mais le nom du fichier.</p>
+</blockquote>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ find  /usr/include -name al*.h
++ find /usr/include -name al12345.h
+</code></pre><h3 id="recherche-avec-protection-2">Recherche avec protection.</h3>
+<p>L&rsquo;instruction <code>find</code> reçoit toujours le pattern.</p>
+<pre tabindex="0"><code>huguenindo@lozan:tmp$ find  /usr/include -name &#39;al*.h&#39;
++ find /usr/include -name &#39;al*.h&#39;
+/usr/include/c++/4.8/ext/alloc_traits.h
+/usr/include/c++/4.8/bits/alloc_traits.h
+/usr/include/c++/4.8/bits/algorithmfwd.h
+/usr/include/c++/4.8/bits/allocator.h
+/usr/include/c++/4.8/parallel/algorithmfwd.h
+/usr/include/c++/4.8/parallel/algobase.h
+/usr/include/c++/4.8/parallel/algo.h
+/usr/include/aliases.h
+/usr/include/alloca.h
+</code></pre>
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

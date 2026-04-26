@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Montage Samba - Accès aux ressources S2 - Enseignants</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/montage-samba-enseignant/">Montage Samba - Accès aux ressources S2 - Enseignants</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>11.08.2020 09:42</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#installation-des-outils">Installation des outils</a></li>
+    <li><a href="#ajouter-lautorisation-dutiliser-mount-et-umount-à-tous-les-utilisateurs">Ajouter l&rsquo;autorisation d&rsquo;utiliser mount et umount à tous les utilisateurs</a></li>
+    <li><a href="#autorisation-des-montages-cifs-dans-un-conteneur-lxc">Autorisation des montages cifs dans un conteneur lxc</a></li>
+    <li><a href="#autorisation-des-montages-cifs-dans-un-conteneur-lxd">Autorisation des montages cifs dans un conteneur lxd</a></li>
+    <li><a href="#liste-des-partages-en-utilisant-kerberos">Liste des partages en utilisant kerberos</a></li>
+    <li><a href="#montage-samba">Montage Samba</a>
+      <ul>
+        <li><a href="#dossier-personnel-enseignant">Dossier personnel, Enseignant</a></li>
+        <li><a href="#dossier-partages-enseignants">Dossier Partages Enseignants</a></li>
+      </ul>
+    </li>
+    <li><a href="#problème-rencontré">Problème rencontré</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="installation-des-outils">Installation des outils</h2>
+<pre tabindex="0"><code>sudo apt-get install smbclient cifs-utils
+</code></pre><h2 id="ajouter-lautorisation-dutiliser-mount-et-umount-à-tous-les-utilisateurs">Ajouter l&rsquo;autorisation d&rsquo;utiliser mount et umount à tous les utilisateurs</h2>
+<p>problème voir <a href="https://s2msamaris.cifom.ch/wiki/tin_iweb/Wiki.jsp?page=HugueninWeblog_blogentry_260914_1">HugueninWeblog_blogentry_260914_1</a></p>
+<pre tabindex="0"><code>ubuntu@lozan:~$ sudo chmod +s $(which mount.cifs)
+ubuntu@lozan:~$ sudo chmod +s $(which umount.cifs)
+</code></pre><pre tabindex="0"><code>ubuntu@lozan:~$ sudo visudo
+%#10004 ALL=(ALL) NOPASSWD: /bin/mount,/bin/umount,/sbin/mount.cifs,/sbin/umount.cifs
+%mount ALL=(ALL) NOPASSWD: /bin/mount,/bin/umount,/sbin/mount.cifs,/sbin/umount.cifs
+</code></pre><p>Les utilisateurs du groupe <strong>mount</strong> et du groupe avec le gid <strong>10004</strong> peuvent effectuer un montage.</p>
+<pre tabindex="0"><code>$ sudo mount ....
+</code></pre><h2 id="autorisation-des-montages-cifs-dans-un-conteneur-lxc">Autorisation des montages cifs dans un conteneur lxc</h2>
+<pre tabindex="0"><code>ubuntu@pahry:~$ sudo cat /var/lib/lxc/lozan/config
+...
+lxc.aa_profile = unconfined
+</code></pre><h2 id="autorisation-des-montages-cifs-dans-un-conteneur-lxd">Autorisation des montages cifs dans un conteneur lxd</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~  <span style="color:#ae81ff">1</span> ✘  dom@domp14s  13:21:45 
+</span></span><span style="display:flex;"><span>╰─ lxc config set lxd-cluster:lozan raw.lxc <span style="color:#e6db74">&#34;lxc.apparmor.profile=unconfined&#34;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>╭─ ~  ✔  dom@domp14s  13:21:55 
+</span></span><span style="display:flex;"><span>╰─ lxc config show lxd-cluster:lozan                                         
+</span></span><span style="display:flex;"><span>architecture: x86_64
+</span></span><span style="display:flex;"><span>config:
+</span></span><span style="display:flex;"><span>  image.architecture: x86_64
+</span></span><span style="display:flex;"><span>  image.description: Ubuntu 20.04 LTS server <span style="color:#f92672">(</span>20210622<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  image.os: ubuntu
+</span></span><span style="display:flex;"><span>  image.release: focal
+</span></span><span style="display:flex;"><span>  raw.lxc: lxc.apparmor.profile<span style="color:#f92672">=</span>unconfined
+</span></span><span style="display:flex;"><span>  volatile.base_image: 0d4b150056aa3c6eff7d5e8e740528be6a6bf3bbbc91e5c8310ee1839f6d96ac
+</span></span><span style="display:flex;"><span>  volatile.eth0.hwaddr: 00:16:3e:af:16:4b
+</span></span><span style="display:flex;"><span>  volatile.idmap.base: <span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span>  volatile.idmap.current: <span style="color:#e6db74">&#39;[{&#34;Isuid&#34;:true,&#34;Isgid&#34;:false,&#34;Hostid&#34;:1000000,&#34;Nsid&#34;:0,&#34;Maprange&#34;:1000000000},{&#34;Isuid&#34;:false,&#34;Isgid&#34;:true,&#34;Hostid&#34;:1000000,&#34;Nsid&#34;:0,&#34;Maprange&#34;:1000000000}]&#39;</span>
+</span></span><span style="display:flex;"><span>  volatile.idmap.next: <span style="color:#e6db74">&#39;[{&#34;Isuid&#34;:true,&#34;Isgid&#34;:false,&#34;Hostid&#34;:1000000,&#34;Nsid&#34;:0,&#34;Maprange&#34;:1000000000},{&#34;Isuid&#34;:false,&#34;Isgid&#34;:true,&#34;Hostid&#34;:1000000,&#34;Nsid&#34;:0,&#34;Maprange&#34;:1000000000}]&#39;</span>
+</span></span><span style="display:flex;"><span>  volatile.last_state.idmap: <span style="color:#e6db74">&#39;[{&#34;Isuid&#34;:true,&#34;Isgid&#34;:false,&#34;Hostid&#34;:1000000,&#34;Nsid&#34;:0,&#34;Maprange&#34;:1000000000},{&#34;Isuid&#34;:false,&#34;Isgid&#34;:true,&#34;Hostid&#34;:1000000,&#34;Nsid&#34;:0,&#34;Maprange&#34;:1000000000}]&#39;</span>
+</span></span><span style="display:flex;"><span>  volatile.last_state.power: STOPPED
+</span></span><span style="display:flex;"><span>  volatile.uuid: a61f99f6-da02-4f54-a7a2-a5e11f294cc9
+</span></span><span style="display:flex;"><span>devices:
+</span></span><span style="display:flex;"><span>  root:
+</span></span><span style="display:flex;"><span>    path: /
+</span></span><span style="display:flex;"><span>    pool: cephpool
+</span></span><span style="display:flex;"><span>    type: disk
+</span></span><span style="display:flex;"><span>ephemeral: false
+</span></span><span style="display:flex;"><span>profiles:
+</span></span><span style="display:flex;"><span>- default
+</span></span><span style="display:flex;"><span>stateful: false
+</span></span><span style="display:flex;"><span>description: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span></code></pre></div><h2 id="liste-des-partages-en-utilisant-kerberos">Liste des partages en utilisant kerberos</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ kinit
+Password for huguenindo@S2.RPN.CH: 
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ smbclient -L //s2msrvadmll.s2.rpn.ch -k
+WARNING: The &#34;idmap uid&#34; option is deprecated
+WARNING: The &#34;idmap gid&#34; option is deprecated
+OS=[Windows Server 2008 R2 Enterprise 7601 Service Pack 1] Server=[Windows Server 2008 R2 Enterprise 6.1]
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	ADMIN$          Disk      Remote Admin
+	Alphacam        Disk      
+	C$              Disk      Default share
+	D$              Disk      Default share
+	ET              Disk      
+	IPC$            IPC       Remote IPC
+	Modules         Disk      
+	Partages        Disk      
+	Pers            Disk      
+	V13             Disk      
+Connection to s2msrvadmll.s2.rpn.ch failed (Error NT_STATUS_NETWORK_UNREACHABLE)
+NetBIOS over TCP disabled -- no workgroup available
+</code></pre><h2 id="montage-samba">Montage Samba</h2>
+<h3 id="dossier-personnel-enseignant">Dossier personnel, Enseignant</h3>
+<ul>
+<li>Création du point de montage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ mkdir S2MesDocuments
+</code></pre><ul>
+<li>Montage du partage personnel</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ sudo mount -t cifs //s2msrvadmll.s2.rpn.ch/et/Pers/Profs/Info/HugueninDo ~/S2MesDocuments -o username=huguenindo
+Password: 
+Password for huguenindo@//s2msrvadmll.s2.rpn.ch/et/Pers/Profs/Info/HugueninDo: 
+</code></pre><ul>
+<li>vérification</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ mount | grep S2MesDocuments
+//s2msrvadmll.s2.rpn.ch/et/Pers/Profs/Info/HugueninDo on /home/S2/huguenindo/S2MesDocuments type cifs (rw)
+</code></pre><ul>
+<li>Démontage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ sudo umount ~/S2MesDocuments
+</code></pre><h3 id="dossier-partages-enseignants">Dossier Partages Enseignants</h3>
+<ul>
+<li>Création du point de montage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ mkdir S2PartagesEnseignants
+</code></pre><ul>
+<li>Montage du partage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ sudo mount -t cifs //s2msrvadmll.s2.rpn.ch/et/Partages ~/S2PartagesEnseignants -o username=huguenindo
+Password: 
+Password for huguenindo@//s2msrvadmll.s2.rpn.ch/et/Partages: 
+</code></pre><ul>
+<li>vérification</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ mount | grep S2PartagesEnseignants
+//s2msrvadmll.s2.rpn.ch/et/Partages on /home/S2/huguenindo/S2PartagesEnseignants type cifs (rw)
+</code></pre><ul>
+<li>Démontage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ sudo umount ~/S2PartagesEnseignants
+</code></pre><h2 id="problème-rencontré">Problème rencontré</h2>
+<ul>
+<li>Opération montrant le problème <a href="https://s2msamaris.cifom.ch/wiki/tin_iweb/Wiki.jsp?page=HugueninWeblog_blogentry_260914_1">HugueninWeblog_blogentry_170914_1</a> Le problème a été résolu par le SIT. Problème de droit!</li>
+</ul>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

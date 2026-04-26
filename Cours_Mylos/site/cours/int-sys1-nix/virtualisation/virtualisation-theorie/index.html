@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - Éléments théoriques</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-theorie/">Virtualisation - Éléments théoriques</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:08</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#définition">Définition</a></li>
+    <li><a href="#isolateur">Isolateur</a></li>
+    <li><a href="#hyperviseur-de-type-2">Hyperviseur de type 2</a></li>
+    <li><a href="#hyperviseur-de-type-1">Hyperviseur de type 1</a></li>
+    <li><a href="#infrastructure-physique">Infrastructure physique</a></li>
+    <li><a href="#hyperviseur">Hyperviseur</a></li>
+    <li><a href="#infrastructure-virtuelle">Infrastructure virtuelle</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="définition">Définition</h2>
+<blockquote>
+<p>La virtualisation consiste à faire fonctionner un ou plusieurs systèmes d&rsquo;exploitation / applications comme un simple logiciel, sur un ou plusieurs ordinateurs - serveurs / système d&rsquo;exploitation, au lieu de ne pouvoir en installer qu&rsquo;un seul par machine. Ces ordinateurs virtuels sont appelés serveur privé virtuel (Virtual Private Server ou VPS) ou encore environnement virtuel (Virtual Environment ou VE).</p>
+<p>[<a href="https://fr.wikipedia.org/wiki/Virtualisation">1</a>]</p>
+</blockquote>
+<h2 id="isolateur">Isolateur</h2>
+<p><img src="../images/800px-Diagramme_ArchiIsolateur.png" alt="Image"></p>
+<p>Par exemple : chroot (isolation changement de racine) ; LXC : libre, (usage des Cgroups du noyau Linux) &hellip;</p>
+<blockquote>
+<p>Un isolateur est un logiciel permettant d&rsquo;isoler l&rsquo;exécution des applications dans ce qui sont appelés des contextes, ou bien zones d&rsquo;exécution. L&rsquo;isolateur permet ainsi de faire tourner plusieurs fois la même application dans un mode multi-instance (plusieurs instances d’exécution) même si elle n’était pas conçue pour ça. Cette solution est très performante, du fait du peu d&rsquo;overhead (temps passé par un système à ne rien faire d&rsquo;autre que se gérer), mais les environnements virtualisés ne sont pas complètement isolés. La performance est donc au rendez-vous, cependant on ne peut pas vraiment parler de virtualisation de systèmes d’exploitation. Uniquement liés aux systèmes Linux, les isolateurs sont en fait composés de plusieurs éléments et peuvent prendre plusieurs formes.</p>
+<p>Par exemple : chroot (isolation changement de racine) ; LXC : libre, (usage des Cgroups du noyau Linux) &hellip;</p>
+<p>[<a href="https://fr.wikipedia.org/wiki/Virtualisation">1</a>]</p>
+</blockquote>
+<h2 id="hyperviseur-de-type-2">Hyperviseur de type 2</h2>
+<p><img src="../images/762px-Diagramme_ArchiEmulateur.png" alt="Image"></p>
+<p>Par exemple : Oracle VM VirtualBox (libre), logiciels VMware (VMware Fusion, VMware Player, VMware Server, VMware Workstation), logiciels libres (QEMU : émulateur de plateformes x86, PPC, Sparc, et bochs : émulateur de plateforme x86) &hellip;</p>
+<blockquote>
+<p>Un hyperviseur de type 2 est un logiciel (généralement assez lourd) qui tourne sur l&rsquo;OS hôte. Ce logiciel permet de lancer un ou plusieurs OS invités. La machine virtualise ou/et émule le matériel pour les OS invités, ces derniers croient dialoguer directement avec ledit matériel. Cette solution est très comparable à un émulateur, et parfois même confondue. Cependant l’unité centrale de calcul, c&rsquo;est-à-dire le microprocesseur, la mémoire de travail (ram) ainsi que la mémoire de stockage (via un fichier) sont directement accessibles aux machines virtuelles, alors que sur un émulateur l’unité centrale est simulée, les performances en sont donc considérablement réduites par rapport à la virtualisation.</p>
+<p>Cette solution isole bien les OS invités, mais elle a un coût en performance. Ce coût peut être très élevé si le processeur doit être émulé, comme cela est le cas dans l’émulation. En échange cette solution permet de faire cohabiter plusieurs OS hétérogènes sur une même machine grâce à une isolation complète. Les échanges entre les machines se font via les canaux standards de communication entre systèmes d’exploitation (TCP/IP et autres protocoles réseau), un tampon d’échange permet d’émuler des cartes réseaux virtuelles sur une seule carte réseau réelle.</p>
+<p>Par exemple : Oracle VM VirtualBox (libre), logiciels VMware (VMware Fusion, VMware Player, VMware Server, VMware Workstation), logiciels libres (QEMU : émulateur de plateformes x86, PPC, Sparc, et bochs : émulateur de plateforme x86) &hellip;</p>
+<p>[<a href="https://fr.wikipedia.org/wiki/Virtualisation">1</a>]</p>
+</blockquote>
+<h2 id="hyperviseur-de-type-1">Hyperviseur de type 1</h2>
+<p><img src="../images/800px-Diagramme_ArchiHyperviseur.png" alt="Image"></p>
+<p>Par exemple : VMware vSphere (anciennement VMware ESXi et VMware ESX), KVM (libre) &hellip;</p>
+<blockquote>
+<p>Un hyperviseur de type 1 est comme un noyau système très léger et optimisé pour gérer les accès des noyaux d&rsquo;OS invités à l&rsquo;architecture matérielle sous-jacente. Si les OS invités fonctionnent en ayant conscience d&rsquo;être virtualisés et sont optimisés pour ce fait, on parle alors de para-virtualisation (méthode indispensable sur Hyper-V de Microsoft et qui augmente les performances sur ESX de VMware par exemple). Actuellement l’hyperviseur est la méthode de virtualisation d&rsquo;infrastructure la plus performante mais elle a pour inconvénient d’être contraignante et onéreuse, bien que permettant plus de flexibilité dans le cas de la virtualisation d&rsquo;un centre de traitement de données.</p>
+<p>Par exemple : VMware vSphere (anciennement VMware ESXi et VMware ESX), KVM (libre) &hellip;</p>
+<p>[<a href="https://fr.wikipedia.org/wiki/Virtualisation">1</a>]</p>
+</blockquote>
+<h2 id="infrastructure-physique">Infrastructure physique</h2>
+<p><img src="../images/machinePhysique.png" alt="Image"></p>
+<h2 id="hyperviseur">Hyperviseur</h2>
+<p><img src="../images/hyperviseur.png" alt="Image"></p>
+<h2 id="infrastructure-virtuelle">Infrastructure virtuelle</h2>
+<p><img src="../images/machinesVirtuelles.png" alt="Image"></p>
+<h2 id="références">Références</h2>
+<ol>
+<li>Virtualisation — Wikipédia,  <a href="https://fr.wikipedia.org/wiki/Virtualisation">https://fr.wikipedia.org/wiki/Virtualisation</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

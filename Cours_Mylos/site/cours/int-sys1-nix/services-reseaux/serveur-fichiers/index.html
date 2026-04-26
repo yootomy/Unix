@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Serveur de fichiers </title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/serveur-fichiers/">Service réseau - Serveur de fichiers </a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:26</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#nfsv4">NFSv4</a></li>
+      </ul>
+    </li>
+    <li><a href="#au-préalable">Au préalable</a>
+      <ul>
+        <li><a href="#configuration-du-dns">Configuration du DNS</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-de-service-nfs">Configuration de service NFS</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<p><img src="../../images/reseau-antiterre-nfs.png" alt="Image" title="Service NFS"></p>
+<blockquote>
+<p><strong>Network File System</strong> (ou NFS, système de fichiers en réseau) est un protocole développé par Sun Microsystems qui permet à un ordinateur d&rsquo;accéder à des fichiers via un réseau. Il fait partie de la couche application du modèle OSI.</p>
+<h3 id="nfsv4">NFSv4</h3>
+<p>Inspirée de AFS la version 4 du protocole marque une rupture totale avec les versions précédentes. L&rsquo;ensemble du protocole est repensé, et les codes sont réécrits. Il s&rsquo;agit d&rsquo;un système de fichier objet.</p>
+<p>Imaginée pour répondre aux besoins d&rsquo;Internet, NFSv4 intègre :</p>
+<ul>
+<li>Une gestion totale de la sécurité :
+<ul>
+<li>négociation du niveau de sécurité entre le client et le serveur</li>
+<li>sécurisation simple, support de kerberos5, certificats SPKM et LIPKEY</li>
+<li>Chiffrement des communications possible (kerberos 5p par exemple)</li>
+</ul>
+</li>
+<li>Support accru de la montée en charge :
+<ul>
+<li>Réduction du trafic par groupement de requêtes (compound)</li>
+<li>Délégation (le client gère le fichier en local)</li>
+</ul>
+</li>
+<li>Systèmes de maintenances simplifiés :
+<ul>
+<li>Migration : le serveur NFS est migré de la machine A vers la machine B de manière transparente pour le client</li>
+<li>Réplication : le serveur A est répliqué sur la machine B</li>
+</ul>
+</li>
+<li>Reprise sur incidents
+<ul>
+<li>La gestion de la reprise sur incident est intégrée du côté client et du côté serveur.</li>
+</ul>
+</li>
+<li>Compatibilité :
+<ul>
+<li>NFSv4 peut être utilisée sous Unix et maintenant également sous MS-Windows</li>
+</ul>
+</li>
+<li>Support de plusieurs protocoles de transports (TCP, RDMA)</li>
+</ul>
+<p>tiré de [<a href="http://fr.wikipedia.org/wiki/Network_File_System">9</a>]</p>
+</blockquote>
+<h2 id="au-préalable">Au préalable</h2>
+<h3 id="configuration-du-dns">Configuration du DNS</h3>
+<ul>
+<li>Ajout de l&rsquo;alias fs.antiterre.lan</li>
+</ul>
+<pre tabindex="0"><code>$ sudo vim /etc/bind/db.antiterre.lan
+</code></pre><pre tabindex="0"><code>...
+urbicande	IN	A	192.168.100.30
+fs		IN 	CNAME 	urbicande
+...
+</code></pre><ul>
+<li>redémarrer le service</li>
+</ul>
+<pre tabindex="0"><code>sudo service bind9 restart
+</code></pre><h2 id="configuration-de-service-nfs">Configuration de service NFS</h2>
+<ul>
+<li><a href="../srv-nfsv4">Configuration du serveur de fichier NFSv4 et d&rsquo;un client</a></li>
+<li><a href="../srv-nfsv4-krb5">Configuration du serveur de fichier NFSv4 avec authentification Kerberos</a></li>
+</ul>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://help.ubuntu.com/lts/serverguide/network-file-system.html">Ubuntu Documentation - Network File System (NFS)</a></li>
+<li><a href="https://help.ubuntu.com/community/NFSv4Howto">NFSv4Howto - Community Ubuntu Documentation</a></li>
+<li><a href="http://nfs.sourceforge.net/">Linux NFS faq</a></li>
+<li><a href="http://wiki.debian.org/NFS/Kerberos">NFSv4 (nfs4) + Kerberos in Debian</a></li>
+<li><a href="http://wiki.linux-nfs.org/wiki/index.php/Nfsv4_configuration_fr">Nfsv4 configuration fr</a></li>
+<li><a href="https://wiki.esne.ch/travaux-etudiants/Wiki.jsp?page=TL10LinuxResInstallNFS_Client_Serveur">TL10 - Réseau Linux</a></li>
+<li><a href="http://fr.wikipedia.org/wiki/Network_File_System">Network File System - Wikipédia</a></li>
+<li><a href="http://www.opinsys.fi/en/setting-up-nfsv4kerberos-on-ubuntu-10-04-alpha-2-lucid-part-6">Setting up NFSv4+Kerberos on Ubuntu 10.04 Alpha 2 (Lucid), part 6</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

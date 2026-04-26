@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Services réseaux - Activité 1550, Script de gestion d&#39;utilisateurs</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/services-reseaux-activite-1550-gestion-utilisateurs/">Services réseaux - Activité 1550, Script de gestion d&#39;utilisateurs</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:23</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-faire">A faire</a>
+      <ul>
+        <li><a href="#utilisation-du-script-de-création">Utilisation du script de création</a></li>
+        <li><a href="#utilisation-du-script-de-suppression">Utilisation du script de suppression</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="a-faire">A faire</h2>
+<p>Créer des scripts permettant de créer et supprimer un utilisateur dans le domaine antiterre.lan.</p>
+<blockquote>
+<p>Le script doit être exécuté par le root (sudo)</p>
+</blockquote>
+<h3 id="utilisation-du-script-de-création">Utilisation du script de création</h3>
+<pre tabindex="0"><code>galatograd:$ sudo antiterre-adduser -u utilisateur -p mot-de-passe
+</code></pre><p>Ce script crée l&rsquo;utilisateur, un groupe de même nom dans l&rsquo;annuaire ldap, un principale dans le service kerberos et un dossier personnel <code>/home/utilisateur</code> dans le serveur de fichier.</p>
+<p><strong>Afficher l&rsquo;aide de la commande</strong></p>
+<pre tabindex="0"><code>galatograd:$ sudo antiterre-adduser -h
+</code></pre><pre tabindex="0"><code>usage: antiterre-adduser -u | --username &lt;username&gt; -p | --password &lt;password&gt;
+
+Création d&#39;un utilisateur dans l&#39;infrastructure antiterre
+
+usage: antiterre-adduser -h | --help
+
+affiche l&#39;aide
+</code></pre><h3 id="utilisation-du-script-de-suppression">Utilisation du script de suppression</h3>
+<pre tabindex="0"><code>galatograd:$ sudo antiterre-deluser -u utilisateur
+</code></pre><p>Ce script supprime l&rsquo;utilisateur, son groupe et son dossier personnel.</p>
+<p><strong>Afficher l&rsquo;aide de la commande</strong></p>
+<pre tabindex="0"><code>galatograd:$ sudo antiterre-deluser -h
+</code></pre><pre tabindex="0"><code>
+usage: antiterre-deluser -u | --username &lt;username&gt; 
+
+Suppression d&#39;un utilisateur dans l&#39;infrastructure antiterre
+
+usage: antiterre-deluser -h | --help
+
+affiche l&#39;aide
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/services-reseaux-activite-1550-gestion-utilisateurs">Éléments de solutions</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

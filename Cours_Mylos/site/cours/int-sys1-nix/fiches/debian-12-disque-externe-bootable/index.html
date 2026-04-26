@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>SYSNIX - Debian 12, création d&#39;un disque externe USB bootable</title>
+	<meta name="description" content="Ce document décrit l&#39;installation de la distribution Debian 12 sur un disque externe USB bootable."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/sysnix/">Sysnix</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/debian-12-disque-externe-bootable/">SYSNIX - Debian 12, création d&#39;un disque externe USB bootable</a></h1>
+    <p>Ce document décrit l&#39;installation de la distribution Debian 12 sur un disque externe USB bootable.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>11.08.2024 00:00</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#marche-à-suivre">Marche à suivre</a></li>
+    <li><a href="#création-de-la-machine-virtuelle-kvm-avec-virt-manager">Création de la machine virtuelle kvm avec virt-manager</a>
+      <ul>
+        <li><a href="#configuration-de-la-machine-avec-libvirt">Configuration de la machine avec libvirt</a></li>
+        <li><a href="#configuration-du-firmware-efi">Configuration du firmware EFI</a></li>
+        <li><a href="#configuration-complète">Configuration complète</a></li>
+      </ul>
+    </li>
+    <li><a href="#installation-du-système-dexploitation">Installation du système d&rsquo;exploitation</a>
+      <ul>
+        <li><a href="#formatage-du-disque-externe">Formatage du disque externe</a></li>
+        <li><a href="#suite-de-linstallation">Suite de l&rsquo;installation</a></li>
+        <li><a href="#installation-de-la-partition-efi">Installation de la partition EFI</a></li>
+      </ul>
+    </li>
+    <li><a href="#vérification">Vérification</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="marche-à-suivre">Marche à suivre</h2>
+<ol>
+<li>Créer une machine virtuelle kvm avec virt-manager avec comme configuration:
+<ol>
+<li>utilisation du firmware EFI</li>
+<li>stockage une disque externe USB</li>
+</ol>
+</li>
+<li>Démarrer la VM sur le live CD téléchargé dans <a href="https://www.debian.org/distrib/">Obtenir</a></li>
+<li>Formater le disque externe selon nos besoins</li>
+<li>Installer le système d&rsquo;exploitation</li>
+<li>Vérifier</li>
+</ol>
+<h2 id="création-de-la-machine-virtuelle-kvm-avec-virt-manager">Création de la machine virtuelle kvm avec virt-manager</h2>
+<blockquote>
+<ul>
+<li><a href="https://video.s2.rpn.ch/permalink/v1268ae78fdc9i1p4o78/">Debian 12 - Vidéo de création de la VM</a></li>
+<li><a href="https://video.s2.rpn.ch/permalink/v126d3901c70a8tihhja/">Debian 13 - Vidéo de création de la VM</a></li>
+</ul>
+</blockquote>
+<ol>
+<li>Télécharger l&rsquo;iso <a href="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.6.0-amd64-netinst.iso">Debian 12, ISO « netinst » pour PC 64 bits</a></li>
+<li>Créer la machine virtuelle</li>
+<li>Démarrer la machine</li>
+</ol>
+<h3 id="configuration-de-la-machine-avec-libvirt">Configuration de la machine avec libvirt</h3>
+<ul>
+<li>
+<p>Aperçu de la machine</p>
+<p><img src="./kvm-apercu.png" alt="kvm"></p>
+</li>
+<li>
+<p>Configuration du CD-ROM</p>
+<p><img src="./kvm-cd-rom.png" alt="kvm"></p>
+</li>
+<li>
+<p>Configuration du contrôleur USB 3</p>
+<p><img src="kvm-controleur-usb.png" alt="kvm"></p>
+</li>
+<li>
+<p>Ajout du disque physique externe</p>
+<p><img src="./kvm-usb-physique.png" alt="kvm"></p>
+</li>
+</ul>
+<h3 id="configuration-du-firmware-efi">Configuration du firmware EFI</h3>
+<ul>
+<li><a href="https://libvirt.org/kbase/secureboot.html">https://libvirt.org/kbase/secureboot.html</a></li>
+</ul>
+<ol>
+<li>remplacer la configuration ci-dessous:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;os&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;type</span> <span style="color:#a6e22e">arch=</span><span style="color:#e6db74">&#34;x86_64&#34;</span> <span style="color:#a6e22e">machine=</span><span style="color:#e6db74">&#34;q35&#34;</span><span style="color:#f92672">&gt;</span>hvm<span style="color:#f92672">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;boot</span> <span style="color:#a6e22e">dev=</span><span style="color:#e6db74">&#34;cdrom&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/os&gt;</span>
+</span></span></code></pre></div></li>
+<li>par la suivante:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;os</span> <span style="color:#a6e22e">firmware=</span><span style="color:#e6db74">&#34;efi&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;type</span> <span style="color:#a6e22e">arch=</span><span style="color:#e6db74">&#34;x86_64&#34;</span> <span style="color:#a6e22e">machine=</span><span style="color:#e6db74">&#34;q35&#34;</span><span style="color:#f92672">&gt;</span>hvm<span style="color:#f92672">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;boot</span> <span style="color:#a6e22e">dev=</span><span style="color:#e6db74">&#34;cdrom&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;firmware&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;feature</span> <span style="color:#a6e22e">enabled=</span><span style="color:#e6db74">&#34;yes&#34;</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;secure-boot&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;feature</span> <span style="color:#a6e22e">enabled=</span><span style="color:#e6db74">&#34;yes&#34;</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;enrolled-keys&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/firmware&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/os&gt;</span>  
+</span></span></code></pre></div></li>
+</ol>
+<h3 id="configuration-complète">Configuration complète</h3>
+<pre><code>```shell
+$ virsh dumpxml debian-usb
+&lt;domain type='kvm' id='1'&gt;
+&lt;name&gt;debian-usb&lt;/name&gt;
+&lt;uuid&gt;66f527f6-dd42-40f3-ba09-7dd140d66292&lt;/uuid&gt;
+&lt;metadata&gt;
+    &lt;libosinfo:libosinfo xmlns:libosinfo=&quot;http://libosinfo.org/xmlns/libvirt/domain/1.0&quot;&gt;
+    &lt;libosinfo:os id=&quot;http://debian.org/debian/12&quot;/&gt;
+    &lt;/libosinfo:libosinfo&gt;
+&lt;/metadata&gt;
+&lt;memory unit='KiB'&gt;4194304&lt;/memory&gt;
+&lt;currentMemory unit='KiB'&gt;4194304&lt;/currentMemory&gt;
+&lt;vcpu placement='static'&gt;4&lt;/vcpu&gt;
+&lt;resource&gt;
+    &lt;partition&gt;/machine&lt;/partition&gt;
+&lt;/resource&gt;
+&lt;os&gt;
+    &lt;type arch='x86_64' machine='pc-q35-6.2'&gt;hvm&lt;/type&gt;
+    &lt;firmware&gt;
+    &lt;feature enabled='yes' name='enrolled-keys'/&gt;
+    &lt;feature enabled='yes' name='secure-boot'/&gt;
+    &lt;/firmware&gt;
+    &lt;loader readonly='yes' type='pflash'&gt;/usr/share/OVMF/OVMF_CODE_4M.ms.fd&lt;/loader&gt;
+    &lt;nvram template='/usr/share/OVMF/OVMF_VARS_4M.ms.fd'&gt;/var/lib/libvirt/qemu/nvram/debian-usb_VARS.fd&lt;/nvram&gt;
+    &lt;boot dev='cdrom'/&gt;
+&lt;/os&gt;
+&lt;features&gt;
+    &lt;acpi/&gt;
+    &lt;apic/&gt;
+    &lt;vmport state='off'/&gt;
+    &lt;smm state='on'/&gt;
+&lt;/features&gt;
+&lt;cpu mode='host-passthrough' check='none' migratable='on'/&gt;
+&lt;clock offset='utc'&gt;
+    &lt;timer name='rtc' tickpolicy='catchup'/&gt;
+    &lt;timer name='pit' tickpolicy='delay'/&gt;
+    &lt;timer name='hpet' present='no'/&gt;
+&lt;/clock&gt;
+&lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;
+&lt;on_reboot&gt;destroy&lt;/on_reboot&gt;
+&lt;on_crash&gt;destroy&lt;/on_crash&gt;
+&lt;pm&gt;
+    &lt;suspend-to-mem enabled='no'/&gt;
+    &lt;suspend-to-disk enabled='no'/&gt;
+&lt;/pm&gt;
+&lt;devices&gt;
+    &lt;emulator&gt;/usr/bin/qemu-system-x86_64&lt;/emulator&gt;
+    &lt;disk type='file' device='cdrom'&gt;
+    &lt;driver name='qemu' type='raw'/&gt;
+    &lt;source file='/home/dom/iso/debian-12.6.0-amd64-netinst.iso' index='1'/&gt;
+    &lt;backingStore/&gt;
+    &lt;target dev='sda' bus='sata'/&gt;
+    &lt;readonly/&gt;
+    &lt;alias name='sata0-0-0'/&gt;
+    &lt;address type='drive' controller='0' bus='0' target='0' unit='0'/&gt;
+    &lt;/disk&gt;
+    &lt;controller type='usb' index='0' model='qemu-xhci' ports='15'&gt;
+    &lt;alias name='usb'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='0' model='pcie-root'&gt;
+    &lt;alias name='pcie.0'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='1' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='1' port='0x10'/&gt;
+    &lt;alias name='pci.1'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0' multifunction='on'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='2' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='2' port='0x11'/&gt;
+    &lt;alias name='pci.2'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x1'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='3' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='3' port='0x12'/&gt;
+    &lt;alias name='pci.3'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x2'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='4' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='4' port='0x13'/&gt;
+    &lt;alias name='pci.4'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x3'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='5' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='5' port='0x14'/&gt;
+    &lt;alias name='pci.5'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x4'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='6' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='6' port='0x15'/&gt;
+    &lt;alias name='pci.6'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='7' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='7' port='0x16'/&gt;
+    &lt;alias name='pci.7'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x6'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='8' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='8' port='0x17'/&gt;
+    &lt;alias name='pci.8'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x7'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='9' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='9' port='0x18'/&gt;
+    &lt;alias name='pci.9'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0' multifunction='on'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='10' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='10' port='0x19'/&gt;
+    &lt;alias name='pci.10'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x1'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='11' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='11' port='0x1a'/&gt;
+    &lt;alias name='pci.11'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x2'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='12' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='12' port='0x1b'/&gt;
+    &lt;alias name='pci.12'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x3'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='13' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='13' port='0x1c'/&gt;
+    &lt;alias name='pci.13'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x4'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='pci' index='14' model='pcie-root-port'&gt;
+    &lt;model name='pcie-root-port'/&gt;
+    &lt;target chassis='14' port='0x1d'/&gt;
+    &lt;alias name='pci.14'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x5'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='sata' index='0'&gt;
+    &lt;alias name='ide'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/&gt;
+    &lt;/controller&gt;
+    &lt;controller type='virtio-serial' index='0'&gt;
+    &lt;alias name='virtio-serial0'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/&gt;
+    &lt;/controller&gt;
+    &lt;interface type='network'&gt;
+    &lt;mac address='52:54:00:39:68:1c'/&gt;
+    &lt;source network='default' portid='a61e4a76-ecfc-4a16-8ba2-223b5f3d47d8' bridge='virbr0'/&gt;
+    &lt;target dev='vnet0'/&gt;
+    &lt;model type='virtio'/&gt;
+    &lt;alias name='net0'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
+    &lt;/interface&gt;
+    &lt;serial type='pty'&gt;
+    &lt;source path='/dev/pts/7'/&gt;
+    &lt;target type='isa-serial' port='0'&gt;
+        &lt;model name='isa-serial'/&gt;
+    &lt;/target&gt;
+    &lt;alias name='serial0'/&gt;
+    &lt;/serial&gt;
+    &lt;console type='pty' tty='/dev/pts/7'&gt;
+    &lt;source path='/dev/pts/7'/&gt;
+    &lt;target type='serial' port='0'/&gt;
+    &lt;alias name='serial0'/&gt;
+    &lt;/console&gt;
+    &lt;channel type='unix'&gt;
+    &lt;source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-1-debian-usb/org.qemu.guest_agent.0'/&gt;
+    &lt;target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/&gt;
+    &lt;alias name='channel0'/&gt;
+    &lt;address type='virtio-serial' controller='0' bus='0' port='1'/&gt;
+    &lt;/channel&gt;
+    &lt;channel type='spicevmc'&gt;
+    &lt;target type='virtio' name='com.redhat.spice.0' state='disconnected'/&gt;
+    &lt;alias name='channel1'/&gt;
+    &lt;address type='virtio-serial' controller='0' bus='0' port='2'/&gt;
+    &lt;/channel&gt;
+    &lt;input type='tablet' bus='usb'&gt;
+    &lt;alias name='input0'/&gt;
+    &lt;address type='usb' bus='0' port='2'/&gt;
+    &lt;/input&gt;
+    &lt;input type='mouse' bus='ps2'&gt;
+    &lt;alias name='input1'/&gt;
+    &lt;/input&gt;
+    &lt;input type='keyboard' bus='ps2'&gt;
+    &lt;alias name='input2'/&gt;
+    &lt;/input&gt;
+    &lt;graphics type='spice' port='5900' autoport='yes' listen='127.0.0.1'&gt;
+    &lt;listen type='address' address='127.0.0.1'/&gt;
+    &lt;image compression='off'/&gt;
+    &lt;/graphics&gt;
+    &lt;sound model='ich9'&gt;
+    &lt;alias name='sound0'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x1b' function='0x0'/&gt;
+    &lt;/sound&gt;
+    &lt;audio id='1' type='spice'/&gt;
+    &lt;video&gt;
+    &lt;model type='virtio' heads='1' primary='yes'/&gt;
+    &lt;alias name='video0'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/&gt;
+    &lt;/video&gt;
+    &lt;hostdev mode='subsystem' type='usb' managed='yes'&gt;
+    &lt;source&gt;
+        &lt;vendor id='0x04e8'/&gt;
+        &lt;product id='0x4001'/&gt;
+        &lt;address bus='5' device='8'/&gt;
+    &lt;/source&gt;
+    &lt;alias name='hostdev0'/&gt;
+    &lt;address type='usb' bus='0' port='1'/&gt;
+    &lt;/hostdev&gt;
+    &lt;redirdev bus='usb' type='spicevmc'&gt;
+    &lt;alias name='redir0'/&gt;
+    &lt;address type='usb' bus='0' port='3'/&gt;
+    &lt;/redirdev&gt;
+    &lt;redirdev bus='usb' type='spicevmc'&gt;
+    &lt;alias name='redir1'/&gt;
+    &lt;address type='usb' bus='0' port='4'/&gt;
+    &lt;/redirdev&gt;
+    &lt;memballoon model='virtio'&gt;
+    &lt;alias name='balloon0'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/&gt;
+    &lt;/memballoon&gt;
+    &lt;rng model='virtio'&gt;
+    &lt;backend model='random'&gt;/dev/urandom&lt;/backend&gt;
+    &lt;alias name='rng0'/&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/&gt;
+    &lt;/rng&gt;
+&lt;/devices&gt;
+&lt;seclabel type='dynamic' model='apparmor' relabel='yes'&gt;
+    &lt;label&gt;libvirt-66f527f6-dd42-40f3-ba09-7dd140d66292&lt;/label&gt;
+    &lt;imagelabel&gt;libvirt-66f527f6-dd42-40f3-ba09-7dd140d66292&lt;/imagelabel&gt;
+&lt;/seclabel&gt;
+&lt;seclabel type='dynamic' model='dac' relabel='yes'&gt;
+    &lt;label&gt;+64055:+109&lt;/label&gt;
+    &lt;imagelabel&gt;+64055:+109&lt;/imagelabel&gt;
+&lt;/seclabel&gt;
+&lt;/domain&gt;
+
+```
+</code></pre>
+<h2 id="installation-du-système-dexploitation">Installation du système d&rsquo;exploitation</h2>
+<h3 id="formatage-du-disque-externe">Formatage du disque externe</h3>
+<blockquote>
+<ul>
+<li><a href="https://video.s2.rpn.ch/permalink/v1268ae790037xc1ob8w/">debian 12 - vidéo montrant le partitionnement avec le live CD</a></li>
+<li><a href="https://video.s2.rpn.ch/permalink/v126d3901c713u7c8snz/">debian 13 - vidéo montrant le début de l&rsquo;installation avec le live CD</a></li>
+<li><a href="https://video.s2.rpn.ch/permalink/v126d3901c71fotwzmvt/">debian 13 - vidéo montrant le partitionnement avec le live CD</a></li>
+</ul>
+</blockquote>
+<h4 id="plan-de-partitionnement">Plan de partitionnement</h4>
+<pre tabindex="0"><code>.------------------------------------------------------------------------------------------------------------------.
+| /dev/sdx                                                                                                         |
++-----------+-----------+----------------------------------------------------------------+-------------------------+
+| /dev/sdx1 | /dev/sdx2 | /dev/sdx3                                                      | 
+| 500MB     | 500MB     | 250GB                                                          | 
+|           |           +----------------------------------------------------------------+
+|           |           | LVM                                                            |
+|           |           +----------------------------------------------------------------+
+|           |           | debian-usb-vg (VG)                                             |           
+|           |           +---------------+----------------+-----------------+-------------+
+|           |           | swap (2G)(LV) | root (50G)(LV) | home (100G)(LV) |
++-----------+-----------+---------------+----------------+-----------------+
+|EFI System | ext2      | swap          | ext4           | ext4            |
+|boot       |           |               |                |
++-----------+-----------+---------------+----------------+-----------------+
+|           | /boot     |               | /root          | /home           |
++-----------+-----------+---------------+----------------+-----------------+
+</code></pre><h3 id="suite-de-linstallation">Suite de l&rsquo;installation</h3>
+<blockquote>
+<ul>
+<li><a href="https://video.s2.rpn.ch/permalink/v1268ae790556fny12f8/">debian 12 - vidéo montrant la suite de l&rsquo;installation de système d&rsquo;exploitation</a></li>
+</ul>
+</blockquote>
+<p>Pour l&rsquo;installation du système suivre le document <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix/mise-en-route-systeme-exploitation/linux-installation/">SYSNIX - OS - Installation GNU/Linux Ubuntu Server</a></p>
+<h3 id="installation-de-la-partition-efi">Installation de la partition EFI</h3>
+<blockquote>
+<ul>
+<li><a href="https://video.s2.rpn.ch/permalink/v1268ae7906b6xdul7be/">debian 12 - vidéo montrant l&rsquo;installation de la partition EFI</a></li>
+<li><a href="https://video.s2.rpn.ch/permalink/v126d3901c74fnzvskzv/">debian 13 - vidéo montrant l&rsquo;installation de la partition EFI</a></li>
+</ul>
+</blockquote>
+<h2 id="vérification">Vérification</h2>
+<ul>
+<li>Redémarrer votre machine physique en choisissant le disque externe USB comme périphérique de démarrage</li>
+</ul>
+<blockquote>
+<p>Vérifier dans le bios que:</p>
+<ul>
+<li>votre machine physique peut démarrer sur un support USB</li>
+<li>l&rsquo;option <code>secure boot</code> soit déactivée.</li>
+</ul>
+</blockquote>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

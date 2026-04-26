@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation</title>
+	<meta name="description" content="Prise en main des outils de virtualisation avec des machines virtuelles et des conteneurs systèmes"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article class="articleList">
+	
+		<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></h1>
+    <p>Prise en main des outils de virtualisation avec des machines virtuelles et des conteneurs systèmes</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 12:07</time>
+    </small>
+</header>
+
+		
+			<section class="articleHead"><h2 id="thème">Thème</h2>
+<ol>
+<li><a href="virtualisation-theorie">Éléments théoriques</a></li>
+<li><a href="virtualisation-kvm">Kernel-based Virtual Machine (KVM)</a>
+<ol>
+<li><a href="virtualisation-kvm-libvirt">libvirt+KVM, installation et configuration</a></li>
+<li><a href="virtualisation-creation-kvm-libvirt">libvirt+KVM, création d&rsquo;une VM</a></li>
+<li><a href="../activites/sysnix-activite-0500-libvirt-kvm-lvm">Activités libvirt, kvm, lvm</a></li>
+</ol>
+</li>
+<li><a href="virtualisation-lxc">Linux Container (LXC)</a>
+<ol>
+<li><a href="virtualisation-lxc-config">LXC, configuration</a></li>
+<li><a href="virtualisation-lxc-lvm">LXC + LVM</a></li>
+<li><a href="virtualisation-lxc-sans-privilege">LXC, conteneur sans privilège</a></li>
+<li><a href="../activites/sysnix-activite-0600-lxc-lvm">Activités lxc,  lvm</a></li>
+</ol>
+</li>
+<li>Réseau virtuel
+<ol>
+<li><a href="../activites/sysnix-activite-0700-reseau">Activité, Mise en réseau de VM KVM et LXC et connection ssh</a></li>
+<li><a href="virtualisation-reseau-virtuel">Réseau virtuel</a></li>
+<li><a href="virtualisation-bridge-reseau">Bridge réseau, partage de l&rsquo;interface réseau</a></li>
+<li><a href="../activites/sysnix-activite-0710-reseau-isole">Activité, configuration d&rsquo;une passerelle entre réseau</a></li>
+</ol>
+</li>
+<li><a href="../fiches">Fiches</a>
+<ol>
+<li><a href="../fiches/virtualisation-post-installation">Post-installation d&rsquo;une VM</a></li>
+<li><a href="../fiches/virtualisation-console-virsh">Accès à la VM via virsh console</a></li>
+<li><a href="../fiches/virtualisation-console-vs-ssh">Accès à la VM avec la console ou le client SSH</a></li>
+<li><a href="../fiches/virtualisation-faq">Virtualisation FAQ</a></li>
+<li><a href="../fiches/virtualisation-libvirt-dhcp">Distribution IP statique par le DHCP libvirt</a></li>
+</ol>
+</li>
+<li><a href="../activites">Activités</a></li>
+</ol>
+</section>
+		
+	
+
+    
+</article>	
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Activités, série 0008 - Gestion des utilisateurs</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/sysnix-activite-0008-gestion-utilisateurs/">Activités, série 0008 - Gestion des utilisateurs</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>11.08.2020 17:13</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#exercices">Exercices</a>
+      <ul>
+        <li><a href="#1">1.</a></li>
+        <li><a href="#2">2.</a></li>
+        <li><a href="#3">3.</a></li>
+        <li><a href="#4">4.</a></li>
+        <li><a href="#5">5.</a></li>
+        <li><a href="#6">6.</a></li>
+        <li><a href="#7">7.</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="exercices">Exercices</h2>
+<h3 id="1">1.</h3>
+<p>Créer l&rsquo;utilisateur <code>guest</code> manuellement en modifiant les fichiers</p>
+<h3 id="2">2.</h3>
+<p>Connectez-vous au système.</p>
+<p>Afficher l’UID, et les GID’s de l&rsquo;utilisateur courant.</p>
+<h3 id="3">3.</h3>
+<p>Créer les comptes pour <code>Jeannette</code> et <code>Lucien</code> avec les commandes <code>adduser</code> ou <code>useradd</code></p>
+<ol>
+<li>Vérifier que ces comptes soient fonctionnels.</li>
+<li>Vérifier les groupes auxquels appartiennent <code>Jeannette</code> et <code>Lucien</code>.</li>
+</ol>
+<h3 id="4">4.</h3>
+<ol>
+<li>Ajouter les groupes <code>stock</code>, <code>comptabilite</code>, <code>eleves</code> au système.</li>
+<li>Effectuer les assignations suivante pour l’utilisateur <code>lucien</code> et vérifier pour chaque situation:
+<ol>
+<li><code>users</code>, <code>stock</code>, <code>comptabilite</code></li>
+<li><code>stock</code></li>
+<li><code>users</code>, <code>stock</code></li>
+<li><code>users</code>, <code>comptabilite</code></li>
+<li><code>users</code>, <code>comptabilite</code>, <code>eleves</code></li>
+</ol>
+</li>
+</ol>
+<p>Remarques. Le premier groupe de chaque situation est le groupe initial de lucien</p>
+<h3 id="5">5.</h3>
+<blockquote>
+<p>Rétablir la situation de l’exercice précèdent et connectez-vous en <code>lucien</code> au système.
+Lucien appartient aux groupes <code>users</code>, <code>comptabilite</code></p>
+</blockquote>
+<ol>
+<li>Créez un fichier <code>testgroupe</code> dans votre répertoire personnel.</li>
+<li>Vérifier les propriétés du fichier <code>testgroupe</code>.</li>
+<li>Changer l’appartenance du fichier <code>testgroupe</code> au groupe <code>comptabilite</code>. Constatations ?</li>
+<li>Changer l’appartenance du fichier <code>testgroupe</code> au groupe <code>eleves</code>. Constatations ?</li>
+</ol>
+<h3 id="6">6.</h3>
+<p>Créer les utilisateurs jack et joe et réaliser cette arborescence</p>
+<pre tabindex="0"><code>/-home  
+  +-jack  
+  | `-projet  
+  |   `-main_jack.cpp  
+  `-joe 
+     `-projet      
+       `-main_joe.cpp  
+</code></pre><ul>
+<li>Joe et Jack désirent partager leur répertoire projet respectif et les fichiers qu’il contient uniquement entre eux. (tout autre utilisateurs du système ne pourra pas y accéder)
+<ul>
+<li>Indiquer les demandes à faire à l’administrateur et les commandes qu’il doit taper.</li>
+<li>Indiquer les commandes que doit taper Joe.</li>
+<li>Indiquer les commandes que doit taper Jack.</li>
+</ul>
+</li>
+</ul>
+<h3 id="7">7.</h3>
+<p>Écrire un script permettant de créer ou de supprimer 100 comptes utilisateurs.</p>
+<ol>
+<li>Vérifier le fonctionnement.
+<ul>
+<li>il est possible de s&rsquo;identifier avec un utilisateur</li>
+</ul>
+</li>
+<li>Vérifier la syntax avec shellcheck</li>
+</ol>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0008-gestion-utilisateurs">Éléments de solution</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Services réseaux</title>
+	<meta name="description" content="Installation et configuration d&#39;une infrastructure comprenant DHCP, DNS, serveur d&#39;authentification et serveur de fichiers"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article class="articleList">
+	
+		<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></h1>
+    <p>Installation et configuration d&#39;une infrastructure comprenant DHCP, DNS, serveur d&#39;authentification et serveur de fichiers</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 12:07</time>
+    </small>
+</header>
+
+		
+			<section class="articleHead"><blockquote>
+<p><strong>Disponibilité, intégrité, confidentialité</strong></p>
+<p><em>Pour un véritable administrateur système, la sécurité n’est pas le but, elle est le chemin ;-)</em></p>
+</blockquote>
+<h2 id="thèmes">Thèmes</h2>
+<ol>
+<li><a href="cas-etude">Cas d&rsquo;étude</a></li>
+<li><a href="infrastructure-virtualisation">Mise en place de l&rsquo;infrastructure de virtualisation</a>
+<ol>
+<li><a href="vm-galatograd">Machine virtuel Galatograd</a></li>
+<li><a href="vm-urbicande">Machine virtuel Urbicande</a></li>
+<li><a href="vm-desktop">Machine Desktops virtuels Cavi et Luna</a></li>
+</ol>
+</li>
+<li><a href="mise-en-reseau">Mise en réseau</a>
+<ol>
+<li><a href="srv-time-chrony">Service NTP, Network Time Protocole</a></li>
+<li><a href="srv-dhcp">Service DHCP, Dynamic Host Configuration Protocol</a></li>
+<li><a href="srv-dns">Service DNS, Domaine Name System</a>
+<ol>
+<li><a href="../activites/services-reseaux-activite-1000-dns-secondaire">Activité, Serveur DNS secondaire</a></li>
+<li><a href="../activites/services-reseaux-activite-1600-dhcp-secondaire">Activité, service DHCP secondaire</a></li>
+<li><a href="../activites/services-reseaux-activite-1200-dns-update-dhcp">Activité, Mise à jour du DNS par le service DHCP</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><a href="authentification">Service d&rsquo;authentification</a>
+<ol>
+<li><a href="srv-kerberos">Service kerberos</a></li>
+<li><a href="srv-ldap">Service d&rsquo;annuaire LDAP</a>
+<ol>
+<li><a href="../activites/services-reseaux-activite-1300-ldap-requetes">Activité, requêtes LDAP </a></li>
+<li><a href="../activites/services-reseaux-activite-1400-ldap-secondaire">Activité, annuaire LDAP secondaire</a></li>
+</ol>
+</li>
+<li><a href="srv-kerberos-ldap">Service Kerberos pour l&rsquo;authentification et service LDAP pour le stockage</a>
+<ol>
+<li><a href="../activites/services-reseaux-activite-1500-kdc-secondaire">Activité, service d&rsquo;authentification (kdc2) secondaire</a></li>
+</ol>
+</li>
+<li><a href="client-kerberos-ldap">service SSSD pour Kerberos et LDAP</a></li>
+<li><a href="srv-ldap-gssapi">Service d&rsquo;annuaire LDAP avec authentification kerberos (GSSAPI)</a></li>
+<li><a href="apache-directory-studio">Installation du client graphique ldap Apache directory Studio</a></li>
+</ol>
+</li>
+<li><a href="serveur-fichiers">Serveur de fichiers</a>
+<ol>
+<li><a href="srv-deplacement-dossier-home">Déplacement du dossier personnel d&rsquo;un utilisateur</a></li>
+<li><a href="srv-nfsv4">Configuration du serveur (service) de fichier NFSv4 et d&rsquo;un client</a></li>
+<li><a href="srv-nfsv4-krb5">Configuration du serveur de fichier NFSv4 avec authentification Kerberos</a></li>
+</ol>
+</li>
+<li><a href="gestion-utilisateurs">Gestion des utilisateur</a>
+<ol>
+<li><a href="../activites/services-reseaux-activite-1550-gestion-utilisateurs">Activité, script de création d&rsquo;un nouvel utilisateur</a></li>
+</ol>
+</li>
+<li>Activités
+<ol>
+<li><a href="../activites/services-reseaux-activite-1700-supervision">Activité, service de surpervision</a></li>
+<li><a href="../activites/services-reseaux-activite-1800-srv-pxe">Activité, Service PXE</a></li>
+<li><a href="../activites/services-reseaux-activite-1900-srv-backup">Activité, sauvegarde</a></li>
+</ol>
+</li>
+</ol>
+</section>
+		
+	
+
+    
+</article>	
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

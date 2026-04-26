@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Activités, série 0004 - Gestion des accès</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/sysnix-activite-0004-gestion-acces/">Activités, série 0004 - Gestion des accès</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 17:14</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#objectifs">Objectifs</a></li>
+    <li><a href="#exercices">Exercices</a>
+      <ul>
+        <li><a href="#1">1</a></li>
+        <li><a href="#2">2</a></li>
+        <li><a href="#3">3</a></li>
+        <li><a href="#4">4</a></li>
+        <li><a href="#5">5</a></li>
+        <li><a href="#6">6</a></li>
+        <li><a href="#7">7</a></li>
+        <li><a href="#8">8</a></li>
+        <li><a href="#9">9</a></li>
+        <li><a href="#10">10</a></li>
+        <li><a href="#11">11</a></li>
+        <li><a href="#12">12</a></li>
+        <li><a href="#13">13</a></li>
+        <li><a href="#14">14</a></li>
+      </ul>
+    </li>
+    <li><a href="#application-des-permissions">Application des permissions</a>
+      <ul>
+        <li><a href="#identifier-les-droits-daccès">Identifier les droits d&rsquo;accès</a></li>
+        <li><a href="#tester-les-droits-daccès">Tester les droits d&rsquo;accès</a></li>
+        <li><a href="#appliquer-les-droits-daccès">Appliquer les droits d&rsquo;accès</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="objectifs">Objectifs</h2>
+<ul>
+<li>Gestion accès et autorisation</li>
+</ul>
+<blockquote>
+<ul>
+<li>Résoudre chaque problème suivant en un minimum d&rsquo;instructions. Généralement une instruction suffit</li>
+<li>Écrire la commande permettant de vérifier le résultat</li>
+</ul>
+</blockquote>
+<h2 id="exercices">Exercices</h2>
+<h3 id="1">1</h3>
+<p>Créez 3 fichiers dans <code>~</code></p>
+<pre tabindex="0"><code>file1
+file2
+file3
+</code></pre><p>Vérifier les droits par défaut.</p>
+<h3 id="2">2</h3>
+<p>Assignez les droits suivants grâce à la forme littérale</p>
+<pre tabindex="0"><code>file1 rwx------
+file2 r—-r—----
+file3 r----x--x
+</code></pre><h3 id="3">3</h3>
+<p>A l’aide de la forme octale , définissez les droits d’accès comme suit :</p>
+<pre tabindex="0"><code>file1 r-x-----x
+file2 -w--w--w-
+file3 ---rwx--x
+</code></pre><h3 id="4">4</h3>
+<ol>
+<li>Ajouter un texte dans le fichier file1. Constatations ?</li>
+<li>Idem pour file2. Constatations ?</li>
+<li>Idem pour file3. Constatations ?</li>
+</ol>
+<h3 id="5">5</h3>
+<p>Assigner les droits suivants:</p>
+<pre tabindex="0"><code>file1 ---------
+file2 r--------
+file3 rw-------
+</code></pre><ol>
+<li>Copier le fichier file1 en file4. Constations ?</li>
+<li>Copier le fichier file2 en file5 et regarder les droits d’accès. Constatations ?</li>
+<li>Supprimez les fichiers file1 à file5. Constations ?</li>
+</ol>
+<h3 id="6">6</h3>
+<p>Créez un répertoire ~/test avec les droits suivants :</p>
+<pre tabindex="0"><code>test drwx------
+</code></pre><ol>
+<li>Dans le répertoire test, créez les fichier file1,file2,file5,file6,file7</li>
+<li>Dans le répertoire test, créez un fichier testdroit.txt. Droits par défaut ?</li>
+<li>Ajouter un texte dans ce fichier. Constatations?</li>
+<li>Supprimer le fichier file1 . Constatations</li>
+</ol>
+<h3 id="7">7</h3>
+<p>Positionnez-vous sur le répertoire « parent » de test et modifier les droits comme suit : <code>test drw-------</code></p>
+<ol>
+<li>Visualisez le contenu du répertoire test et vérifiez les droits d’accès du fichier testdroit.txt. Constatation ?</li>
+<li>Créer un nouveau fichier testdroit1.txt dans le répertoire test. Constations ?</li>
+<li>Supprimez le fichier file2. Constations ?</li>
+</ol>
+<h3 id="8">8</h3>
+<p>Positionnez-vous sur le répertoire « parent » de test et modifier les droits comme suit : <code>test d-w-------</code></p>
+<ol>
+<li>Visualisez le contenu du répertoire test et vérifiez les droits d’accès aux fichiers contenus dans ce répertoire. Constatation ?</li>
+</ol>
+<h3 id="9">9</h3>
+<p>Positionnez-vous sur le répertoire « parent » de test et modifier les droits comme suit : <code>test dr--------</code></p>
+<ol>
+<li>Visualisez le contenu du répertoire test et vérifiez les droits d’accès aux fichiers contenus dans ce répertoire. Constatation ?</li>
+</ol>
+<h3 id="10">10</h3>
+<p>Positionnez-vous sur le répertoire « parent » de test et modifier les droits comme suit : <code>test dr-x------</code></p>
+<ol>
+<li>Visualisez le contenu du répertoire test et vérifiez les droits d’accès aux fichiers contenus dans ce répertoire. Constatation ?</li>
+<li>Créez un nouveau fichier testdroit5.txt dans le répertoire test. Remarques ?</li>
+<li>Ajoutez un texte  au fichier file5. Constations ?</li>
+<li>Supprimez le fichier file5. Constatations ?</li>
+</ol>
+<h3 id="11">11</h3>
+<p>Positionnez-vous sur le répertoire « parent » de test et modifier les droits comme suit : <code>test d--x------</code></p>
+<ol>
+<li>Visualisez le contenu du répertoire test et vérifiez les droits d’accès aux fichiers contenus dans ce répertoire. Constatations ?</li>
+<li>Créez un fichier testdroit6.txt dans test. Constatations ?</li>
+<li>Ajoutez un texte de votre choix au fichier file6. Constatations ?</li>
+<li>Supprimez le fichier file6. Constatations ?</li>
+</ol>
+<h3 id="12">12</h3>
+<p>Positionnez-vous sur le répertoire « parent » de test et modifier les droits comme suit : <code>test d-wx------</code></p>
+<ol>
+<li>Visualisez le contenu du répertoire test et vérifiez les droits d’accès aux fichiers contenus dans ce répertoire. Constatations ?</li>
+<li>Créez un fichier testdroit7.txt dans test. Constatations ?</li>
+<li>Ajoutez un texte de votre choix au fichier file7. Constatations ?</li>
+<li>Supprimez le fichier file7. Constatations ?</li>
+</ol>
+<h3 id="13">13</h3>
+<p>Créer un sous-répertoire test_sec et y placer quelques fichiers.</p>
+<h3 id="14">14</h3>
+<p>Placer les bons codes de protection à votre répertoire test_sec et à ses fichiers afin de permettre aux membres de votre groupe de:</p>
+<ol>
+<li>lire le contenu des fichiers</li>
+<li>lister les fichiers sans pouvoir lire leur contenu</li>
+<li>lire le contenu d&rsquo;un fichier connu sans pouvoir faire la liste des fichiers</li>
+<li>modifier un fichier existant</li>
+<li>ajouter et effacer un fichier</li>
+</ol>
+<h2 id="application-des-permissions">Application des permissions</h2>
+<blockquote>
+<p>Planifier -&gt; Agir -&gt; Tester</p>
+</blockquote>
+<h3 id="identifier-les-droits-daccès">Identifier les droits d&rsquo;accès</h3>
+<p>Mettre les droits d&rsquo;accès sur les dossiers et fichiers de l&rsquo;arborescence ci-dessous.</p>
+<ol>
+<li>Les fichiers txt ne sont pas exécutables.</li>
+<li>Le propriétaire pier possède tous les droits sur les dossiers et fichiers l&rsquo;arborescence</li>
+<li>Les utilisateurs, appartenant au même groupe que pier, peuvent uniquement:
+<ol>
+<li>lire le contenu, des dossiers et des fichiers, du dossier ./d1</li>
+<li>ajouter de nouveaux fichiers/dossiers dans le dossier ./d2, les modifier et lire leur contenu.</li>
+</ol>
+</li>
+<li>Le reste des utilisateurs n&rsquo;ont aucun droit dans l&rsquo;arborescence de pier.</li>
+</ol>
+<pre tabindex="0"><code>|
+├── home [dr-xr-xr-x]  
+│   │
+│   └── pier [d---------]  
+│       │
+│       ├── d1 [d---------]  
+│       │   │
+│       │   ├── f1.txt [----------]  
+│       │   │
+│       │   ├── f2.txt [----------]  
+│       │   │
+│       │   ├── f3.txt [----------]  
+│       │   │
+│       │   ├── f4.txt [----------] 
+│       │   │
+│       │   └── f5.txt [----------]  
+│       │   
+│       └── d2 [d---------]  
+│           │
+│           ├── f1.txt [----------]  
+│           │
+│           ├── f2.txt [----------]  
+│           │
+│           ├── f3.txt [----------]  
+│           │
+│           ├── f4.txt [----------]  
+│           │
+│           └── f5.txt [----------]  
+</code></pre><h3 id="tester-les-droits-daccès">Tester les droits d&rsquo;accès</h3>
+<p>Écrire les instructions de création/suppression/visualisation permettant de vérifier les accès autorisés et refusés des membres du même groupe de <code>pier</code>.</p>
+<blockquote>
+<p>Demander à votre voisin d&rsquo;exécuter les instructions de test sur votre arborescence.</p>
+</blockquote>
+<h3 id="appliquer-les-droits-daccès">Appliquer les droits d&rsquo;accès</h3>
+<p>Écrire les instructions qui permettent d&rsquo;appliquer les droits d&rsquo;accès ci-dessus.</p>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0004-gestion-acces">Éléments de solution</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

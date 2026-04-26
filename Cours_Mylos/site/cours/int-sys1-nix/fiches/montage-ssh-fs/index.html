@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Montages avec sshfs</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/montage-ssh-fs/">Montages avec sshfs</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>11.08.2020 17:15</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#montage-ssh">Montage ssh</a>
+      <ul>
+        <li><a href="#installation-des-paquets">installation des paquets</a></li>
+        <li><a href="#montage">Montage</a></li>
+        <li><a href="#etcfstab">/etc/fstab</a></li>
+        <li><a href="#remarque">Remarque</a></li>
+        <li><a href="#démontage">Démontage</a></li>
+      </ul>
+    </li>
+    <li><a href="#montage-sftp-avec-nautilus">Montage sftp avec Nautilus</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="montage-ssh">Montage ssh</h2>
+<h3 id="installation-des-paquets">installation des paquets</h3>
+<pre tabindex="0"><code>sudo apt-get install sshfs
+</code></pre><h3 id="montage">Montage</h3>
+<pre tabindex="0"><code>ubuntu@MC0-0315-00-DHU:~$ man sshfs
+
+SSHFS(1)         User Commands                       SSHFS(1)
+
+NAME
+       SSHFS - filesystem client based on ssh
+
+SYNOPSIS
+   mounting
+       sshfs [user@]host:[dir] mountpoint [options]
+
+   unmounting
+       fusermount -u mountpoint
+</code></pre><pre tabindex="0"><code>$ mkdir lozan 
+$ sshfs huguenindo@lozan.labo.dhu:/home/S2/huguenindo ~/lozan
+</code></pre><p>ou</p>
+<pre tabindex="0"><code>sudo mount -t fuse sshfs#huguenindo@lozan.labo.dhu:/home/S2/huguenindo \
+~/lozan
+</code></pre><p>On vérifie en faisant:</p>
+<pre tabindex="0"><code>$ mount
+</code></pre><pre tabindex="0"><code>huguenindo@lozan.labo.dhu:/home/S2/huguenindo on /home/ubuntu/lozan \
+ type fuse.sshfs (rw,nosuid,nodev,max_read=65536,user=ubuntu)
+</code></pre><h3 id="etcfstab">/etc/fstab</h3>
+<ul>
+<li>Dans <code>/etc/fstab</code>, on ajoute:</li>
+</ul>
+<pre tabindex="0"><code># &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;
+...
+sshfs#huguenindo@lozan.labo.dhu:/home/S2/huguenindo  /mnt/lozan fuse
+</code></pre><blockquote>
+<h3 id="remarque">Remarque</h3>
+<p>/!\ le montage est accessible en tant que utilisateur <strong>huguenindo</strong></p>
+</blockquote>
+<pre tabindex="0"><code>$ ls -ld lozan
+</code></pre><pre tabindex="0"><code>drwx------ 1 10250 10005 4096 2010-05-20 12:08 lozan
+</code></pre><h3 id="démontage">Démontage</h3>
+<pre tabindex="0"><code>ubuntu@MC0-0315-00-DHU:~$ fusermount -u ~/lozan/
+</code></pre><h2 id="montage-sftp-avec-nautilus">Montage sftp avec Nautilus</h2>
+<ul>
+<li>Dans le champs <strong>emplacement</strong>, on écrit:</li>
+</ul>
+<pre tabindex="0"><code>sftp://huguenindo@lozan.labo.dhu/
+</code></pre><ul>
+<li>Cela a pour effet d&rsquo;ajouter un montage dans ~/.gvfs</li>
+</ul>
+<pre tabindex="0"><code>$ ls -l .gvfs/
+</code></pre><pre tabindex="0"><code>total 4
+drwx------ 1 ubuntu ubuntu 4096 2010-03-09 10:17 sftp en tant que \
+                                               huguenindo sur lozan.labo.dhu
+</code></pre>
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

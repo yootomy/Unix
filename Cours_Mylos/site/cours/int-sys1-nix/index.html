@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>INT_SYS1_NIX - Systèmes d&#39;exploitation de type Unix</title>
+	<meta name="description" content="Développer ses compétences de gestion et d’exploitation d’une infrastructure de machines et de services sur un environnement de type UNIX afin de pouvoir répondre aux exigences des besoins de situation pratique de manière économiques, durables et sécure."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article class="articleList">
+	
+		<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/notes-de-cours/">Notes De Cours</a></li>
+            
+            <li><a href="/cours/tags/syst%C3%A8me/">Système</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/">INT_SYS1_NIX - Systèmes d&#39;exploitation de type Unix</a></h1>
+    <p>Développer ses compétences de gestion et d’exploitation d’une infrastructure de machines et de services sur un environnement de type UNIX afin de pouvoir répondre aux exigences des besoins de situation pratique de manière économiques, durables et sécure.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>13.05.2020 15:35</time>
+    </small>
+</header>
+
+		
+			<section class="articleHead"><blockquote>
+<p><strong>L&rsquo;interface utilisateur graphique rend facile les tâches simples, tandis que l&rsquo;interface en ligne de commande rend possible les tâches difficiles.</strong></p>
+</blockquote>
+<p><img src="geekscottes_004.png" alt="image"></p>
+<h2 id="objectifs-dapprentissage">Objectifs d’apprentissage</h2>
+<p>A la fin du module, l&rsquo;étudiant sera capable d’employer et de configurer un ordinateur en tant que station de travail et serveur sur un environnement libre</p>
+<h2 id="thèmes">Thèmes</h2>
+<nav id="themes-nav">
+    <ol>
+        
+        <li><a href="/cours/int-sys1-nix/bienvenue/">Bienvenue</a><br/></li>
+        
+        <li><a href="/cours/int-sys1-nix/accueil/">Accueil</a><br/></li>
+        
+        <li><a href="/cours/int-sys1-nix/shell/">Shell</a><br/>Prise en main de la console et des commandes bash</li>
+        
+        <li><a href="/cours/int-sys1-nix/mise-en-route-systeme-exploitation/">Système d&#39;exploitation</a><br/>Installation et configuration du système d&#39;exploitation</li>
+        
+        <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a><br/>Prise en main des outils de virtualisation avec des machines virtuelles et des conteneurs systèmes</li>
+        
+        <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a><br/>Installation et configuration d&#39;une infrastructure comprenant DHCP, DNS, serveur d&#39;authentification et serveur de fichiers</li>
+        
+        <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a><br/>Notes sur différents sujets relatifs au cours</li>
+        
+        <li><a href="/cours/int-sys1-nix/activites/">Activités</a><br/>Liste de toutes les activités</li>
+        
+    </ol>    
+</nav>
+
+
+
+<h2 id="bibliographie-références-et-liens-en-ligne">Bibliographie, références et liens en ligne</h2>
+<ol>
+<li>SYSNIX - Systèmes d&rsquo;exploitation de type Unix (notes de cours en ligne), <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix">https://mylos.s2.rpn.ch/cours/int-sys1-nix</a></li>
+<li>Intranet de la filière Informatique, spécialisé-e en informatique technique, <a href="https://cpne-t.rpn.ch/Pages/Accueil_INT.aspx">https://cpne-t.rpn.ch/Pages/Accueil_INT.aspx</a></li>
+<li>Bases techniques probatoires (INT_BAS), <a href="https://cpne-t.rpn.ch/_layouts/15/DocIdRedir.aspx?ID=PTNRPN-321906164-725">https://cpne-t.rpn.ch/_layouts/15/DocIdRedir.aspx?ID=PTNRPN-321906164-725</a></li>
+<li>Système 1, <a href="https://cpne-t.rpn.ch/_layouts/15/DocIdRedir.aspx?ID=PTNRPN-321906164-961">https://cpne-t.rpn.ch/_layouts/15/DocIdRedir.aspx?ID=PTNRPN-321906164-961</a></li>
+<li>LinuxCommand.org: Learn the Linux command line. Write shell scripts, <a href="http://linuxcommand.org/">http://linuxcommand.org/</a></li>
+<li>The Linux Command Line by William E. Shotts, Jr., <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a>  ou <a href="../pdf/TLCL.pdf">TLCL.pdf version local</a></li>
+<li>The Linux Documentation Project, <a href="http://tldp.org/">http://tldp.org/</a></li>
+<li>Official Ubuntu Documentation, <a href="https://help.ubuntu.com/">https://help.ubuntu.com/</a></li>
+<li>Debian &ndash; Documentation, <a href="http://www.debian.org/doc/">http://www.debian.org/doc/</a></li>
+<li>Systèmes d&rsquo;exploitation de type Unix (INT_SYS1_NIX), notes de cours en ligne, <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix/">https://mylos.s2.rpn.ch/cours/int-sys1-nix/</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.suivi2024-2int-s-ema/-/wikis/home">2INT-S-EMa 2024, Suivi (wiki)</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.suivi2024-1int-s-pma/-/wikis/home">1INT-S-PMa 2024, Suivi (wiki)</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.suivi2025/-/wikis/home">Suivi 2025 (wiki)</a></li>
+</ol>
+</section>
+		
+	
+
+    
+</article>	
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

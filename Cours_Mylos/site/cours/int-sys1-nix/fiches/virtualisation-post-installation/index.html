@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - Post-installation d&#39;une VM</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/virtualisation-post-installation/">Virtualisation - Post-installation d&#39;une VM</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:14</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#changer-les-clés-du-serveur-ssh">Changer les clés du serveur ssh</a></li>
+    <li><a href="#virt-sysprep">virt-sysprep</a>
+      <ul>
+        <li><a href="#références">Références</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+
+    <p>Après une clone d&rsquo;une VM, il faut encore dans la nouvelle VM</p>
+<ol>
+<li>Renommer la machine dans <code>/etc/hostname</code></li>
+<li>Revoir les résolutions statiques dans <code>/etc/hosts</code></li>
+<li>Revoir si nécessaire la configuration réseau</li>
+</ol>
+<blockquote>
+<p><strong>warning</strong></p>
+<ol start="4">
+<li>Redémarrer la machine</li>
+</ol>
+</blockquote>
+<ol start="5">
+<li>Changer les clés du serveur ssh</li>
+</ol>
+<h2 id="changer-les-clés-du-serveur-ssh">Changer les clés du serveur ssh</h2>
+<ul>
+<li>Supprimer les clés exitantes</li>
+</ul>
+<pre tabindex="0"><code>guest:~$ sudo rm -v /etc/ssh/ssh_host_*
+[sudo] Mot de passe de ubuntu : 
+&#39;/etc/ssh/ssh_host_ecdsa_key&#39; supprimé
+&#39;/etc/ssh/ssh_host_ecdsa_key.pub&#39; supprimé
+&#39;/etc/ssh/ssh_host_ed25519_key&#39; supprimé
+&#39;/etc/ssh/ssh_host_ed25519_key.pub&#39; supprimé
+&#39;/etc/ssh/ssh_host_rsa_key&#39; supprimé
+&#39;/etc/ssh/ssh_host_rsa_key.pub&#39; supprimé
+</code></pre><ul>
+<li>Générer les nouvelles clés</li>
+</ul>
+<pre tabindex="0"><code>guest:~$ sudo dpkg-reconfigure openssh-server
+Creating SSH2 RSA key; this may take some time ...
+2048 SHA256:VOQLNb4ARqFUd/AHU4RW2R5uSvWK1SO6usq5wPJ4nSg root@guest (RSA)
+Creating SSH2 ECDSA key; this may take some time ...
+256 SHA256:9+SYu5HSyILHDV97UhtomEhtoaKjsr7+OvC0UvvvrBw root@guest (ECDSA)
+Creating SSH2 ED25519 key; this may take some time ...
+256 SHA256:0VCKO0pjuw6wpi6enUtJYshBcFAhIB6uaffXRRlkbdc root@guest (ED25519)
+ubuntu@vm3:~$ ssh-keygen -lf /etc/ssh/ssh_host_rsa_key.pub
+2048 SHA256:VOQLNb4ARqFUd/AHU4RW2R5uSvWK1SO6usq5wPJ4nSg root@guest (RSA)
+</code></pre><ul>
+<li>Afficher les clés</li>
+</ul>
+<pre tabindex="0"><code>guest:~$ for f in $(ls /etc/ssh/ssh_host_*.pub); do ssh-keygen -lf $f; done;
+256 SHA256:9+SYu5HSyILHDV97UhtomEhtoaKjsr7+OvC0UvvvrBw root@guest (ECDSA)
+256 SHA256:0VCKO0pjuw6wpi6enUtJYshBcFAhIB6uaffXRRlkbdc root@guest (ED25519)
+2048 SHA256:VOQLNb4ARqFUd/AHU4RW2R5uSvWK1SO6usq5wPJ4nSg root@guest (RSA)
+</code></pre><blockquote>
+<p><strong>information</strong></p>
+<h2 id="virt-sysprep">virt-sysprep</h2>
+<p>virt-sysprep - Reset, unconfigure or customize a virtual machine so clones can be made.</p>
+<h3 id="références">Références</h3>
+<ol>
+<li>22.11. virt-sysprep: Resetting Virtual Machine Settings - Red Hat Customer Portal, <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/%3Evirtualization_deployment_and_administration_guide/%3Esect-guest_virtual_machine_disk_access_with_offline_tools-using_virt_sysprep">https://access.&gt;redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/&gt;virtualization_deployment_and_administration_guide/&gt;sect-guest_virtual_machine_disk_access_with_offline_tools-using_virt_sysprep</a></li>
+<li>virt-sysprep,<a href="http://libguestfs.org/virt-sysprep.1.html">http://libguestfs.org/virt-sysprep.1.html</a></li>
+</ol>
+</blockquote>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

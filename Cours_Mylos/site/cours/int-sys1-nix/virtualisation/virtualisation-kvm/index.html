@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - Kernel-based Virtual Machine (KVM)</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-kvm/">Virtualisation - Kernel-based Virtual Machine (KVM)</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:08</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#définition">Définition</a></li>
+    <li><a href="#installation-de-la-couche-de-virtualisation">Installation de la couche de virtualisation</a>
+      <ul>
+        <li><a href="#tester-la-capacité-de-processeur-à-la-virtualisation-voir-8">Tester la capacité de processeur à la virtualisation voir [[8]]</a></li>
+        <li><a href="#installation-de-paquets">Installation de paquets</a></li>
+      </ul>
+    </li>
+    <li><a href="#machine-virtuelle-avec-qemu">Machine virtuelle avec qemu</a>
+      <ul>
+        <li><a href="#création-du-disque-virtuel">Création du disque virtuel</a></li>
+        <li><a href="#installation-du-la-machine-virtuelle">Installation du la machine virtuelle</a></li>
+        <li><a href="#exécution-du-la-machine-virtuelle">Exécution du la machine virtuelle</a></li>
+        <li><a href="#visualisation-des-processus">Visualisation des processus</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="définition">Définition</h2>
+<blockquote>
+<p><strong>KVM (Kernel-based Virtual Machine)</strong> est un hyperviseur libre de type I pour Linux. KVM est intégré dans le noyau Linux depuis la version 2.6.20.</p>
+<p>Il fonctionne originellement sur les processeurs à architectures x86 disposant des instructions de Virtualisation Intel VT ou AMD-V. Depuis, KVM a été porté pour les architectures Power PC, IA-64 ainsi que ARM depuis le noyau Linux 3.9.</p>
+<p>KVM est une instance de QEMU. Les développeurs des deux projets essayent de ne pas trop diverger et le code source des deux projets est fréquemment resynchronisé. La principale modification apportée est la prise en charge du module kvm. Lorsqu&rsquo;on parle de KVM, on parle généralement de l&rsquo;ensemble : la version modifiée de QEMU et le module kvm.</p>
+<p>[<a href="https://fr.wikipedia.org/wiki/Kernel-based_Virtual_Machine">Kernel-based Virtual Machine — Wikipédia</a>]</p>
+</blockquote>
+<h2 id="installation-de-la-couche-de-virtualisation">Installation de la couche de virtualisation</h2>
+<h3 id="tester-la-capacité-de-processeur-à-la-virtualisation-voir-8">Tester la capacité de processeur à la virtualisation voir [[8]]</h3>
+<pre tabindex="0"><code>$ sudo apt-get install cpu-checker
+</code></pre><pre tabindex="0"><code>$ sudo kvm-ok
+</code></pre><pre tabindex="0"><code>INFO: /dev/kvm exists
+KVM acceleration can be used
+</code></pre><h3 id="installation-de-paquets">Installation de paquets</h3>
+<pre tabindex="0"><code>$ sudo apt-get install qemu-kvm
+</code></pre><h2 id="machine-virtuelle-avec-qemu">Machine virtuelle avec qemu</h2>
+<h3 id="création-du-disque-virtuel">Création du disque virtuel</h3>
+<pre tabindex="0"><code>$ qemu-img create -f raw ./vdisk.img 4G
+Formatting &#39;vdisk.img&#39;, fmt=raw size=4294967296 
+</code></pre><ul>
+<li><strong>-f raw</strong>: format du disque , raw, qcow2, vmdk</li>
+<li><strong>vdisk.img</strong>: nom du fichier contenant les données du disque</li>
+<li><strong>4G</strong>: taille du disque</li>
+</ul>
+<h3 id="installation-du-la-machine-virtuelle">Installation du la machine virtuelle</h3>
+<pre tabindex="0"><code># kvm -hda ./vdisk.img -cdrom ~/iso/debian-12.2.0-amd64-netinst.iso -boot d -m 512 -k fr-ch
+</code></pre><ul>
+<li><em>-hda ./vdisk.img</em>: disque système</li>
+<li><em>-cdrom ~/iso/debian-12.2.0-amd64-netinst.iso</em>: <a href="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.2.0-amd64-netinst.iso">iso d&rsquo;installation</a></li>
+<li><em>-boot d</em>: boot sur le cdrom</li>
+<li><em>-m 512</em>: 512Mo ram</li>
+<li><em>-k fr-ch</em>: langage de clavier</li>
+</ul>
+<h3 id="exécution-du-la-machine-virtuelle">Exécution du la machine virtuelle</h3>
+<pre tabindex="0"><code>$ kvm -hda ./vdisk.img -m 512 -k fr-ch -daemonize
+</code></pre><h3 id="visualisation-des-processus">Visualisation des processus</h3>
+<pre tabindex="0"><code>$ ps -ef | grep kvm
+...
+dhu 10362 1 6 15:59 ? 00:00:06 qemu-system-x86_64 -enable-kvm 
+                                    -hda ./vdisk.img 
+                                    -m 512 -k fr-ch -daemonize
+...
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://fr.wikipedia.org/wiki/Kernel-based_Virtual_Machine">Kernel-based Virtual Machine — Wikipédia</a></li>
+<li><a href="https://ubuntu.com/server/docs/virtualization-introduction">Introduction to virtualisation | Ubuntu</a></li>
+<li><a href="https://www.linux-kvm.org/page/Main_Page">KVM</a></li>
+<li><a href="https://www.linux-kvm.org/page/Documents">Documents - KVM</a></li>
+<li><a href="http://libvirt.org/">libvirt: The virtualization API</a></li>
+<li><a href="https://ubuntu.com/server/docs/virtualization-libvirt">Libvirt | Ubuntu</a></li>
+<li><a href="https://fr.wikipedia.org/wiki/Libvirt">Libvirt — Wikipédia</a></li>
+<li><a href="https://linuxhandbook.com/lvm-guide/">Complete Beginner's Guide to LVM in Linux [With Hands-on]</a></li>
+<li><a href="https://www.debian.org/distrib/">Debian &ndash; Obtenir Debian</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

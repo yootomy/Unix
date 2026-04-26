@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Activités, série 0005 - Édition des fichiers</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/sysnix-activite-0005-edition/">Activités, série 0005 - Édition des fichiers</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.08.2020 15:55</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#objectifs">Objectifs:</a></li>
+    <li><a href="#exercices">Exercices</a>
+      <ul>
+        <li><a href="#1">1</a></li>
+        <li><a href="#12">1.2</a></li>
+        <li><a href="#2">2</a></li>
+        <li><a href="#3">3</a></li>
+        <li><a href="#4">4</a></li>
+        <li><a href="#5">5</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="objectifs">Objectifs:</h2>
+<ul>
+<li>Éditions des fichiers</li>
+</ul>
+<h2 id="exercices">Exercices</h2>
+<h3 id="1">1</h3>
+<p>faire le tutorial de vim</p>
+<pre tabindex="0"><code>vimtutor fr
+</code></pre><h3 id="12">1.2</h3>
+<p>Rechercher dans l&rsquo;aide de vim la commande pour faire un &ldquo;rechercher/remplacer&rdquo;.</p>
+<h3 id="2">2</h3>
+<p>Écrire le programme <code>beuseu.c</code> ci-dessous et compiler le</p>
+<pre tabindex="0"><code>/*
+ ***********************
+ dominique huguenin (dominique.huguenin@rpn.ch)
+ ************************
+*/
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt; 
+
+#define LIMITE_MAX 20
+#define NUMERO_INTERDIT 7
+#define MOT_MAGIQUE &#34;Beuseu&#34;
+
+int main(int argc, char* argv[]){
+  int limite;
+  int nombreTemporaire;
+  int unite;
+  int multiple7;
+  int contient7;
+  int nombre;
+
+  if ( argc &lt;= 1 ){
+        limite = LIMITE_MAX;
+  } else {
+        limite = atoi(argv[1]);
+  }
+
+  for ( nombre = 1; nombre &lt;= limite ; nombre++ ){
+    multiple7 = nombre % NUMERO_INTERDIT == 0;
+    nombreTemporaire = nombre;
+
+    do {
+      unite = nombreTemporaire % 10;
+      contient7 = ( unite % NUMERO_INTERDIT ) == 0 &amp;&amp; ( unite != 0 );
+      nombreTemporaire = nombreTemporaire / 10;
+    } while ( !contient7 &amp;&amp; (nombreTemporaire &gt; 0 ) ); 
+
+    if ( multiple7 || contient7 ) {
+      printf(&#34;%s\n&#34;,MOT_MAGIQUE);
+    } else {
+      printf(&#34;%d\n&#34;,nombre);
+    }
+  }
+  return 0;
+}
+</code></pre><h3 id="3">3</h3>
+<p>Sauvegarder le fichier <code>beuseu.c</code> dans le dossier unix de votre dossier personnel sur S2.</p>
+<h3 id="4">4</h3>
+<p>Compiler avec le compilateur <code>gcc</code> le fichier <code>beuseu.c</code>. La compilation doit produire un exécutable du nom de <code>beuseu</code>. Le code <code>beuseu.c</code> est du <strong>C ANSI</strong>.</p>
+<h3 id="5">5</h3>
+<p>Configurer le système pour que la commande ci-dessous fonctionne:</p>
+<pre tabindex="0"><code>$ beuseu
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0005-edition">Éléments de solution</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Gestion des utilisateurs</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/gestion-utilisateurs/">Service réseau - Gestion des utilisateurs</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:26</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#emplacement-par-défaut-du-dossier-personnel">Emplacement par défaut du dossier personnel</a></li>
+    <li><a href="#créer-un-utilisateur-dans-lannuaire-ldap">Créer un utilisateur dans l&rsquo;annuaire LDAP</a>
+      <ul>
+        <li><a href="#personnalisation-de-la-création-dun-utilisateur">Personnalisation de la création d&rsquo;un utilisateur</a></li>
+        <li><a href="#création-de-lutilisateur">Création de l&rsquo;utilisateur</a></li>
+      </ul>
+    </li>
+    <li><a href="#créer-un-principal-kerberos">Créer un principal Kerberos</a></li>
+    <li><a href="#créer-un-dossier-personnel-sur-le-serveur-de-fichier">Créer un dossier personnel sur le serveur de fichier</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <blockquote>
+<p><strong>Canetti, Jacob</strong>. Ancien Contrôleur des boues et vidanges. Grand amateur d&rsquo;orchidées, il fut le principal promoteur de la transformation de CALVANI (A, GC). voir [<a href="http://dictionary.ebbs.net/francais/fpages/fdict_c.htm">1</a>] sous <strong>C</strong></p>
+<p><strong>Wappendorf, Axel</strong>. Inventeur célèbre dans le Monde Obscur. Ses travaux ont fait l&rsquo;objet de plusieurs expositions dans notre monde, dont une installée en permanence dans le grenier de la MAISON IMAGINAIRE. Né à ALAXIS en 691 AT, il réalisa son premier véhicule à l&rsquo;âge de douze ans. Bien qu&rsquo;il se soit spécialisé dans les moyens de transport (ETPV), c&rsquo;est un SAVANT à l&rsquo;érudition universelle (GC). En 751 AT, il s&rsquo;envola en direction d&rsquo;ANTINÉA en compagnie de Mary VON RATHEN, alors âgée de 15 ans. Ils manquèrent cependant leur but et se retrouvèrent dans une antichambre des mondes, où Axel rencontra Jules VERNE et DESOMBRES (EP). Il se lia d&rsquo;amitié avec ce dernier lors de son second PASSAGE. Sa rencontre avec Vigoleis KOELBER ne fut pas aussi heureuse (MAD).  En vieillissant, le savant a souvent exprimé sa lassitude quand aux multiples cas étranges qu&rsquo;on ne cesse de lui soumettre (ODH). voir [<a href="http://dictionary.ebbs.net/francais/fpages/fdict_c.htm">1</a>] sous <strong>W</strong></p>
+</blockquote>
+<h2 id="introduction">Introduction</h2>
+<p>Ce document montre comment créer un nouvel utilisateur en reprenant les différentes commandes vues dans les chapitres précédents.</p>
+<p>Le principe consiste à :</p>
+<ol>
+<li>Créer un utilisateur dans l&rsquo;annuaire LDAP</li>
+<li>Créer un principal Kerberos</li>
+<li>Créer un dossier personnel sur le serveur de fichier</li>
+</ol>
+<h2 id="emplacement-par-défaut-du-dossier-personnel">Emplacement par défaut du dossier personnel</h2>
+<p>Pour ne pas faire de confusion entre les utilisateurs locaux et ceux du domaine, le dossier personnel des utilisateurs du domaine sont placé dans le dossier <code>/home/ANTITERRE</code>. La configuration ci-dessous définit l&rsquo;emplacement par défaut du dossier d&rsquo;utilisateur.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ cat /etc/adduser.conf
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>DHOME<span style="color:#f92672">=</span>/home/ANTITERRE
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>Le dossier personnel des utilisateurs du domaine ANTITERRE seront stocké dans le dossier <code>/home/ANTITERRE</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo mkdir /home/ANTITERRE
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ ls -l /home
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">4</span> debian debian <span style="color:#ae81ff">4096</span> Apr <span style="color:#ae81ff">22</span> 14:44 debian
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">5</span> root   root   <span style="color:#ae81ff">4096</span> Apr <span style="color:#ae81ff">22</span> 14:48 ANTITERRE
+</span></span></code></pre></div><h2 id="créer-un-utilisateur-dans-lannuaire-ldap">Créer un utilisateur dans l&rsquo;annuaire LDAP</h2>
+<p>L&rsquo;utilisateur sera créé sur le serveur d&rsquo;authentification (galatograd)</p>
+<h3 id="personnalisation-de-la-création-dun-utilisateur">Personnalisation de la création d&rsquo;un utilisateur</h3>
+<ul>
+<li>
+<p>Création d&rsquo;un template à partir de l&rsquo;exemple</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ sudo cp /usr/share/doc/ldapscripts/examples/ldapadduser.template.sample <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>          /etc/ldapscripts/ldapadduser.template
+</span></span></code></pre></div></li>
+<li>
+<p>Modification du template</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ sudo vim /etc/ldapscripts/ldapadduser.template 
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>&lt;user&gt;,&lt;usuffix&gt;,&lt;suffix&gt;
+</span></span><span style="display:flex;"><span>objectClass: inetOrgPerson
+</span></span><span style="display:flex;"><span>objectClass: posixAccount
+</span></span><span style="display:flex;"><span>objectClass: shadowAccount
+</span></span><span style="display:flex;"><span>cn: &lt;user&gt;
+</span></span><span style="display:flex;"><span>uid: &lt;user&gt;
+</span></span><span style="display:flex;"><span>sn: &lt;user&gt;
+</span></span><span style="display:flex;"><span>uidNumber: &lt;uid&gt;
+</span></span><span style="display:flex;"><span>gidNumber: &lt;gid&gt;
+</span></span><span style="display:flex;"><span>homeDirectory: &lt;home&gt;
+</span></span><span style="display:flex;"><span>loginShell: &lt;shell&gt;
+</span></span><span style="display:flex;"><span>gecos: &lt;user&gt;
+</span></span><span style="display:flex;"><span>description: User account
+</span></span></code></pre></div></li>
+<li>
+<p>Utilisation du template</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ cat /etc/ldapscripts/ldapscripts.conf
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># User passwords generation</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Command-line used to generate a password for added users (you may use %u for username here)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># WARNING !!!! This is evaluated, everything specified here will be run !</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Special value &#34;&lt;ask&gt;&#34; will ask for a password interactively</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#PASSWORDGEN=&#34;cat /dev/random | LC_ALL=C tr -dc &#39;a-zA-Z0-9&#39; | head -c8&#34;</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#PASSWORDGEN=&#34;pwgen&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#PASSWORDGEN=&#34;echo changeme&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#PASSWORDGEN=&#34;echo %u&#34;</span>
+</span></span><span style="display:flex;"><span>PASSWORDGEN<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&lt;ask&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># You can specify custom LDIF templates here</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Leave empty to use default templates</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># See *.template.sample for default templates</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#GTEMPLATE=&#34;/path/to/ldapaddgroup.template&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#UTEMPLATE=&#34;/path/to/ldapadduser.template&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#MTEMPLATE=&#34;/path/to/ldapaddmachine.template&#34;</span>
+</span></span><span style="display:flex;"><span>GTEMPLATE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>UTEMPLATE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/etc/ldapscripts/ldapadduser.template&#34;</span>
+</span></span><span style="display:flex;"><span>MTEMPLATE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="création-de-lutilisateur">Création de l&rsquo;utilisateur</h3>
+<ul>
+<li>
+<p>Ajout du groupe</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ sudo ldapaddgroup wappendorf
+</span></span></code></pre></div></li>
+<li>
+<p>Vérification de l&rsquo;ajout du groupe</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                    -b ou<span style="color:#f92672">=</span>groups,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan cn<span style="color:#f92672">=</span>wappendorf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: cn<span style="color:#f92672">=</span>wappendorf,ou<span style="color:#f92672">=</span>groups,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>objectClass: posixGroup
+</span></span><span style="display:flex;"><span>cn: wappendorf
+</span></span><span style="display:flex;"><span>gidNumber: <span style="color:#ae81ff">10002</span>
+</span></span><span style="display:flex;"><span>description: Group account
+</span></span></code></pre></div></li>
+<li>
+<p>Ajout de utilisateur</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ sudo ldapadduser wappendorf  wappendorf
+</span></span></code></pre></div></li>
+<li>
+<p>Vérification de l&rsquo;ajout de l&rsquo;utilisateur</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>&gt;                      -b ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan uid<span style="color:#f92672">=</span>wappendorf
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>wappendorf,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>objectClass: account
+</span></span><span style="display:flex;"><span>objectClass: posixAccount
+</span></span><span style="display:flex;"><span>objectClass: krbPrincipalAux
+</span></span><span style="display:flex;"><span>objectClass: krbTicketPolicyAux
+</span></span><span style="display:flex;"><span>cn: wappendorf
+</span></span><span style="display:flex;"><span>uid: wappendorf
+</span></span><span style="display:flex;"><span>uidNumber: <span style="color:#ae81ff">10002</span>
+</span></span><span style="display:flex;"><span>gidNumber: <span style="color:#ae81ff">10002</span>
+</span></span><span style="display:flex;"><span>homeDirectory: /home/ANTITERRE/wappendorf
+</span></span><span style="display:flex;"><span>loginShell: /bin/bash
+</span></span><span style="display:flex;"><span>gecos: wappendorf
+</span></span><span style="display:flex;"><span>description: User account
+</span></span><span style="display:flex;"><span>krbLoginFailedCount: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>krbPrincipalName: wappendorf@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>krbLastPwdChange: 20230327102141Z
+</span></span><span style="display:flex;"><span>krbExtraData:: AAI1biFkcm9vdC9hZG1pbkBBTlRJVEVSUkUuTEFOAA<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>krbExtraData:: AAgBAA<span style="color:#f92672">==</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="créer-un-principal-kerberos">Créer un principal Kerberos</h2>
+<ul>
+<li>
+<p>Ajout du principal</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ kadmin
+</span></span><span style="display:flex;"><span>Authenticating as principal ubuntu/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> ubuntu/admin@ANTITERRE.LAN: <span style="color:#f92672">[</span>ubuntuadminpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kadmin:  addprinc -x dn<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;uid=wappendorf,ou=people,dc=antiterre,dc=lan&#34;</span> wappendorf
+</span></span><span style="display:flex;"><span>WARNING: no policy specified <span style="color:#66d9ef">for</span> wappendorf@ANTITERRE.LAN; defaulting to no policy
+</span></span><span style="display:flex;"><span>Enter password <span style="color:#66d9ef">for</span> principal <span style="color:#e6db74">&#34;wappendorf@ANTITERRE.LAN&#34;</span>: <span style="color:#f92672">[</span>wappendorfpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Re-enter password <span style="color:#66d9ef">for</span> principal <span style="color:#e6db74">&#34;wappendorf@ANTITERRE.LAN&#34;</span>: <span style="color:#f92672">[</span>wappendorfpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Principal <span style="color:#e6db74">&#34;wappendorf@ANTITERRE.LAN&#34;</span> created.
+</span></span></code></pre></div><pre tabindex="0"><code>kadmin:  listprincs
+robick@ANTITERRE.LAN
+vonrathen@ANTITERRE.LAN
+K/M@ANTITERRE.LAN
+krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+kadmin/admin@ANTITERRE.LAN
+kadmin/changepw@ANTITERRE.LAN
+kadmin/history@ANTITERRE.LAN
+kadmin/galatograd.antiterre.lan@ANTITERRE.LAN
+ubuntu/admin@ANTITERRE.LAN
+wappendorf@ANTITERRE.LAN
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kadmin:  quit
+</span></span></code></pre></div></li>
+<li>
+<p>vérification dans ldap de l&rsquo;ajout des attributs liés à kerberos</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                    -b ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan uid<span style="color:#f92672">=</span>wappendorf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>wappendorf,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>objectClass: inetOrgPerson
+</span></span><span style="display:flex;"><span>objectClass: posixAccount
+</span></span><span style="display:flex;"><span>objectClass: shadowAccount
+</span></span><span style="display:flex;"><span>objectClass: krbPrincipalAux
+</span></span><span style="display:flex;"><span>objectClass: krbTicketPolicyAux
+</span></span><span style="display:flex;"><span>cn: wappendorf
+</span></span><span style="display:flex;"><span>uid: wappendorf
+</span></span><span style="display:flex;"><span>sn: wappendorf
+</span></span><span style="display:flex;"><span>uidNumber: <span style="color:#ae81ff">10002</span>
+</span></span><span style="display:flex;"><span>gidNumber: <span style="color:#ae81ff">10002</span>
+</span></span><span style="display:flex;"><span>homeDirectory: /home/wappendorf
+</span></span><span style="display:flex;"><span>loginShell: /bin/bash
+</span></span><span style="display:flex;"><span>gecos: wappendorf
+</span></span><span style="display:flex;"><span>description: User account
+</span></span><span style="display:flex;"><span>krbPrincipalName: wappendorf@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>krbLastPwdChange: 20110505135623Z
+</span></span><span style="display:flex;"><span>krbExtraData:: AAKHrMJNdWJ1bnR1L2FkbWluQEFOVElURVJSRS5MQU4A
+</span></span><span style="display:flex;"><span>krbExtraData:: AAgBAA<span style="color:#f92672">==</span>
+</span></span></code></pre></div></li>
+<li>
+<p>Vérification de l&rsquo;acquisition du ticket</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ kinit wappendorf
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> wappendorf@ANTITERRE.LAN: <span style="color:#f92672">[</span>wappendorfpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ klist
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: wappendorf@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>05/05/11 16:00:25  05/06/11 02:00:25  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>  renew <span style="color:#66d9ef">until</span> 05/06/11 16:00:19
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="créer-un-dossier-personnel-sur-le-serveur-de-fichier">Créer un dossier personnel sur le serveur de fichier</h2>
+<p>Le dossier de l&rsquo;utilisateur sera créé sur le serveur de fichier (urbicande)</p>
+<ul>
+<li>
+<p>Ajout du dossier personnel</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo cp -R --copy-contents /etc/skel /home/ANTITERRE/wappendorf
+</span></span></code></pre></div></li>
+<li>
+<p>Mise à jour des droits</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo chown -R 10002:10002 /home/ANTITERRE/wappendorf/
+</span></span></code></pre></div></li>
+<li>
+<p>Vérifier depuis luna en s&rsquo;identifiant en tant que wappendorf</p>
+</li>
+</ul>
+<h2 id="références">Références</h2>
+<ol>
+<li>DICTIONNAIRE OBSCUR,<a href="http://dictionary.ebbs.net/francais/fpages/fdict_c.htm">http://dictionary.ebbs.net/francais/fpages/fdict_c.htm</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

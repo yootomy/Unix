@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Services réseaux - Activité 1300, Requêtes LDAP</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/services-reseaux-activite-1300-ldap-requetes/">Services réseaux - Activité 1300, Requêtes LDAP</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:22</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-faire">A faire</a></li>
+    <li><a href="#exemple">Exemple</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="a-faire">A faire</h2>
+<p>Créer les requêtes suivantes:</p>
+<ul>
+<li>
+<p>Rechercher dans l&rsquo;Active Directory (ldap.s2.rpn.ch), toutes les personnes faisant parties de votre classes.</p>
+</li>
+<li>
+<p>Rechercher dans l&rsquo;Active Directory, la listes des personnes pouvant utiliser les wiki  (CN=GGS_S2M_Projets_Etudiants,OU=WEB,OU=ARGroupesGlobaux,DC=s2,DC=rpn,DC=ch)</p>
+<p><strong>Aide</strong> - Dans active Directory, il est possible de créer des groupes imbriqués ou nested group .</p>
+</li>
+</ul>
+<p>Ces requêtes utilisent la commande <code>ldapsearch</code>.</p>
+<h2 id="exemple">Exemple</h2>
+<p>La requête ci-dessous:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ ldapsearch -H ldap://ldap.s2.rpn.ch<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>              -D <span style="color:#e6db74">&#34;CN=Huguenin Dominique (DHU),OU=Enseignants,OU=TI,OU=CPNE,OU=Utilisateurs,DC=s2,DC=rpn,DC=ch&#34;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>              -W<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>              -b OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#34;(cn=*Huguenin*)&#34;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>              dn
+</span></span><span style="display:flex;"><span>Enter LDAP Password: 
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extended LDIF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAPv3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># base &lt;OU=CPNE,OU=Utilisateurs,DC=s2,DC=rpn,DC=ch&gt; with scope subtree</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># filter: (cn=*Huguenin*)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># requesting: dn </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Elie Nathan, 2DIN-C-DMa, DIN-C-D, Eleves, AS, CPNE, Utilisateurs, s2</span>
+</span></span><span style="display:flex;"><span>.rpn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Elie Nathan,OU<span style="color:#f92672">=</span>2DIN-C-DMa,OU<span style="color:#f92672">=</span>DIN-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>AS,OU<span style="color:#f92672">=</span>CPNE,O
+</span></span><span style="display:flex;"><span>U<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Dumittan Timoth\C3\A9e, 4MMA-C-DKa, MMA-CD, Eleves, TI, CPNE, Utilis</span>
+</span></span><span style="display:flex;"><span>ateurs, s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn:: Q049SHVndWVuaW4tRHVtaXR0YW4gVGltb3Row6llLE9VPTRNTUEtQy1ES2EsT1U9TU1BLUNEL
+</span></span><span style="display:flex;"><span>E9VPUVsZXZlcyxPVT1USSxPVT1DUE5FLE9VPVV0aWxpc2F0ZXVycyxEQz1zMixEQz1ycG4sREM9Y2
+</span></span><span style="display:flex;"><span>g<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Virchaux Ma\C3\ABl, 4HOR-C-PKa, HOR-CP, Eleves, TI, CPNE, Utilisateu</span>
+</span></span><span style="display:flex;"><span>rs, s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn:: Q049SHVndWVuaW4tVmlyY2hhdXggTWHDq2wsT1U9NEhPUi1DLVBLYSxPVT1IT1ItQ1AsT1U9R
+</span></span><span style="display:flex;"><span>WxldmVzLE9VPVRJLE9VPUNQTkUsT1U9VXRpbGlzYXRldXJzLERDPXMyLERDPXJwbixEQz1jaA<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Dumittan Lo\C3\AFc, 4PME-4TDKa, PME-4TD, Eleves, TI, CPNE, Utilisate</span>
+</span></span><span style="display:flex;"><span>urs, s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn:: Q049SHVndWVuaW4tRHVtaXR0YW4gTG/Dr2MsT1U9NFBNRS00VERLYSxPVT1QTUUtNFRELE9VP
+</span></span><span style="display:flex;"><span>UVsZXZlcyxPVT1USSxPVT1DUE5FLE9VPVV0aWxpc2F0ZXVycyxEQz1zMixEQz1ycG4sREM9Y2g<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Elie Ethan, 2MML-C-DKa, MML-CD, Eleves, TI, CPNE, Utilisateurs, s2.r</span>
+</span></span><span style="display:flex;"><span>pn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Elie Ethan,OU<span style="color:#f92672">=</span>2MML-C-DKa,OU<span style="color:#f92672">=</span>MML-CD,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>TI,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin Dominique - El\C3\A8ve, Eleves, TI, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn:: Q049SHVndWVuaW4gRG9taW5pcXVlIC0gRWzDqHZlLE9VPUVsZXZlcyxPVT1USSxPVT1DUE5FL
+</span></span><span style="display:flex;"><span>E9VPVV0aWxpc2F0ZXVycyxEQz1zMixEQz1ycG4sREM9Y2g<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin Brayan, 3PRO-S-EMa, PRO-SE, Eleves, TI, CPNE, Utilisateurs, s2.rpn.c</span>
+</span></span><span style="display:flex;"><span>h
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin Brayan,OU<span style="color:#f92672">=</span>3PRO-S-EMa,OU<span style="color:#f92672">=</span>PRO-SE,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>TI,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Util
+</span></span><span style="display:flex;"><span>isateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># HugueninBGr, 4CAP-C-DKa, CAP-CD, Eleves, TI, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>HugueninBGr,OU<span style="color:#f92672">=</span>4CAP-C-DKa,OU<span style="color:#f92672">=</span>CAP-CD,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>TI,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisat
+</span></span><span style="display:flex;"><span>eurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Virchaux Nicolas (NIH), Enseignants, TI, CPNE, Utilisateurs, s2.rpn.</span>
+</span></span><span style="display:flex;"><span>ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Virchaux Nicolas <span style="color:#f92672">(</span>NIH<span style="color:#f92672">)</span>,OU<span style="color:#f92672">=</span>Enseignants,OU<span style="color:#f92672">=</span>TI,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisa
+</span></span><span style="display:flex;"><span>teurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Vuillemin Philippe (PHG), Enseignants, TI, CPNE, Utilisateurs, s2.rp</span>
+</span></span><span style="display:flex;"><span>n.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Vuillemin Philippe <span style="color:#f92672">(</span>PHG<span style="color:#f92672">)</span>,OU<span style="color:#f92672">=</span>Enseignants,OU<span style="color:#f92672">=</span>TI,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utili
+</span></span><span style="display:flex;"><span>sateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin Dominique (DHU), Enseignants, TI, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin Dominique <span style="color:#f92672">(</span>DHU<span style="color:#f92672">)</span>,OU<span style="color:#f92672">=</span>Enseignants,OU<span style="color:#f92672">=</span>TI,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisateurs,D
+</span></span><span style="display:flex;"><span>C<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin Damien, Eleves, CMOD, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin Damien,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>CMOD,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,
+</span></span><span style="display:flex;"><span>DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Dumittan Amalia (AHD), Enseignants, 2S, CPNE, Utilisateurs, s2.rpn.c</span>
+</span></span><span style="display:flex;"><span>h
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Dumittan Amalia <span style="color:#f92672">(</span>AHD<span style="color:#f92672">)</span>,OU<span style="color:#f92672">=</span>Enseignants,OU<span style="color:#f92672">=</span>2S,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisat
+</span></span><span style="display:flex;"><span>eurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Virchaux Nathan, 1FOB-C-DAa, FOB-C-D, Eleves, TN, CPNE, Utilisateurs</span>
+</span></span><span style="display:flex;"><span>, s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Virchaux Nathan,OU<span style="color:#f92672">=</span>1FOB-C-DAa,OU<span style="color:#f92672">=</span>FOB-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>TN,OU<span style="color:#f92672">=</span>CP
+</span></span><span style="display:flex;"><span>NE,OU<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin Dumittan Eliot, 3MEB-C-DLa, MEB-C-D, Eleves, BC, CPNE, Utilisateurs,</span>
+</span></span><span style="display:flex;"><span>s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin Dumittan Eliot,OU<span style="color:#f92672">=</span>3MEB-C-DLa,OU<span style="color:#f92672">=</span>MEB-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>BC,OU<span style="color:#f92672">=</span>CPN
+</span></span><span style="display:flex;"><span>E,OU<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># HugueninDDa, 3AGE-C-DMa, AEC-C-D, Eleves, BC, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>HugueninDDa,OU<span style="color:#f92672">=</span>3AGE-C-DMa,OU<span style="color:#f92672">=</span>AEC-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>BC,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisa
+</span></span><span style="display:flex;"><span>teurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin Noah, 3INS-C-DLa, INS-C-D, Eleves, BC, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin Noah,OU<span style="color:#f92672">=</span>3INS-C-DLa,OU<span style="color:#f92672">=</span>INS-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>BC,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utili
+</span></span><span style="display:flex;"><span>sateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Bergenat Michael, 4IEL-C-DLb, IEL-C-D, Eleves, BC, CPNE, Utilisateur</span>
+</span></span><span style="display:flex;"><span>s, s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Bergenat Michael,OU<span style="color:#f92672">=</span>4IEL-C-DLb,OU<span style="color:#f92672">=</span>IEL-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>BC,OU<span style="color:#f92672">=</span>C
+</span></span><span style="display:flex;"><span>PNE,OU<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Dezot Laura, 1EDC-C-DPe, EDC-C-D, Eleves, CG, CPNE, Utilisateurs, s2</span>
+</span></span><span style="display:flex;"><span>.rpn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Dezot Laura,OU<span style="color:#f92672">=</span>1EDC-C-DPe,OU<span style="color:#f92672">=</span>EDC-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>CG,OU<span style="color:#f92672">=</span>CPNE,O
+</span></span><span style="display:flex;"><span>U<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Bergenat Talia, 1EDC-C-DPc, EDC-C-D, Eleves, CG, CPNE, Utilisateurs,</span>
+</span></span><span style="display:flex;"><span>s2.rpn.ch
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Huguenin-Bergenat Talia,OU<span style="color:#f92672">=</span>1EDC-C-DPc,OU<span style="color:#f92672">=</span>EDC-C-D,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>CG,OU<span style="color:#f92672">=</span>CPN
+</span></span><span style="display:flex;"><span>E,OU<span style="color:#f92672">=</span>Utilisateurs,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># HugueninV1, 1MPE-1EPMd, MPE2, Eleves, CG, CPNE, Utilisateurs, s2.rpn.ch</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>HugueninV1,OU<span style="color:#f92672">=</span>1MPE-1EPMd,OU<span style="color:#f92672">=</span>MPE2,OU<span style="color:#f92672">=</span>Eleves,OU<span style="color:#f92672">=</span>CG,OU<span style="color:#f92672">=</span>CPNE,OU<span style="color:#f92672">=</span>Utilisateur
+</span></span><span style="display:flex;"><span>s,DC<span style="color:#f92672">=</span>s2,DC<span style="color:#f92672">=</span>rpn,DC<span style="color:#f92672">=</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Huguenin-Virchaux M\C3\A9lanie (MHV), Enseignants, CG, CPNE, Utilisateurs, s2</span>
+</span></span><span style="display:flex;"><span>.rpn.ch
+</span></span><span style="display:flex;"><span>dn:: Q049SHVndWVuaW4tVmlyY2hhdXggTcOpbGFuaWUgKE1IViksT1U9RW5zZWlnbmFudHMsT1U9Q
+</span></span><span style="display:flex;"><span>0csT1U9Q1BORSxPVT1VdGlsaXNhdGV1cnMsREM9czIsREM9cnBuLERDPWNo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># search result</span>
+</span></span><span style="display:flex;"><span>search: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>result: <span style="color:#ae81ff">0</span> Success
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numResponses: 23</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numEntries: 22</span>
+</span></span></code></pre></div><blockquote>
+<p>Exemple de dn pour un étudiant</p>
+<pre tabindex="0"><code>dn : CN=BrodoCh,OU=1INT-S-PMa,OU=INT-SP,OU=Eleves,OU=TI,OU=CPNE,OU=Utilisateurs,DC=s2,DC=rpn,DC=ch
+dn: CN=MassonZi,OU=2INT-S-EMa,OU=INT-SE,OU=Eleves,OU=TI,OU=CPNE,OU=Utilisateurs,DC=s2,DC=rpn,DC=ch
+</code></pre></blockquote>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://wiki.debian.org/LDAP/OpenLDAPSetup">LDAP/OpenLDAPSetup - Debian Wiki</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/services-reseaux-activite-1300-ldap-requetes">Éléments de solution</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

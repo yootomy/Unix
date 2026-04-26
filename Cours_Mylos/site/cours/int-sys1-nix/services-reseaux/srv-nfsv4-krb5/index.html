@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - NFS v4 &#43; KERBEROS</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-nfsv4-krb5/">Service réseau - NFS v4 &#43; KERBEROS</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:26</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#configuration-des-clients-kerberos">Configuration des clients Kerberos</a>
+      <ul>
+        <li><a href="#au-préalable">Au préalable</a></li>
+        <li><a href="#configurer-du-client-kerberos-sur-le-serveur-de-fichier-urbicandeantiterrelan">Configurer du client Kerberos sur le serveur de fichier (urbicande.antiterre.lan)</a></li>
+        <li><a href="#création-des-principals-pour-les-machines-serveur-et-clients-urbicande-et-luna">Création des principals pour les machines serveur et clients (urbicande et luna)</a></li>
+        <li><a href="#création-du-trousseau-de-kerberos-pour--les-machines-serveur-et-clients-urbicande-et-luna">Création du trousseau de kerberos pour  les machines serveur et clients (urbicande et luna)</a></li>
+        <li><a href="#copier-les-trousseaux-sur-les-machines-serveur-et-clients-urbicande-et-luna">Copier les trousseaux sur les machines serveur et clients (urbicande et luna)</a></li>
+        <li><a href="#configuration-du-serveur-nfsv4">Configuration du serveur NFSv4</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-du-client-nfs">Configuration du client NFS</a>
+      <ul>
+        <li><a href="#configuration">Configuration</a></li>
+        <li><a href="#montage-du-système-de-fichier-nfs-avec-kerberos">Montage du système de fichier NFS avec Kerberos</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="configuration-des-clients-kerberos">Configuration des clients Kerberos</h2>
+<h3 id="au-préalable">Au préalable</h3>
+<ul>
+<li>faire l&rsquo;installation du serveur NFSv4, <a href="../srv-nfsv4">Service réseau - Configuration du serveur de fichier et client</a></li>
+<li>faire l&rsquo;installation du <a href="../client-kerberos-ldap">service SSSD pour Kerberos et LDAP</a></li>
+</ul>
+<h3 id="configurer-du-client-kerberos-sur-le-serveur-de-fichier-urbicandeantiterrelan">Configurer du client Kerberos sur le serveur de fichier (urbicande.antiterre.lan)</h3>
+<ul>
+<li>Vérification</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ kinit debian/admin@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ klist
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Ticket cache: FILE:/tmp/krb5cc_1000
+</span></span><span style="display:flex;"><span>Default principal: debian/admin@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Valid starting     Expires            Service principal
+</span></span><span style="display:flex;"><span>02/22/11 21:44:23  02/23/11 07:44:23  krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>	renew <span style="color:#66d9ef">until</span> 02/23/11 21:44:16
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ kdestroy 
+</span></span></code></pre></div><h3 id="création-des-principals-pour-les-machines-serveur-et-clients-urbicande-et-luna">Création des principals pour les machines serveur et clients (urbicande et luna)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ kadmin
+</span></span><span style="display:flex;"><span>Authenticating as principal debian/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kadmin:  addprinc -randkey nfs/urbicande.antiterre.lan@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>WARNING: no policy specified <span style="color:#66d9ef">for</span> nfs/urbicande.antiterre.lan@ANTITERRE.LAN; defaulting to no policy
+</span></span><span style="display:flex;"><span>Principal <span style="color:#e6db74">&#34;nfs/urbicande.antiterre.lan@ANTITERRE.LAN&#34;</span> created.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kadmin:  addprinc -randkey nfs/luna@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>WARNING: no policy specified <span style="color:#66d9ef">for</span> nfs/luna.antiterre.lan@ANTITERRE.LAN; defaulting to no policy
+</span></span><span style="display:flex;"><span>Principal <span style="color:#e6db74">&#34;nfs/luna.antiterre.lan@ANTITERRE.LAN&#34;</span> created.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kadmin:  getprincs
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>nfs/urbicande.antiterre.lan@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>nfs/luna@ANTITERRE.LAN
+</span></span></code></pre></div><h3 id="création-du-trousseau-de-kerberos-pour--les-machines-serveur-et-clients-urbicande-et-luna">Création du trousseau de kerberos pour  les machines serveur et clients (urbicande et luna)</h3>
+<ul>
+<li>
+<p>Création des trousseaux de clé</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ kadmin
+</span></span><span style="display:flex;"><span>Authenticating as principal debian/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: <span style="color:#f92672">[</span>debianadminpass<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kadmin:  ktadd -k /tmp/urbicande.keytab nfs/urbicande.antiterre.lan
+</span></span><span style="display:flex;"><span>Entry <span style="color:#66d9ef">for</span> principal nfs/urbicande.antiterre.lan with kvno 5, encryption type aes256-cts-hmac-sha1-96 added to keytab WRFILE:urbicande.keytab.
+</span></span><span style="display:flex;"><span>Entry <span style="color:#66d9ef">for</span> principal nfs/urbicande.antiterre.lan with kvno 5, encryption type aes128-cts-hmac-sha1-96 added to keytab WRFILE:urbicande.keytab.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kadmin:  ktadd -k /tmp/luna.keytab nfs/luna
+</span></span><span style="display:flex;"><span>Entry <span style="color:#66d9ef">for</span> principal nfs/luna with kvno 2, encryption type aes256-cts-hmac-sha1-96 added to keytab WRFILE:luna.keytab.
+</span></span><span style="display:flex;"><span>Entry <span style="color:#66d9ef">for</span> principal nfs/luna with kvno 2, encryption type aes128-cts-hmac-sha1-96 added to keytab WRFILE:luna.keytab.
+</span></span></code></pre></div></li>
+<li>
+<p>Vérification de l&rsquo;existence des trousseaux</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ ls /tmp/*.keytab
+</span></span><span style="display:flex;"><span>/tmp/luna.keytab  /tmp/urbicande.keytab
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="copier-les-trousseaux-sur-les-machines-serveur-et-clients-urbicande-et-luna">Copier les trousseaux sur les machines serveur et clients (urbicande et luna)</h3>
+<ul>
+<li>
+<p>Transfère du fichier sur urbicande</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ scp /tmp/urbicande.keytab debian@urbicande:/home/debian
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>The authenticity of host <span style="color:#e6db74">&#39;urbicande (192.168.100.30)&#39;</span> can<span style="color:#e6db74">&#39;t be established.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">RSA key fingerprint is 7d:9e:67:06:ef:47:ab:e6:28:10:73:20:c2:b5:8a:15.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Warning: Permanently added &#39;</span>urbicande,192.168.100.30<span style="color:#e6db74">&#39; (RSA) to the list of known hosts.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">debian@urbicande&#39;</span>s password: <span style="color:#f92672">[</span>debian<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>urbicande.keytab                              100%   <span style="color:#ae81ff">74</span>     0.1KB/s   00:00 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo cp urbicande.keytab /etc/krb5.keytab
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ ls -l /etc/krb5.keytab 
+</span></span><span style="display:flex;"><span>-rw------- <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">74</span> 2011-05-12 15:50 /etc/krb5.keytab
+</span></span></code></pre></div></li>
+<li>
+<p>contenu du trousseau d&rsquo;urbicande</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo ktutil
+</span></span><span style="display:flex;"><span>ktutil:  rkt /etc/krb5.keytab 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ktutil:  list -e -t -k
+</span></span><span style="display:flex;"><span>slot KVNO Timestamp         Principal
+</span></span><span style="display:flex;"><span>---- ---- ----------------- ---------------------------------------------------
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">1</span>    <span style="color:#ae81ff">2</span> 05/12/11 15:27:16 nfs/urbicande.antiterre.lan@ANTITERRE.LAN 
+</span></span><span style="display:flex;"><span>                           <span style="color:#f92672">(</span>DES cbc mode with CRC-32<span style="color:#f92672">)</span>  <span style="color:#f92672">(</span>0x6da4f2dc645ea78a<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>Transfère du fichier sur luna</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ scp /tmp/luna.keytab debian@192.168.100.100:/home/debian
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>The authenticity of host <span style="color:#e6db74">&#39;192.168.100.100 (192.168.100.100)&#39;</span> can<span style="color:#e6db74">&#39;t be established.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">RSA key fingerprint is 86:09:bb:d9:f9:18:b8:40:e5:4d:90:10:91:00:8f:5e.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Warning: Permanently added &#39;</span>192.168.100.100<span style="color:#e6db74">&#39; (RSA) to the list of known hosts.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">debian@192.168.100.100&#39;</span>s password: <span style="color:#f92672">[</span>debian<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>luna.keytab                                   100%   <span style="color:#ae81ff">69</span>     0.1KB/s   00:00 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@luna:~$ sudo cp luna.keytab /etc/krb5.keytab
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@luna:~$ ls -l /etc/krb5.keytab 
+</span></span><span style="display:flex;"><span>-rw------- <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">69</span> 2011-05-12 15:46 /etc/krb5.keytab
+</span></span></code></pre></div></li>
+<li>
+<p>Contenu du trousseau de luna</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@luna:~$ sudo ktutil 
+</span></span><span style="display:flex;"><span>ktutil:  rkt /etc/krb5.keytab 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ktutil:  list -e -t -k
+</span></span><span style="display:flex;"><span>slot KVNO Timestamp         Principal
+</span></span><span style="display:flex;"><span>---- ---- ----------------- ---------------------------------------------------
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">1</span>    <span style="color:#ae81ff">2</span> 05/12/11 15:27:34     nfs/luna.antiterre.lan@ANTITERRE.LAN 
+</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">(</span>DES cbc mode with CRC-32<span style="color:#f92672">)</span>  <span style="color:#f92672">(</span>0xc87f086bf145c8d9<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="configuration-du-serveur-nfsv4">Configuration du serveur NFSv4</h3>
+<ul>
+<li>
+<p>Activation du démon svcgssd</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo vim /etc/default/nfs-kernel-server 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Do you want to start the svcgssd daemon? It is only required for Kerberos</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># exports. Valid alternatives are &#34;yes&#34; and &#34;no&#34;; the default is &#34;no&#34;.</span>
+</span></span><span style="display:flex;"><span>NEED_SVCGSSD<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo vim /etc/default/nfs-common
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Do you want to start the idmapd daemon? It is only needed for NFSv4.</span>
+</span></span><span style="display:flex;"><span>NEED_IDMAPD<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Do you want to start the gssd daemon? It is required for Kerberos mounts.</span>
+</span></span><span style="display:flex;"><span>NEED_GSSD<span style="color:#f92672">=</span>yes
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo vim /etc/idmapd.conf 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>General<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Verbosity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>Pipefs-Directory <span style="color:#f92672">=</span> /run/rpc_pipefs
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># set your own domain here, if it differs from FQDN minus hostname</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Domain = localdomain</span>
+</span></span><span style="display:flex;"><span>Domain <span style="color:#f92672">=</span> antiterre.lan
+</span></span><span style="display:flex;"><span>Local-Realms <span style="color:#f92672">=</span> ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Mapping<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nobody-User <span style="color:#f92672">=</span> nobody
+</span></span><span style="display:flex;"><span>Nobody-Group <span style="color:#f92672">=</span> nogroup
+</span></span></code></pre></div></li>
+<li>
+<p>Exporter nos dossiers pour les machines connu de kerberos, il faut ajouter les lignes suivantes dans le fichier <strong>/etc/exports</strong> :</p>
+<pre tabindex="0"><code>...
+/home/ANTITERRE   192.168.100.0/24(rw,sync,no_subtree_check,sec=krb5)
+</code></pre></li>
+<li>
+<p>Redémarrage du service :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo systemctl restart nfs-kernel-server.service 
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ sudo systemctl status nfs-kernel-server.service 
+</span></span><span style="display:flex;"><span>● nfs-server.service - NFS server and services
+</span></span><span style="display:flex;"><span>   Loaded: loaded <span style="color:#f92672">(</span>/lib/systemd/system/nfs-server.service; enabled; vendor preset: enabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   Active: active <span style="color:#f92672">(</span>exited<span style="color:#f92672">)</span> since Tue 2019-05-21 15:55:05 CEST; 2s ago
+</span></span><span style="display:flex;"><span>Process: <span style="color:#ae81ff">619</span> ExecStopPost<span style="color:#f92672">=</span>/usr/sbin/exportfs -f <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Process: <span style="color:#ae81ff">618</span> ExecStopPost<span style="color:#f92672">=</span>/usr/sbin/exportfs -au <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Process: <span style="color:#ae81ff">617</span> ExecStop<span style="color:#f92672">=</span>/usr/sbin/rpc.nfsd <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Process: <span style="color:#ae81ff">630</span> ExecStart<span style="color:#f92672">=</span>/usr/sbin/rpc.nfsd $RPCNFSDARGS <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Process: <span style="color:#ae81ff">629</span> ExecStartPre<span style="color:#f92672">=</span>/usr/sbin/exportfs -r <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Main PID: <span style="color:#ae81ff">630</span> <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mai <span style="color:#ae81ff">21</span> 15:55:05 urbicande systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Starting NFS server and services...
+</span></span><span style="display:flex;"><span>mai <span style="color:#ae81ff">21</span> 15:55:05 urbicande systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Started NFS server and services.
+</span></span></code></pre></div></li>
+<li>
+<p>Exportation - maintenance de la liste des partages</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo exportfs -ra
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ sudo exportfs -v
+</span></span><span style="display:flex;"><span>/home/ANTITERRE
+</span></span><span style="display:flex;"><span>      192.168.100.0/24<span style="color:#f92672">(</span>rw,wdelay,root_squash,no_subtree_check,sec<span style="color:#f92672">=</span>krb5,rw,secure,root_squash,no_all_squash<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="configuration-du-client-nfs">Configuration du client NFS</h2>
+<h3 id="configuration">Configuration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>robick@cavi:~$ cat /etc/default/nfs-common 
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># If you do not set values for the NEED_ options, they will be attempted</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># autodetected; this should be sufficient for most people. Valid alternatives</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for the NEED_ options are &#34;yes&#34; and &#34;no&#34;.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Options for rpc.statd.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   Should rpc.statd listen on a specific port? This is especially useful</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   when you have a port-based firewall. To use a fixed port, set this</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   this variable to a statd argument like: &#34;--port 4000 --outgoing-port 4001&#34;.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   For more information, see rpc.statd(8) or http://wiki.debian.org/SecuringNFS</span>
+</span></span><span style="display:flex;"><span>STATDOPTS<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Do you want to start the gssd daemon? It is required for Kerberos mounts.</span>
+</span></span><span style="display:flex;"><span>NEED_GSSD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span><span style="display:flex;"><span>NEED_IDMAPD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>robick@cavi:~$ cat /etc/idmapd.conf 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>General<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Verbosity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>Pipefs-Directory <span style="color:#f92672">=</span> /run/rpc_pipefs
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># set your own domain here, if it differs from FQDN minus hostname</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Domain = localdomain</span>
+</span></span><span style="display:flex;"><span>Domain <span style="color:#f92672">=</span> antiterre.lan
+</span></span><span style="display:flex;"><span>Local-Realms <span style="color:#f92672">=</span> ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Mapping<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nobody-User <span style="color:#f92672">=</span> nobody
+</span></span><span style="display:flex;"><span>Nobody-Group <span style="color:#f92672">=</span> nogroup
+</span></span><span style="display:flex;"><span>robick@cavi:~$ 
+</span></span></code></pre></div><h3 id="montage-du-système-de-fichier-nfs-avec-kerberos">Montage du système de fichier NFS avec Kerberos</h3>
+<ul>
+<li>
+<p>Montage</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo mount -t nfs4 -o sec<span style="color:#f92672">=</span>krb5 fs.antiterre.lan:/home/ANTITERRE /home/ANTITERRE
+</span></span></code></pre></div></li>
+<li>
+<p>Vérification</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@luna:~$ mount -t nfs4
+</span></span><span style="display:flex;"><span>fs.antiterre.lan:/home/ANTITERRE on /home/ANTITERRE type nfs4 <span style="color:#f92672">(</span>rw,relatime,sync,vers<span style="color:#f92672">=</span>4.2,rsize<span style="color:#f92672">=</span>131072,wsize<span style="color:#f92672">=</span>131072,namlen<span style="color:#f92672">=</span>255,hard,proto<span style="color:#f92672">=</span>tcp,timeo<span style="color:#f92672">=</span>600,retrans<span style="color:#f92672">=</span>2,sec<span style="color:#f92672">=</span>krb5,clientaddr<span style="color:#f92672">=</span>192.168.100.100,local_lock<span style="color:#f92672">=</span>none,addr<span style="color:#f92672">=</span>192.168.100.30<span style="color:#f92672">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@luna:~$ cat /etc/fstab 
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>fs.antiterre.lan:/home/ANTITERRE /home/ANTITERRE nfs4 rw,sync,sec<span style="color:#f92672">=</span>krb5 <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://ubuntu.com/server/docs/service-nfs">Network File System (NFS) | Ubuntu</a></li>
+<li><a href="https://help.ubuntu.com/community/NFSv4Howto">NFSv4Howto - Community Ubuntu Documentation</a></li>
+<li><a href="http://nfs.sourceforge.net/">Linux NFS faq</a></li>
+<li><a href="https://wiki.linux-nfs.org/wiki/index.php/Nfsv4_configuration_fr">Nfsv4 configuration fr</a></li>
+<li><a href="http://fr.wikipedia.org/wiki/Network_File_System">Network File System - Wikipédia.</a></li>
+<li><a href="https://wiki.debian.org/NFS/Kerberos">NFSv4 (nfs4) + Kerberos in Debian</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

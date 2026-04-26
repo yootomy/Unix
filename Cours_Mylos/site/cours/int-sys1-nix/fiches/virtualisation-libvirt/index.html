@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation, création d&#39;une machine virtuelle Debian 12 avec libvirt</title>
+	<meta name="description" content="Vidéo montrant l&#39;installation d&#39;une machine virtuelle Debian 12 à l&#39;aide de virt-manager"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/sysnix/">Sysnix</a></li>
+            
+            <li><a href="/cours/tags/libvirt/">Libvirt</a></li>
+            
+            <li><a href="/cours/tags/kvm/">Kvm</a></li>
+            
+            <li><a href="/cours/tags/virtualisation/">Virtualisation</a></li>
+            
+            <li><a href="/cours/tags/vid%C3%A9o/">Vidéo</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/virtualisation-libvirt/">Virtualisation, création d&#39;une machine virtuelle Debian 12 avec libvirt</a></h1>
+    <p>Vidéo montrant l&#39;installation d&#39;une machine virtuelle Debian 12 à l&#39;aide de virt-manager</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>24.03.2025 10:00</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#vidéo">Vidéo</a></li>
+    <li><a href="#création-dune-machine-virtuelle-avec-virt-install">Création d&rsquo;une machine virtuelle avec virt-install</a></li>
+    <li><a href="#accès-à-la-console-de-la-machine-virtuelle">accès à la console de la machine virtuelle</a></li>
+    <li><a href="#administration-dune-machine-virtuelle-avec-virsh">Administration d&rsquo;une machine virtuelle avec virsh</a>
+      <ul>
+        <li><a href="#lancer-la-console-dadministration">lancer la console d&rsquo;administration</a></li>
+        <li><a href="#afficher-laide">Afficher l&rsquo;aide</a></li>
+        <li><a href="#liste-de-toutes-les-machines-virtuelles-domaines">Liste de toutes les machines virtuelles (domaines)</a></li>
+        <li><a href="#démarrer-une-machine-virtuelle">Démarrer une machine virtuelle</a></li>
+        <li><a href="#arrêter-une-machine-virtuelle">Arrêter une machine virtuelle</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+
+    <h2 id="vidéo">Vidéo</h2>
+<p><a href="https://video.s2.rpn.ch/permalink/v1266664ac900naafmml/">Lien vers la vidéo</a></p>
+<h2 id="création-dune-machine-virtuelle-avec-virt-install">Création d&rsquo;une machine virtuelle avec virt-install</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virt-install --connect qemu:///system <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>   -n vm1 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>   -r <span style="color:#ae81ff">1024</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>   --disk path<span style="color:#f92672">=</span>./vm1disk.img,format<span style="color:#f92672">=</span>raw,bus<span style="color:#f92672">=</span>virtio,size<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>   -c ~/iso/debian-13.3.0-amd64-netinst.iso <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>   --network network<span style="color:#f92672">=</span>default,model<span style="color:#f92672">=</span>virtio <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>   --osinfo name<span style="color:#f92672">=</span>debian11
+</span></span></code></pre></div><blockquote>
+<ul>
+<li>
+<p>Télécharger l&rsquo;iso en <a href="https://www.debian.org/distrib/">Obtenir Debian</a></p>
+</li>
+<li>
+<p>Installation dans une console</p>
+<pre tabindex="0"><code>virt-install --connect qemu:///system \
+  -n vm1 \
+  -r 1024 \
+  --disk path=./vm1disk.img,format=raw,bus=virtio,size=6 \
+  --location ~/iso/debian-13.3.0-amd64-netinst.iso \
+  --network network=default,model=virtio \
+  --osinfo name=debian11 \
+  --graphics none \
+  --console pty,target_type=serial \
+  --extra-args &#34;console=ttyS0,115200n8&#34;
+</code></pre></li>
+</ul>
+</blockquote>
+<h2 id="accès-à-la-console-de-la-machine-virtuelle">accès à la console de la machine virtuelle</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virt-viewer -c qemu:///system vm1
+</span></span></code></pre></div><h2 id="administration-dune-machine-virtuelle-avec-virsh">Administration d&rsquo;une machine virtuelle avec virsh</h2>
+<h3 id="lancer-la-console-dadministration">lancer la console d&rsquo;administration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virsh --connect qemu:///system
+</span></span></code></pre></div><h3 id="afficher-laide">Afficher l&rsquo;aide</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virsh <span style="color:#75715e"># help</span>
+</span></span></code></pre></div><h3 id="liste-de-toutes-les-machines-virtuelles-domaines">Liste de toutes les machines virtuelles (domaines)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virsh <span style="color:#75715e"># list --all</span>
+</span></span></code></pre></div><h3 id="démarrer-une-machine-virtuelle">Démarrer une machine virtuelle</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virsh <span style="color:#75715e"># start vm1</span>
+</span></span><span style="display:flex;"><span>virsh <span style="color:#75715e"># list</span>
+</span></span></code></pre></div><h3 id="arrêter-une-machine-virtuelle">Arrêter une machine virtuelle</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>virsh <span style="color:#75715e"># destroy vm1</span>
+</span></span><span style="display:flex;"><span>virsh <span style="color:#75715e"># list</span>
+</span></span></code></pre></div>
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

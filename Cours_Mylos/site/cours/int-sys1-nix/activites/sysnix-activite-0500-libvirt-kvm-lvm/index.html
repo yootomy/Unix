@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Activités, série 0500 - Libvirt &#43; kvm &#43; lvm</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/activites/sysnix-activite-0500-libvirt-kvm-lvm/">Activités, série 0500 - Libvirt &#43; kvm &#43; lvm</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:10</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#kvm---cloner">KVM - Cloner</a>
+      <ul>
+        <li><a href="#éléments-de-solution">Éléments de solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#kvm---cloner-dans-une-lv">KVM - Cloner dans une LV</a>
+      <ul>
+        <li><a href="#éléments-de-solution-1">Éléments de solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#kvm---étendre-la-taille-du-disque-dune-vm-contenu-dans-un-volume-logique-lv">KVM - Étendre la taille du disque d&rsquo;une vm contenu dans un volume logique (LV)</a>
+      <ul>
+        <li><a href="#éléments-de-solution-2">Éléments de solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#kvm---étendre-la-taille-du-disque-dune-vm-utilisant-lvm">KVM - Étendre la taille du disque d&rsquo;une vm utilisant lvm</a>
+      <ul>
+        <li><a href="#éléments-de-solution-3">Éléments de solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#kvm---snapshot">KVM - Snapshot</a>
+      <ul>
+        <li><a href="#éléments-de-solution-4">Éléments de solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#kvm---ajouter-un-nouveau-disque-à-la-vm">KVM - Ajouter un nouveau disque à la VM</a>
+      <ul>
+        <li><a href="#éléments-de-solution-5">Éléments de solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#création-dun-nouveau-volume-logique">Création d&rsquo;un nouveau volume logique</a>
+      <ul>
+        <li><a href="#éléments-de-solution-6">Éléments de solution</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+
+    <h2 id="kvm---cloner">KVM - Cloner</h2>
+<ol>
+<li>Cloner une machine virtuelle KVM en ligne de commande</li>
+<li>Cloner une machine virtuelle sur la serveur hôte du voisin</li>
+</ol>
+<pre tabindex="0"><code>                       cloner
+                      --------&gt;
+vm1                            vm1b
+ +-description matériel  --&gt;   +-description matériel
+ `-stockage                     `-stockage
+    `-fichier            --&gt;      `-fichier
+</code></pre><h3 id="éléments-de-solution">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0510-kvm-clone">Éléments de solution</a></li>
+</ul>
+<h2 id="kvm---cloner-dans-une-lv">KVM - Cloner dans une LV</h2>
+<ol>
+<li>Créer un machine virtuelle avec KVM en utilisant comme stockage un volume virtuel lvm (LV) de 4G.
+<ol>
+<li>copier le contenu du fichier contenant d&rsquo;un disque virtuelle dans un volume logique lvm.</li>
+<li>Créer la machine virtuelle.</li>
+</ol>
+</li>
+</ol>
+<pre tabindex="0"><code>                       cloner
+                      --------&gt;
+vm1                            vm3
+ +-description matériel  --&gt;   +-description matériel
+ `-stockage                     `-stockage
+    `-fichier            --&gt;      `-volume logique (LV) (/dev/vg/kvm-vm3)
+</code></pre><h3 id="éléments-de-solution-1">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0520-kvm-lvm-clone">Éléments de solution</a></li>
+</ul>
+<h2 id="kvm---étendre-la-taille-du-disque-dune-vm-contenu-dans-un-volume-logique-lv">KVM - Étendre la taille du disque d&rsquo;une vm contenu dans un volume logique (LV)</h2>
+<ol>
+<li>Étendre la taille du disque de 2G.</li>
+</ol>
+<pre tabindex="0"><code>.---------------------------------.
+| LV - /dev/vg/vm3  6G            | Hote
++---------------------------------+
+| /dev/sda   6GB                  | disque VM
++------------+--------------------+
+| /dev/sda1  |/dev/sda2           | partition
+| primaire   |etendue    5.5G     |
+| 512M       +--------------------+
+|            |/dev/sda5           | 
+|            |logique    5.5G     |
++------------+--------------------+
+|  /boot/efi  | /                 | système de fichiers
+|  FAT        | etx4              |
+`---------------------------------&#39;
+</code></pre><pre tabindex="0"><code>.----------------------------------------------.
+| LV - /dev/vg/vm3  8G                         | Hote
++----------------------------------------------+
+| /dev/sda   8GB                               | disque VM
++------------+---------------------------------+
+| /dev/sda1  |/dev/sda2                        | partition
+| primaire   |etendue    7.5G                  |
+| 512M       +---------------------------------+
+|            |/dev/sda5                        | 
+|            |logique    7.5G                  |
++------------+---------------------------------+
+|  /boot/efi  | /                              | système de fichiers
+|  FAT        | etx4                           |
+`----------------------------------------------&#39;
+</code></pre><h3 id="éléments-de-solution-2">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0530-kvm-extend-disk-v2">Éléments de solution (V2)</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0530-kvm-extend-disk">Éléments de solution</a></li>
+</ul>
+<h2 id="kvm---étendre-la-taille-du-disque-dune-vm-utilisant-lvm">KVM - Étendre la taille du disque d&rsquo;une vm utilisant lvm</h2>
+<ol>
+<li>Étendre la taille du disque de 2G.</li>
+</ol>
+<pre tabindex="0"><code>.---------------------------------.
+| LV - /dev/vg/vm4     6G         | Hote
++---------------------------------+
+| /dev/sda   6GB                  | disque VM
++------------+--------------------+
+| /dev/sda1  |/dev/sda2           | partition
+| primaire   |etendue    5.5G     |
+| 512M       +--------------------+
+|            |/dev/sda5           | 
+|            |logique    5.5G     |
+|            +--------------------+
+|            | PV                 | LVM
+|            +--------------------+
+|            | VG  vmLvm1-vg      | VG
+|            +----------+---------+
+|            | LV root  |LV swap_1|
++------------+----------+---------+
+| fat        |ext4      | swap    | système de fichiers
++------------+----------+---------+
+| /boot/efi  |/         | swap    |
+`------------+----------+---------&#39;
+</code></pre><pre tabindex="0"><code>.---------------------------------.-------------.
+| LV - /dev/vg/vm4     6G           +2G         | Hote
++---------------------------------+-------------+
+| /dev/sda   8GB                                | disque VM
++------------+--------------------+-------------+
+| /dev/sda1  |/dev/sda2           | /dev/sda3   |  partition
+| primaire   |etendue    5.5G     | primaire 2G |
+| 512M       +--------------------+             |
+|            |/dev/sda5           |             |
+|            |logique    5.5G     |             |
+|            +--------------------+-------------+
+|            | PV                 | PV          |  LVM
+|            +--------------------+-------------+
+|            | VG  vgvmlvm3                     |  VG
+|            +------------------------+---------+
+|            | LV root                |LV swap_1|
++------------+------------------------+---------+
+| fat        |ext4                    | swap    |  système de fichiers
++------------+------------------------+---------+
+| /boot/efi  |/                       | swap    |
+`------------+------------------------+---------&#39;
+</code></pre><h3 id="éléments-de-solution-3">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0540-kvm-lvm-extend-lv-v2">Éléments de solution (V2)</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0540-kvm-lvm-extend-lv">Éléments de solution</a></li>
+</ul>
+<h2 id="kvm---snapshot">KVM - Snapshot</h2>
+<pre tabindex="0"><code>             .---------------------------------..-------------------------.
+Hote         | LV - /dev/vg/vm3                || LV - /dev/vg/vm3-s1     | 
+             +---------------------------------+`-------------------------&#39;
+Guest        | /dev/sda   6GB                  | 
+             +------------+--------------------+
+Partition    | /dev/sda1  |/dev/sda2           |
+             | primaire   |etendue    5.5G     |
+             | 512M       +--------------------+
+             |            |/dev/sda5           | 
+             |            |logique    5.5G     |
+             +------------+--------------------+
+             |  /boot/efi  | /                 | 
+             |  FAT        | etx4              |
+             `---------------------------------&#39;
+</code></pre><ol>
+<li>Créer un snapshot du volume logique de la VM</li>
+<li>Installer le logiciel  <code>apache2</code></li>
+<li>Vérifier que le logiciel fonctionne</li>
+<li>Revenir avant l&rsquo;installation du logiciel</li>
+</ol>
+<h3 id="éléments-de-solution-4">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0550-kvm-lvm-snapshot">Éléments de solution</a></li>
+</ul>
+<h2 id="kvm---ajouter-un-nouveau-disque-à-la-vm">KVM - Ajouter un nouveau disque à la VM</h2>
+<ul>
+<li>Ajouter ce nouveau disque au groupe de volume existant</li>
+</ul>
+<pre tabindex="0"><code>             .---------------------------------..---------------------------------.
+Hote         | LV - /dev/vg/vm4                || fichier - ~/tmp/pool/vol1.img   | 
+             +---------------------------------++---------------------------------+
+Guest        | /dev/vda                        || /dev/vdb                        | 
+             +---------------------------------++---------------------------------+
+partition    | /dev/vda1                       || /dev/vdb1                       | 
+             | primaire                        || primaire                        |
+             +---------------------------------++---------------------------------+
+LVM          | PV                              || PV                              | 
+             +---------------------------------++---------------------------------+
+             | VG  vmLvm1-vg                                                      | 
+             +-----------------------+---------+----------------------------------&#39;
+             | LV root               |LV swap_1|
+             +-----------------------+---------+
+             | ext4                  | swap    |
+             +-----------------------+---------&#39;
+             | /                     | swap    |
+             `-----------------------+---------&#39;
+</code></pre><h3 id="éléments-de-solution-5">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0560-kvm-lvm-add-pv">Éléments de solution</a></li>
+</ul>
+<h2 id="création-dun-nouveau-volume-logique">Création d&rsquo;un nouveau volume logique</h2>
+<pre tabindex="0"><code>             .---------------------------------..---------------------------------.
+Hote         | LV - /dev/vg/vm4                || fichier - ~/tmp/pool/vol1.img   | 
+             +---------------------------------++---------------------------------+
+Guest        | /dev/vda                        || /dev/vdb                        | 
+             +---------------------------------++---------------------------------+
+partition    | /dev/vda1                       || /dev/vdb1                       | 
+             | primaire                        || primaire                        |
+             +---------------------------------++---------------------------------+
+LVM          | PV                              || PV                              | 
+             +---------------------------------++---------------------------------+
+             | VG  vmLvm1-vg                                                      | 
+             +-----------------------+---------+----------------------------------&#39;
+             | LV root               |LV swap_1|  LV data |                       |
+             +-----------------------+---------+----------+-----------------------&#39;
+             |  ext4                 | swap    | ext4     |
+             +-----------------------+---------+----------&#39;
+             | /                     | swap    |  /mnt    |
+             `-----------------------+---------+----------&#39;
+</code></pre><p>Dans le machine vmLvm3,</p>
+<ul>
+<li>Créer un nouveau volume logique <strong>data</strong></li>
+<li>Formater ce volume logique en <strong>ext4</strong></li>
+<li>Monter ce stockage en <strong>/mnt</strong></li>
+<li>Faire en sorte que le montage soit permanent.</li>
+</ul>
+<h3 id="éléments-de-solution-6">Éléments de solution</h3>
+<ul>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.cours/intsys1nix/intsys1nix.documents/-/wikis/elements-de-solution/sysnix-activite-0570-kvm-lvm-add-lv">Éléments de solution</a></li>
+</ul>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/activites/">Activités</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

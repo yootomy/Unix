@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - incus &#43; zfs</title>
+	<meta name="description" content="Virtualisation des conteneurs gérés avec incus utilisant zfs comme volume de stockage."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/sysnix/">Sysnix</a></li>
+            
+            <li><a href="/cours/tags/virtualisation/">Virtualisation</a></li>
+            
+            <li><a href="/cours/tags/zfs/">Zfs</a></li>
+            
+            <li><a href="/cours/tags/lxd/">Lxd</a></li>
+            
+            <li><a href="/cours/tags/incus/">Incus</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/virtualisation-incus-zfs/">Virtualisation - incus &#43; zfs</a></h1>
+    <p>Virtualisation des conteneurs gérés avec incus utilisant zfs comme volume de stockage.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>17.05.2021 08:30</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#installation-et-configuration-de-zfs">Installation et configuration de zfs</a></li>
+    <li><a href="#installation-et-configuration-de-incus">Installation et configuration de incus</a></li>
+    <li><a href="#création-dun-conteneur-de-test">Création d&rsquo;un conteneur de test</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="installation-et-configuration-de-zfs">Installation et configuration de zfs</h2>
+<ul>
+<li>
+<p>installation de zfs</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt-get install zfsutils-linux
+</span></span></code></pre></div></li>
+<li>
+<p>Création d&rsquo;un <strong>pool</strong> zfs</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo fdisk -l /dev/sda
+</span></span><span style="display:flex;"><span>Disque /dev/sda : 298.9 GiB, 320072933376 octets, 625142448 secteurs
+</span></span><span style="display:flex;"><span>Disk model: WDC WD3200AAKX-0
+</span></span><span style="display:flex;"><span>Unités : secteur de <span style="color:#ae81ff">1</span> × 512 <span style="color:#f92672">=</span> 512 octets
+</span></span><span style="display:flex;"><span>Taille de secteur <span style="color:#f92672">(</span>logique / physique<span style="color:#f92672">)</span> : 512 octets / 512 octets
+</span></span><span style="display:flex;"><span>taille d<span style="color:#e6db74">&#39;E/S (minimale / optimale) : 512 octets / 512 octets
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Type d&#39;</span>étiquette de disque : dos
+</span></span><span style="display:flex;"><span>Identifiant de disque : 0x204c43a2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Périphérique Amorçage     Début       Fin  Secteurs Taille Id Type
+</span></span><span style="display:flex;"><span>/dev/sda1    *             <span style="color:#ae81ff">2048</span> <span style="color:#ae81ff">488282111</span> <span style="color:#ae81ff">488280064</span> 232.9G 8e LVM Linux
+</span></span><span style="display:flex;"><span>/dev/sda2             <span style="color:#ae81ff">488282112</span> <span style="color:#ae81ff">625141759</span> <span style="color:#ae81ff">136859648</span>  65.3G <span style="color:#ae81ff">83</span> Linux
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo zpool create dpool /dev/sda2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ sudo zpool list
+</span></span><span style="display:flex;"><span>NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+</span></span><span style="display:flex;"><span>dpool    65G   112K  65.0G        -         -     0%     0%  1.00x    ONLINE  -
+</span></span></code></pre></div></li>
+<li>
+<p>Création d&rsquo;un <strong>dataset</strong> pour incus dans le pool zfs</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo zfs create dpool/incus -o mountpoint<span style="color:#f92672">=</span>none
+</span></span><span style="display:flex;"><span>$ sudo zfs list
+</span></span><span style="display:flex;"><span>NAME                USED  AVAIL     REFER  MOUNTPOINT
+</span></span><span style="display:flex;"><span>dpool              4.34G   220G       24K  /dpool
+</span></span><span style="display:flex;"><span>dpool/incus          24K   220G       24K  none
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="installation-et-configuration-de-incus">Installation et configuration de incus</h2>
+<ul>
+<li>
+<p>installation de incus suivre les instructions du <a href="https://github.com/zabbly/incus#installation">lien</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ sudo su
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# curl -fsSL https://pkgs.zabbly.com/key.asc | gpg --show-keys --fingerprint
+</span></span><span style="display:flex;"><span>gpg: répertoire « /root/.gnupg » créé
+</span></span><span style="display:flex;"><span>gpg: le trousseau local « /root/.gnupg/pubring.kbx » a été créé
+</span></span><span style="display:flex;"><span>pub   rsa3072 2023-08-23 <span style="color:#f92672">[</span>SC<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>expire : 2025-08-22<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      4EFC <span style="color:#ae81ff">5906</span> 96CB 15B8 7C73  A3AD 82CC <span style="color:#ae81ff">8797</span> C838 DCFD
+</span></span><span style="display:flex;"><span>uid                      Zabbly Kernel Builds &lt;info@zabbly.com&gt;
+</span></span><span style="display:flex;"><span>sub   rsa3072 2023-08-23 <span style="color:#f92672">[</span>E<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>expire : 2025-08-22<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# mkdir -p /etc/apt/keyrings/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# curl -fsSL https://pkgs.zabbly.com/key.asc -o /etc/apt/keyrings/zabbly.asc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# sh -c <span style="color:#e6db74">&#39;cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/zabbly-incus-stable.sources
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Enabled: yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Types: deb
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">URIs: https://pkgs.zabbly.com/incus/stable
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Suites: $(. /etc/os-release &amp;&amp; echo ${VERSION_CODENAME})
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Components: main
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Architectures: $(dpkg --print-architecture)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Signed-By: /etc/apt/keyrings/zabbly.asc
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# apt update
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# apt-get install incus
+</span></span></code></pre></div></li>
+<li>
+<p>Ajouter à l&rsquo;utilisateur principal</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# adduser huguenindo incus-admin
+</span></span><span style="display:flex;"><span>Ajout de l<span style="color:#e6db74">&#39;utilisateur « huguenindo » au groupe « incus-admin » ...
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Ajout de l&#39;</span>utilisateur huguenindo au groupe incus-admin
+</span></span><span style="display:flex;"><span>Fait.
+</span></span><span style="display:flex;"><span>root@ubuntu-usb-dhu:/home/huguenindo# id huguenindo
+</span></span><span style="display:flex;"><span>uid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>huguenindo<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>huguenindo<span style="color:#f92672">)</span> groupes<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>huguenindo<span style="color:#f92672">)</span>,4<span style="color:#f92672">(</span>adm<span style="color:#f92672">)</span>,24<span style="color:#f92672">(</span>cdrom<span style="color:#f92672">)</span>,27<span style="color:#f92672">(</span>sudo<span style="color:#f92672">)</span>,30<span style="color:#f92672">(</span>dip<span style="color:#f92672">)</span>,46<span style="color:#f92672">(</span>plugdev<span style="color:#f92672">)</span>,122<span style="color:#f92672">(</span>lpadmin<span style="color:#f92672">)</span>,134<span style="color:#f92672">(</span>lxd<span style="color:#f92672">)</span>,135<span style="color:#f92672">(</span>sambashare<span style="color:#f92672">)</span>,139<span style="color:#f92672">(</span>libvirt<span style="color:#f92672">)</span>,144<span style="color:#f92672">(</span>incus-admin<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>activer temporairement le nouveau groupe</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ newgrp incus-admin
+</span></span><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ id
+</span></span><span style="display:flex;"><span>uid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>huguenindo<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>144<span style="color:#f92672">(</span>incus-admin<span style="color:#f92672">)</span> groupes<span style="color:#f92672">=</span>144<span style="color:#f92672">(</span>incus-admin<span style="color:#f92672">)</span>,4<span style="color:#f92672">(</span>adm<span style="color:#f92672">)</span>,24<span style="color:#f92672">(</span>cdrom<span style="color:#f92672">)</span>,27<span style="color:#f92672">(</span>sudo<span style="color:#f92672">)</span>,30<span style="color:#f92672">(</span>dip<span style="color:#f92672">)</span>,46<span style="color:#f92672">(</span>plugdev<span style="color:#f92672">)</span>,122<span style="color:#f92672">(</span>lpadmin<span style="color:#f92672">)</span>,134<span style="color:#f92672">(</span>lxd<span style="color:#f92672">)</span>,135<span style="color:#f92672">(</span>sambashare<span style="color:#f92672">)</span>,139<span style="color:#f92672">(</span>libvirt<span style="color:#f92672">)</span>,1000<span style="color:#f92672">(</span>huguenindo<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>configuration</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ incus admin init
+</span></span><span style="display:flex;"><span>Would you like to use clustering? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>no<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>Do you want to configure a new storage pool? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>yes<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>Name of the new storage pool <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>default<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>Name of the storage backend to use <span style="color:#f92672">(</span>dir, lvm, zfs<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>zfs<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>Create a new ZFS pool? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>yes<span style="color:#f92672">]</span>: no
+</span></span><span style="display:flex;"><span>Name of the existing ZFS pool or dataset: dpool/incus
+</span></span><span style="display:flex;"><span>Would you like to create a new local network bridge? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>yes<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>What should the new bridge be called? <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>incusbr0<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>What IPv4 address should be used? <span style="color:#f92672">(</span>CIDR subnet notation, “auto” or “none”<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>auto<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>What IPv6 address should be used? <span style="color:#f92672">(</span>CIDR subnet notation, “auto” or “none”<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>auto<span style="color:#f92672">]</span>: none
+</span></span><span style="display:flex;"><span>Would you like the server to be available over the network? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>no<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>Would you like stale cached images to be updated automatically? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>yes<span style="color:#f92672">]</span>: 
+</span></span><span style="display:flex;"><span>Would you like a YAML <span style="color:#e6db74">&#34;init&#34;</span> preseed to be printed? <span style="color:#f92672">(</span>yes/no<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>default<span style="color:#f92672">=</span>no<span style="color:#f92672">]</span>: 
+</span></span></code></pre></div></li>
+<li>
+<p>Vérification de l&rsquo;utilisation du volume zfs par incus</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ sudo zfs list dpool/incus -r
+</span></span><span style="display:flex;"><span>NAME                                   USED  AVAIL     REFER  MOUNTPOINT
+</span></span><span style="display:flex;"><span>dpool/incus                            288K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/buckets                     24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/containers                  24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/custom                      24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/deleted                    144K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/deleted/buckets             24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/deleted/containers          24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/deleted/custom              24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/deleted/images              24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/deleted/virtual-machines    24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/images                      24K   220G       24K  legacy
+</span></span><span style="display:flex;"><span>dpool/incus/virtual-machines            24K   220G       24K  legacy
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ incus list
+</span></span><span style="display:flex;"><span>+------+-------+------+------+------+-----------+
+</span></span><span style="display:flex;"><span>| NAME | STATE | IPV4 | IPV6 | TYPE | SNAPSHOTS |
+</span></span><span style="display:flex;"><span>+------+-------+------+------+------+-----------+
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="création-dun-conteneur-de-test">Création d&rsquo;un conteneur de test</h2>
+<ul>
+<li>
+<p>Création du conteneur</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ incus launch images:debian/bookworm/cloud test
+</span></span><span style="display:flex;"><span>Creating test
+</span></span><span style="display:flex;"><span>Starting test                               
+</span></span><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ incus list
+</span></span><span style="display:flex;"><span>+------+---------+----------------------+------+-----------+-----------+
+</span></span><span style="display:flex;"><span>| NAME |  STATE  |         IPV4         | IPV6 |   TYPE    | SNAPSHOTS |
+</span></span><span style="display:flex;"><span>+------+---------+----------------------+------+-----------+-----------+
+</span></span><span style="display:flex;"><span>| test | RUNNING | 10.185.16.189 <span style="color:#f92672">(</span>eth0<span style="color:#f92672">)</span> |      | CONTAINER | <span style="color:#ae81ff">0</span>         |
+</span></span><span style="display:flex;"><span>+------+---------+----------------------+------+-----------+-----------+
+</span></span></code></pre></div></li>
+<li>
+<p>accès à la console</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@ubuntu-usb-dhu:~$ incus exec test -- su -l debian
+</span></span><span style="display:flex;"><span>debian@test:~$
+</span></span></code></pre></div></li>
+</ul>
+<p>Finaliser l&rsquo;installation en installant le service ssh et en configuration les accès avec des clé <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix/fiches/ssh-authentification-sans-mot-de-passe/">Ssh - authentification sans saisie de mot de passe</a></p>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://linuxcontainers.org/">Linux Containers</a></li>
+<li><a href="https://linuxcontainers.org/incus/introduction/">Incus - documentation</a></li>
+<li><a href="https://github.com/zabbly/incus">Incus builds</a></li>
+<li><a href="https://openzfs.github.io/openzfs-docs/index.html">OpenZFS Documentation</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

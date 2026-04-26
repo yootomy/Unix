@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Gestion du temps - timedatectl</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-time-chrony/">Service réseau - Gestion du temps - timedatectl</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:21</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#installation-et-configuration-du-serveur-de-temps-sur-la-machine-hôte">Installation et configuration du serveur de temps sur la machine hôte</a></li>
+    <li><a href="#configuration-du-dhcp-pour">Configuration du DHCP pour</a></li>
+    <li><a href="#vérification-de-la-configuration-du-client-timedatectl-sur-urbicande">Vérification de la configuration du client timedatectl sur urbicande</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="installation-et-configuration-du-serveur-de-temps-sur-la-machine-hôte">Installation et configuration du serveur de temps sur la machine hôte</h2>
+<ul>
+<li>installation de service chrony</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ sudo apt-get install chrony
+Lecture des listes de paquets... Fait
+Construction de l&#39;arbre des dépendances       
+Lecture des informations d&#39;état... Fait
+Les NOUVEAUX paquets suivants seront installés :
+  chrony
+0 mis à jour, 1 nouvellement installés, 0 à enlever et 3 non mis à jour.
+Il est nécessaire de prendre 203 ko dans les archives.
+Après cette opération, 509 ko d&#39;espace disque supplémentaires seront utilisés.
+Réception de :1 http://ch.archive.ubuntu.com/ubuntu bionic-updates/main amd64 chrony amd64 3.2-4ubuntu4.2 [203 kB]
+203 ko réceptionnés en 0s (2&#39;795 ko/s)
+Sélection du paquet chrony précédemment désélectionné.
+(Lecture de la base de données... 312905 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de .../chrony_3.2-4ubuntu4.2_amd64.deb ...
+Dépaquetage de chrony (3.2-4ubuntu4.2) ...
+Traitement des actions différées (« triggers ») pour ureadahead (0.100.0-20) ...
+Paramétrage de chrony (3.2-4ubuntu4.2) ...
+Creating &#39;_chrony&#39; system user/group for the chronyd daemon…
+
+Creating config file /etc/chrony/chrony.conf with new version
+
+Creating config file /etc/chrony/chrony.keys with new version
+Created symlink /etc/systemd/system/chronyd.service → /lib/systemd/system/chrony.service.
+Created symlink /etc/systemd/system/multi-user.target.wants/chrony.service → /lib/systemd/system/chrony.service.
+Traitement des actions différées (« triggers ») pour systemd (237-3ubuntu10.15) ...
+Traitement des actions différées (« triggers ») pour man-db (2.8.3-2ubuntu0.1) ...
+Traitement des actions différées (« triggers ») pour ureadahead (0.100.0-20) ...
+</code></pre><ul>
+<li>configuration du service, modifier le fichier <code>/etc/chrony/chrony.conf</code></li>
+</ul>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ cat /etc/chrony/chrony.conf 
+# Welcome to the chrony configuration file. See chrony.conf(5) for more
+# information about usuable directives.
+
+# This will use (up to):
+# - 4 sources from ntp.ubuntu.com which some are ipv6 enabled
+# - 2 sources from 2.ubuntu.pool.ntp.org which is ipv6 enabled as well
+# - 1 source from [01].ubuntu.pool.ntp.org each (ipv4 only atm)
+# This means by default, up to 6 dual-stack and up to 2 additional IPv4-only
+# sources will be used.
+# At the same time it retains some protection against one of the entries being
+# down (compare to just using one of the lines). See (LP: #1754358) for the
+# discussion.
+#
+# About using servers from the NTP Pool Project in general see (LP: #104525).
+# Approved by Ubuntu Technical Board on 2011-02-08.
+# See http://www.pool.ntp.org/join.html for more information.
+#pool ntp.ubuntu.com        iburst maxsources 4
+#pool 0.ubuntu.pool.ntp.org iburst maxsources 1
+#pool 1.ubuntu.pool.ntp.org iburst maxsources 1
+#pool 2.ubuntu.pool.ntp.org iburst maxsources 2
+pool ntp.s2.rpn.ch        iburst maxsources 4     #&lt;-------- serveur ntp du S2
+
+allow all 192.168.100.0/24                        #&lt;-------- autorisation des accès
+
+# This directive specify the location of the file containing ID/key pairs for
+# NTP authentication.
+keyfile /etc/chrony/chrony.keys
+
+# This directive specify the file into which chronyd will store the rate
+# information.
+driftfile /var/lib/chrony/chrony.drift
+
+# Uncomment the following line to turn logging on.
+#log tracking measurements statistics
+
+# Log files location.
+logdir /var/log/chrony
+
+# Stop bad estimates upsetting machine clock.
+maxupdateskew 100.0
+
+# This directive enables kernel synchronisation (every 11 minutes) of the
+# real-time clock. Note that it can’t be used along with the &#39;rtcfile&#39; directive.
+rtcsync
+
+# Step the system clock instead of slewing it if the adjustment is larger than
+# one second, but only in the first three clock updates.
+makestep 1 3
+</code></pre><ul>
+<li>redémarrer le service</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ sudo systemctl restart chrony
+</code></pre><pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ sudo systemctl status chrony
+● chrony.service - chrony, an NTP client/server
+   Loaded: loaded (/lib/systemd/system/chrony.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2019-03-26 14:45:09 CET; 4s ago
+     Docs: man:chronyd(8)
+           man:chronyc(1)
+           man:chrony.conf(5)
+  Process: 20102 ExecStartPost=/usr/lib/chrony/chrony-helper update-daemon (code=exited, status=0/SUCCESS)
+  Process: 20064 ExecStart=/usr/lib/systemd/scripts/chronyd-starter.sh $DAEMON_OPTS (code=exited, status=0/SUCCESS)
+ Main PID: 20096 (chronyd)
+    Tasks: 1 (limit: 4915)
+   CGroup: /system.slice/chrony.service
+           └─20096 /usr/sbin/chronyd
+
+mar 26 14:45:08 mc0-0315-dhu systemd[1]: Stopping chrony, an NTP client/server...
+mar 26 14:45:08 mc0-0315-dhu systemd[1]: Stopped chrony, an NTP client/server.
+mar 26 14:45:08 mc0-0315-dhu systemd[1]: Starting chrony, an NTP client/server...
+mar 26 14:45:09 mc0-0315-dhu chronyd[20096]: chronyd version 3.2 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SECHASH +
+mar 26 14:45:09 mc0-0315-dhu chronyd[20096]: Frequency 21.599 +/- 54.161 ppm read from /var/lib/chrony/chrony.drift
+mar 26 14:45:09 mc0-0315-dhu systemd[1]: Started chrony, an NTP client/server.
+mar 26 14:45:13 mc0-0315-dhu chronyd[20096]: Selected source 157.26.166.16
+</code></pre><ul>
+<li>vérification que le port 123 est en écoute</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ netstat -nl | grep :123
+udp        0      0 0.0.0.0:123             0.0.0.0:*     
+</code></pre><h2 id="configuration-du-dhcp-pour">Configuration du DHCP pour</h2>
+<ul>
+<li>Distribution des serveur NTP</li>
+</ul>
+<pre tabindex="0"><code>ubuntu@atomium:~$ cat /etc/dhcp/dhcpd.conf 
+#
+# DHCP antiterre.lan
+#
+...
+option ntp-servers              192.168.100.1;
+...
+}
+</code></pre><ul>
+<li>Redémarrer le service</li>
+</ul>
+<pre tabindex="0"><code>ubuntu@atomium:~$ sudo systemctl restart isc-dhcp-server
+ubuntu@atomium:~$ sudo systemctl status isc-dhcp-server
+● isc-dhcp-server.service - ISC DHCP IPv4 server
+   Loaded: loaded (/lib/systemd/system/isc-dhcp-server.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2019-03-26 12:27:46 UTC; 2s ago
+     Docs: man:dhcpd(8)
+ Main PID: 1661 (dhcpd)
+    Tasks: 1 (limit: 4915)
+   CGroup: /system.slice/isc-dhcp-server.service
+           └─1661 dhcpd -user dhcpd -group dhcpd -f -4 -pf /run/dhcp-server/dhcpd.pid -cf /etc/dhcp/dhcpd.conf
+
+mar 26 12:27:46 atomium sh[1661]: Wrote 4 leases to leases file.
+mar 26 12:27:46 atomium dhcpd[1661]: Wrote 0 new dynamic host decls to leases file.
+mar 26 12:27:46 atomium dhcpd[1661]: Wrote 4 leases to leases file.
+mar 26 12:27:46 atomium dhcpd[1661]: Listening on LPF/eth0/00:16:3e:dd:23:a9/192.168.100.0/24
+mar 26 12:27:46 atomium sh[1661]: Listening on LPF/eth0/00:16:3e:dd:23:a9/192.168.100.0/24
+mar 26 12:27:46 atomium dhcpd[1661]: Sending on   LPF/eth0/00:16:3e:dd:23:a9/192.168.100.0/24
+mar 26 12:27:46 atomium sh[1661]: Sending on   LPF/eth0/00:16:3e:dd:23:a9/192.168.100.0/24
+mar 26 12:27:46 atomium sh[1661]: Sending on   Socket/fallback/fallback-net
+mar 26 12:27:46 atomium dhcpd[1661]: Sending on   Socket/fallback/fallback-net
+mar 26 12:27:46 atomium dhcpd[1661]: Server starting service.
+</code></pre><h2 id="vérification-de-la-configuration-du-client-timedatectl-sur-urbicande">Vérification de la configuration du client timedatectl sur urbicande</h2>
+<ul>
+<li>redémarrage du service</li>
+</ul>
+<pre tabindex="0"><code>ubuntu@urbicande:~$ sudo systemctl stop systemd-timesyncd
+ubuntu@urbicande:~$ sudo systemctl start systemd-timesyncd
+ubuntu@urbicande:~$ sudo systemctl status systemd-timesyncd
+● systemd-timesyncd.service - Network Time Synchronization
+   Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2019-03-26 14:49:15 CET; 2s ago
+     Docs: man:systemd-timesyncd.service(8)
+ Main PID: 835 (systemd-timesyn)
+   Status: &#34;Synchronized to time server 192.168.100.1:123 (192.168.100.1).&#34;
+    Tasks: 2 (limit: 2338)
+   CGroup: /system.slice/systemd-timesyncd.service
+           └─835 /lib/systemd/systemd-timesyncd
+
+mar 26 14:49:15 urbicande systemd[1]: Starting Network Time Synchronization...
+mar 26 14:49:15 urbicande systemd[1]: Started Network Time Synchronization.
+mar 26 14:49:15 urbicande systemd-timesyncd[835]: Synchronized to time server 192.168.100.1:123 (192.168.100.1).
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>Time Synchronization, <a href="https://help.ubuntu.com/lts/serverguide/NTP.html">https://help.ubuntu.com/lts/serverguide/NTP.html</a></li>
+<li>timedatectl : l’outil de systemd pour régler l’heure et la date | memo-linux.com, <a href="https://memo-linux.com/timedatectl-loutil-de-systemd-pour-regler-lheure-et-la-date/">https://memo-linux.com/timedatectl-loutil-de-systemd-pour-regler-lheure-et-la-date/</a></li>
+<li>Ancien configuration avec ntpd <a href="SysNixSrvResNTPPublic">SysNixSrvResNTPPublic</a></li>
+<li>pool.ntp.org: NTP Servers in Switzerland, ch.pool.ntp.org, <a href="https://www.pool.ntp.org/zone/ch">https://www.pool.ntp.org/zone/ch</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

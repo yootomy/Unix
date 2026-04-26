@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Service DNS, Domaine Name System</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-dns/">Service réseau - Service DNS, Domaine Name System</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:22</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#hébergeur">Hébergeur</a></li>
+    <li><a href="#installation-des-paquets">Installation des paquets</a></li>
+    <li><a href="#configuration">Configuration</a>
+      <ul>
+        <li><a href="#fichiers-de-configuration">Fichiers de configuration</a></li>
+        <li><a href="#configuration-du-transfert-forward">Configuration du transfert (forward)</a></li>
+        <li><a href="#ajout-dun-domaine-primaire-primary-zone">Ajout d&rsquo;un domaine primaire (primary zone)</a></li>
+        <li><a href="#reverse-zone-file">Reverse Zone File</a></li>
+        <li><a href="#redémarrage-du-service-dns">Redémarrage du service DNS</a></li>
+        <li><a href="#test">test</a></li>
+        <li><a href="#configurer-le-serveur-dns-netplan">Configurer le serveur DNS (netplan)</a></li>
+        <li><a href="#ajout-de-noms-dhôte">Ajout de noms d&rsquo;hôte</a></li>
+      </ul>
+    </li>
+    <li><a href="#post-configuration">Post-configuration</a></li>
+    <li><a href="#vérification-de-la-configuration-courant-du-dns">Vérification de la configuration courant du DNS</a></li>
+    <li><a href="#commandes">Commandes</a>
+      <ul>
+        <li><a href="#dig">dig</a></li>
+        <li><a href="#nslookup">nslookup</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<blockquote>
+<p>Le Domain Name System (ou DNS, système de noms de domaine) est un service permettant d&rsquo;établir une correspondance entre une adresse IP et un nom de domaine et, plus généralement, de trouver une information à partir d&rsquo;un nom de domaine.</p>
+<p><img src="../../images/800px-Dns-raum.svg.png" alt="Image"></p>
+<p><img src="../../images/400px-DNS_iterations.svg.png" alt="Image"></p>
+<p>Résolution itérative d&rsquo;un nom dans le DNS par un serveur DNS (étapes 2 à 7) et réponse (étape 8) suite à l&rsquo;interrogation récursive (étape 1) effectuée par un client (resolver) DNS. (remarque: Le serveur DNS récursif est dit récursif car il accepte ce type de requêtes mais il effectue des requêtes itératives).</p>
+<p>Tirer de [<a href="http://fr.wikipedia.org/wiki/Domain_Name_System">5</a>]</p>
+</blockquote>
+<h2 id="hébergeur">Hébergeur</h2>
+<p>La machine <code>blossfeldtstad</code> hébergera ce service.</p>
+<h2 id="installation-des-paquets">Installation des paquets</h2>
+<pre tabindex="0"><code>sudo apt-get install bind9 dnsutils
+</code></pre><h2 id="configuration">Configuration</h2>
+<h3 id="fichiers-de-configuration">Fichiers de configuration</h3>
+<pre tabindex="0"><code>/
+├── ...
+├── etc
+│   ├── ...
+│   ├── network
+│   │   └── interface
+│   ├── ...
+│   └── bind
+│       ├── ...
+│       ├── db.192.168.100    # zone inverse
+│       ├── db.antiterre.lan  # zone
+│       ├── ...
+│       ├── named.conf.local
+│       ├── named.conf.options
+│       └── ...
+├── ...
+└── var
+    └── log
+        ├── ...
+        ├── syslog # journal des services
+        └── ...
+</code></pre><h3 id="configuration-du-transfert-forward">Configuration du transfert (forward)</h3>
+<pre tabindex="0"><code>sudo vim /etc/bind/named.conf.options
+</code></pre><pre tabindex="0"><code>options {
+        directory &#34;/var/cache/bind&#34;;
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+        // the all-0&#39;s placeholder.
+
+        forwarders {
+            157.26.166.16; # dns du cpne
+            157.26.166.17; # dns du cpne
+            8.8.8.8;       # dns google
+            1.1.1.1;
+        };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        //dnssec-validation auto;
+
+        dnssec-validation no;
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+
+        rrset-order { order cyclic; };
+};
+</code></pre><h3 id="ajout-dun-domaine-primaire-primary-zone">Ajout d&rsquo;un domaine primaire (primary zone)</h3>
+<p>dans <code>/etc/bind/named.conf.local</code> ajout d&rsquo;une nouvelle zone <strong>antiterre.lan</strong></p>
+<pre tabindex="0"><code>...
+zone &#34;antiterre.lan&#34; {
+             type master;
+             file &#34;/etc/bind/db.antiterre.lan&#34;;
+        };
+...
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo cp /etc/bind/db.local /etc/bind/db.antiterre.lan
+</span></span></code></pre></div><p>Dans <code>/etc/bind/db.antiterre.lan</code> remplacer :</p>
+<ul>
+<li><strong>localhost.</strong> par <strong>ns1.antiterre.lan.</strong></li>
+<li><strong>root.localhost.</strong> par <strong>root.antiterre.lan.</strong></li>
+<li>Comme paramètre à <strong>Serial</strong> la date de la configuration <strong>YYYYMMDDHH</strong></li>
+<li>fixe la bonne adresse IP</li>
+</ul>
+<pre tabindex="0"><code>;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	ns1.antiterre.lan. root.antiterre.lan. (
+		     2014103001		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@		IN	NS	ns1.antiterre.lan.
+@		IN	A	192.168.100.10
+
+ns1		IN 	A	192.168.100.10
+blossfeldtstad  IN 	CNAME   ns1
+</code></pre><h3 id="reverse-zone-file">Reverse Zone File</h3>
+<ul>
+<li>
+<p>Dans <code>/etc/bind/named.conf.local</code> ajouter d&rsquo;une nouvelle zone <strong>100.168.192.in-addr.arpa</strong></p>
+<pre tabindex="0"><code>...
+zone &#34;100.168.192.in-addr.arpa&#34; {
+        type master;
+        notify no;
+        file &#34;/etc/bind/db.192.168.100&#34;;
+};
+...
+</code></pre></li>
+<li>
+<p>Créer le fichier <code>/etc/bind/db.192.168.100</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo cp /etc/bind/db.127 /etc/bind/db.192.168.100
+</span></span></code></pre></div></li>
+<li>
+<p>Modifier le fichier <code>/etc/bind/db.192.168.100</code></p>
+<pre tabindex="0"><code>;
+; BIND reverse data file for local loopback interface
+;
+$TTL    604800
+@		IN      SOA     ns1.antiterre.lan. root.antiterre.lan. (
+                    2014103001         ; Serial
+                        604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                        604800 )       ; Negative Cache TTL
+;
+@		IN	NS	ns1.
+10		IN	PTR	ns1.antiterre.lan.
+</code></pre></li>
+<li>
+<p>Validation des zones dns</p>
+<pre tabindex="0"><code>$ named-checkzone antiterre.lan /etc/bind/db.antiterre.lan
+zone antiterre.lan/IN: loaded serial 2014103001
+OK
+</code></pre><pre tabindex="0"><code>$ named-checkzone antiterre.lan /etc/bind/db.192.168.100
+zone antiterre.lan/IN: loaded serial 2014103001
+OK
+</code></pre></li>
+</ul>
+<h3 id="redémarrage-du-service-dns">Redémarrage du service DNS</h3>
+<pre tabindex="0"><code>debian@blossfeldtstad:~$ sudo systemctl restart bind9
+debian@blossfeldtstad:~$ sudo systemctl status bind9
+● bind9.service - BIND Domain Name Server
+   Loaded: loaded (/lib/systemd/system/bind9.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2019-04-02 08:47:43 UTC; 4s ago
+     Docs: man:named(8)
+  Process: 1644 ExecStop=/usr/sbin/rndc stop (code=exited, status=0/SUCCESS)
+ Main PID: 1678 (named)
+    Tasks: 11 (limit: 4915)
+   CGroup: /system.slice/bind9.service
+           └─1678 /usr/sbin/named -f -u bind
+
+avr 02 08:47:43 blossfeldtstad named[1678]: managed-keys-zone: journal file is out of date: rem
+avr 02 08:47:43 blossfeldtstad named[1678]: managed-keys-zone: loaded serial 2
+avr 02 08:47:43 blossfeldtstad named[1678]: zone 0.in-addr.arpa/IN: loaded serial 1
+avr 02 08:47:43 blossfeldtstad named[1678]: zone 127.in-addr.arpa/IN: loaded serial 1
+avr 02 08:47:43 blossfeldtstad named[1678]: zone 100.168.192.in-addr.arpa/IN: loaded serial 201
+avr 02 08:47:43 blossfeldtstad named[1678]: zone localhost/IN: loaded serial 2
+avr 02 08:47:43 blossfeldtstad named[1678]: zone 255.in-addr.arpa/IN: loaded serial 1
+avr 02 08:47:43 blossfeldtstad named[1678]: zone antiterre.lan/IN: loaded serial 2019040200
+avr 02 08:47:43 blossfeldtstad named[1678]: all zones loaded
+avr 02 08:47:43 blossfeldtstad named[1678]: running
+lines 1-20/20 (END)
+</code></pre><blockquote>
+<p><strong>information</strong>
+<code>$ sudo journalctl -u named</code> permet de consulter les messages du service DNS.</p>
+</blockquote>
+<h3 id="test">test</h3>
+<blockquote>
+<p>dig est un programme informatique de débogage de serveurs DNS. Il signifie Domain Information Groper, littéralement Chercheur d&rsquo;Information sur les Domaines.[<a href="http://fr.wikipedia.org/wiki/Dig_%28programme_informatique%29">6</a>]</p>
+</blockquote>
+<ul>
+<li>
+<p>Interroge le service DNS du serveur 192.168.100.10 (@192.168.100.10)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ dig @192.168.100.10 antiterre.lan
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.9.5-3-Ubuntu &lt;&lt;&gt;&gt; @192.168.100.10 antiterre.lan
+</span></span><span style="display:flex;"><span>; <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> server found<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>;; Got answer:
+</span></span><span style="display:flex;"><span>;; -&gt;&gt;HEADER<span style="color:#e6db74">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style="color:#ae81ff">47222</span>
+</span></span><span style="display:flex;"><span>;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; OPT PSEUDOSECTION:
+</span></span><span style="display:flex;"><span>; EDNS: version: 0, flags:; udp: <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>;; QUESTION SECTION:
+</span></span><span style="display:flex;"><span>;antiterre.lan.			IN	A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>antiterre.lan.		604800	IN	A	192.168.100.10
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; AUTHORITY SECTION:
+</span></span><span style="display:flex;"><span>antiterre.lan.		604800	IN	NS	ns1.antiterre.lan.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ADDITIONAL SECTION:
+</span></span><span style="display:flex;"><span>ns1.antiterre.lan.	604800	IN	A	192.168.100.10
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; Query time: <span style="color:#ae81ff">4</span> msec
+</span></span><span style="display:flex;"><span>;; SERVER: 192.168.100.10#53<span style="color:#f92672">(</span>192.168.100.10<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; WHEN: Thu Oct <span style="color:#ae81ff">30</span> 14:33:10 CET <span style="color:#ae81ff">2014</span>
+</span></span><span style="display:flex;"><span>;; MSG SIZE  rcvd: <span style="color:#ae81ff">92</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ dig @192.168.100.10 100.168.192.in-addr.arpa AXFR
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.9.5-3-Ubuntu &lt;&lt;&gt;&gt; @192.168.100.10 100.168.192.in-addr.arpa AXFR
+</span></span><span style="display:flex;"><span>; <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> server found<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>100.168.192.in-addr.arpa. <span style="color:#ae81ff">604800</span> IN	SOA	ns1.antiterre.lan. root.antiterre.lan. 
+</span></span><span style="display:flex;"><span>                                                <span style="color:#ae81ff">2014103001</span> <span style="color:#ae81ff">604800</span> <span style="color:#ae81ff">86400</span> <span style="color:#ae81ff">2419200</span> <span style="color:#ae81ff">604800</span>
+</span></span><span style="display:flex;"><span>100.168.192.in-addr.arpa. <span style="color:#ae81ff">604800</span> IN	NS	ns1.
+</span></span><span style="display:flex;"><span>10.100.168.192.in-addr.arpa. <span style="color:#ae81ff">604800</span> IN	PTR	ns1.antiterre.lan.
+</span></span><span style="display:flex;"><span>100.168.192.in-addr.arpa. <span style="color:#ae81ff">604800</span> IN	SOA	ns1.antiterre.lan. root.antiterre.lan. 
+</span></span><span style="display:flex;"><span>                                                <span style="color:#ae81ff">2014103001</span> <span style="color:#ae81ff">604800</span> <span style="color:#ae81ff">86400</span> <span style="color:#ae81ff">2419200</span> <span style="color:#ae81ff">604800</span>
+</span></span><span style="display:flex;"><span>;; Query time: <span style="color:#ae81ff">2</span> msec
+</span></span><span style="display:flex;"><span>;; SERVER: 192.168.100.10#53<span style="color:#f92672">(</span>192.168.100.10<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; WHEN: Thu Oct <span style="color:#ae81ff">30</span> 14:33:57 CET <span style="color:#ae81ff">2014</span>
+</span></span><span style="display:flex;"><span>;; XFR size: <span style="color:#ae81ff">4</span> records <span style="color:#f92672">(</span>messages 1, bytes 170<span style="color:#f92672">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ dig @192.168.100.10 ns1.antiterre.lan
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.9.5-3-Ubuntu &lt;&lt;&gt;&gt; @192.168.100.10 ns1.antiterre.lan
+</span></span><span style="display:flex;"><span>; <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> server found<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>;; Got answer:
+</span></span><span style="display:flex;"><span>;; -&gt;&gt;HEADER<span style="color:#e6db74">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style="color:#ae81ff">30800</span>
+</span></span><span style="display:flex;"><span>;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; OPT PSEUDOSECTION:
+</span></span><span style="display:flex;"><span>; EDNS: version: 0, flags:; udp: <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>;; QUESTION SECTION:
+</span></span><span style="display:flex;"><span>;ns1.antiterre.lan.		IN	A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>ns1.antiterre.lan.	604800	IN	A	192.168.100.10
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; AUTHORITY SECTION:
+</span></span><span style="display:flex;"><span>antiterre.lan.		604800	IN	NS	ns1.antiterre.lan.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; Query time: <span style="color:#ae81ff">0</span> msec
+</span></span><span style="display:flex;"><span>;; SERVER: 192.168.100.10#53<span style="color:#f92672">(</span>192.168.100.10<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; WHEN: Thu Oct <span style="color:#ae81ff">30</span> 14:34:55 CET <span style="color:#ae81ff">2014</span>
+</span></span><span style="display:flex;"><span>;; MSG SIZE  rcvd: <span style="color:#ae81ff">76</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ dig @192.168.100.10 www.google.ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.9.5-3-Ubuntu &lt;&lt;&gt;&gt; @192.168.100.10 www.google.ch
+</span></span><span style="display:flex;"><span>; <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> server found<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>;; Got answer:
+</span></span><span style="display:flex;"><span>;; -&gt;&gt;HEADER<span style="color:#e6db74">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style="color:#ae81ff">13583</span>
+</span></span><span style="display:flex;"><span>;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 13, ADDITIONAL: <span style="color:#ae81ff">19</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; OPT PSEUDOSECTION:
+</span></span><span style="display:flex;"><span>; EDNS: version: 0, flags:; udp: <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>;; QUESTION SECTION:
+</span></span><span style="display:flex;"><span>;www.google.ch.			IN	A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>www.google.ch.		158	IN	A	173.194.116.88
+</span></span><span style="display:flex;"><span>www.google.ch.		158	IN	A	173.194.116.87
+</span></span><span style="display:flex;"><span>www.google.ch.		158	IN	A	173.194.116.79
+</span></span><span style="display:flex;"><span>www.google.ch.		158	IN	A	173.194.116.95
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; Query time: <span style="color:#ae81ff">1211</span> msec
+</span></span><span style="display:flex;"><span>;; SERVER: 192.168.100.10#53<span style="color:#f92672">(</span>192.168.100.10<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; WHEN: Thu Oct <span style="color:#ae81ff">30</span> 14:35:31 CET <span style="color:#ae81ff">2014</span>
+</span></span><span style="display:flex;"><span>;; MSG SIZE  rcvd: <span style="color:#ae81ff">665</span>
+</span></span></code></pre></div></li>
+<li>
+<p>test la résolution inverse</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ dig @192.168.100.10 -x 192.168.100.10
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.9.5-3-Ubuntu &lt;&lt;&gt;&gt; @192.168.100.10 -x 192.168.100.10
+</span></span><span style="display:flex;"><span>; <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> server found<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>;; Got answer:
+</span></span><span style="display:flex;"><span>;; -&gt;&gt;HEADER<span style="color:#e6db74">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style="color:#ae81ff">18740</span>
+</span></span><span style="display:flex;"><span>;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; OPT PSEUDOSECTION:
+</span></span><span style="display:flex;"><span>; EDNS: version: 0, flags:; udp: <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>;; QUESTION SECTION:
+</span></span><span style="display:flex;"><span>;10.100.168.192.in-addr.arpa.	IN	PTR
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>10.100.168.192.in-addr.arpa. <span style="color:#ae81ff">604800</span> IN	PTR	ns1.antiterre.lan.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; AUTHORITY SECTION:
+</span></span><span style="display:flex;"><span>100.168.192.in-addr.arpa. <span style="color:#ae81ff">604800</span> IN	NS	ns1.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; Query time: <span style="color:#ae81ff">2</span> msec
+</span></span><span style="display:flex;"><span>;; SERVER: 192.168.100.10#53<span style="color:#f92672">(</span>192.168.100.10<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; WHEN: Thu Oct <span style="color:#ae81ff">30</span> 14:37:13 CET <span style="color:#ae81ff">2014</span>
+</span></span><span style="display:flex;"><span>;; MSG SIZE  rcvd: <span style="color:#ae81ff">104</span>
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="configurer-le-serveur-dns-netplan">Configurer le serveur DNS (netplan)</h3>
+<ul>
+<li>
+<p>Dans une configuration réseau statique faite dans <code>/etc/netplan/*.yaml</code></p>
+<pre tabindex="0"><code>network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp3s0:
+...
+      nameservers:
+          search:
+            - antiterre.lan
+          addresses:
+            - 192.168.100.10
+</code></pre></li>
+</ul>
+<h3 id="ajout-de-noms-dhôte">Ajout de noms d&rsquo;hôte</h3>
+<ul>
+<li>
+<p>Dans le fichier <code>/etc/bind/db.antiterre.lan</code> ajouter:</p>
+<pre tabindex="0"><code>...
+ntp1            IN      CNAME   ns1           ; alias pour le service de temps
+galatograd      IN      A       192.168.100.20
+urbicande       IN      A       192.168.100.30
+...
+</code></pre></li>
+<li>
+<p>Dans le fichier <code>/etc/bind/db.192.168.100</code> ajouter:</p>
+<pre tabindex="0"><code>...
+20      IN      PTR     galatograd.antiterre.lan.
+30      IN      PTR     urbicande.antiterre.lan.
+...
+</code></pre></li>
+<li>
+<p>vérification de la syntax</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ named-checkzone antiterre.lan /etc/bind/db.antiterre.lan
+</span></span><span style="display:flex;"><span>zone antiterre.lan/IN: loaded serial <span style="color:#ae81ff">20101229</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ named-checkzone antiterre.lan /etc/bind/db.192.168.100
+</span></span><span style="display:flex;"><span>zone antiterre.lan/IN: loaded serial <span style="color:#ae81ff">20101229</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span></code></pre></div></li>
+<li>
+<p>Redémarrer le service</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl restart named
+</span></span></code></pre></div></li>
+<li>
+<p>tester avec <code>nslookup</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup antiterre.lan
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Name:	antiterre.lan
+</span></span><span style="display:flex;"><span>Address: 192.168.100.10
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup blossfeldtstad.antiterre.lan
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>blossfeldtstad.antiterre.lan	canonical name <span style="color:#f92672">=</span> ns1.antiterre.lan.
+</span></span><span style="display:flex;"><span>Name:	ns1.antiterre.lan
+</span></span><span style="display:flex;"><span>Address: 192.168.100.10
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup galatograd.antiterre.lan
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Name:	galatograd.antiterre.lan
+</span></span><span style="display:flex;"><span>Address: 192.168.100.20
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup urbicande.antiterre.lan
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Name:	urbicande.antiterre.lan
+</span></span><span style="display:flex;"><span>Address: 192.168.100.30
+</span></span></code></pre></div></li>
+<li>
+<p>tester la résolution inverse</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup 192.168.100.10
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>10.100.168.192.in-addr.arpa	name <span style="color:#f92672">=</span> ns1.antiterre.lan.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup 192.168.100.20
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>20.100.168.192.in-addr.arpa	name <span style="color:#f92672">=</span> galatograd.antiterre.lan.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup 192.168.100.30
+</span></span><span style="display:flex;"><span>Server:		192.168.100.10
+</span></span><span style="display:flex;"><span>Address:	192.168.100.10#53
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>30.100.168.192.in-addr.arpa	name <span style="color:#f92672">=</span> urbicande.antiterre.lan.
+</span></span></code></pre></div></li>
+</ul>
+<blockquote>
+<p><strong>information</strong></p>
+<h2 id="post-configuration">Post-configuration</h2>
+<ol>
+<li>Pour une configuration statique des paramètres réseau ,  ajouter l&rsquo;adresse du DNS dans le fichier de configuration du réseau</li>
+<li>Pour une configuration réseau distribué par le DHCP, mettre à jour l&rsquo;adresse du DNS dans le service DHCP</li>
+</ol>
+</blockquote>
+<h2 id="vérification-de-la-configuration-courant-du-dns">Vérification de la configuration courant du DNS</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@galatograd:~$ systemd-resolve --status --no-pager
+</span></span><span style="display:flex;"><span>Global
+</span></span><span style="display:flex;"><span>          DNSSEC NTA: 10.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      16.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      168.192.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      17.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      18.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      19.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      20.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      21.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      22.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      23.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      24.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      25.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      26.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      27.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      28.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      29.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      30.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      31.172.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      corp
+</span></span><span style="display:flex;"><span>                      d.f.ip6.arpa
+</span></span><span style="display:flex;"><span>                      home
+</span></span><span style="display:flex;"><span>                      internal
+</span></span><span style="display:flex;"><span>                      intranet
+</span></span><span style="display:flex;"><span>                      lan
+</span></span><span style="display:flex;"><span>                      local
+</span></span><span style="display:flex;"><span>                      private
+</span></span><span style="display:flex;"><span>                      test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Link <span style="color:#ae81ff">20</span> <span style="color:#f92672">(</span>eth0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      Current Scopes: DNS
+</span></span><span style="display:flex;"><span>       LLMNR setting: yes
+</span></span><span style="display:flex;"><span>MulticastDNS setting: no
+</span></span><span style="display:flex;"><span>      DNSSEC setting: no
+</span></span><span style="display:flex;"><span>    DNSSEC supported: no
+</span></span><span style="display:flex;"><span>         DNS Servers: 192.168.100.10
+</span></span><span style="display:flex;"><span>          DNS Domain: antiterre.lan
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>debian@galatograd:~$ resolvectl status --no-pager
+</span></span><span style="display:flex;"><span>Global
+</span></span><span style="display:flex;"><span>       LLMNR setting: no                  
+</span></span><span style="display:flex;"><span>MulticastDNS setting: no                  
+</span></span><span style="display:flex;"><span>  DNSOverTLS setting: no                  
+</span></span><span style="display:flex;"><span>      DNSSEC setting: no                  
+</span></span><span style="display:flex;"><span>    DNSSEC supported: no                  
+</span></span><span style="display:flex;"><span>          DNSSEC NTA: 10.in-addr.arpa     
+</span></span><span style="display:flex;"><span>                      16.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      168.192.in-addr.arpa
+</span></span><span style="display:flex;"><span>                      17.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      18.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      19.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      20.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      21.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      22.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      23.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      24.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      25.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      26.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      27.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      28.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      29.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      30.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      31.172.in-addr.arpa 
+</span></span><span style="display:flex;"><span>                      corp                
+</span></span><span style="display:flex;"><span>                      d.f.ip6.arpa        
+</span></span><span style="display:flex;"><span>                      home                
+</span></span><span style="display:flex;"><span>                      internal            
+</span></span><span style="display:flex;"><span>                      intranet            
+</span></span><span style="display:flex;"><span>                      lan                 
+</span></span><span style="display:flex;"><span>                      local               
+</span></span><span style="display:flex;"><span>                      private             
+</span></span><span style="display:flex;"><span>                      test                
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Link <span style="color:#ae81ff">37</span> <span style="color:#f92672">(</span>eth0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      Current Scopes: DNS           
+</span></span><span style="display:flex;"><span>DefaultRoute setting: yes           
+</span></span><span style="display:flex;"><span>       LLMNR setting: yes           
+</span></span><span style="display:flex;"><span>MulticastDNS setting: no            
+</span></span><span style="display:flex;"><span>  DNSOverTLS setting: no            
+</span></span><span style="display:flex;"><span>      DNSSEC setting: no            
+</span></span><span style="display:flex;"><span>    DNSSEC supported: no            
+</span></span><span style="display:flex;"><span>  Current DNS Server: 192.168.100.10
+</span></span><span style="display:flex;"><span>         DNS Servers: 192.168.100.10
+</span></span><span style="display:flex;"><span>          DNS Domain: antiterre.lan 
+</span></span></code></pre></div><h2 id="commandes">Commandes</h2>
+<h3 id="dig">dig</h3>
+<pre tabindex="0"><code>DIG(1)                               BIND9                              DIG(1)
+
+NAME
+       dig - DNS lookup utility
+
+SYNOPSIS
+       dig [@server] [-b address] [-c class] [-f filename] [-k filename] [-m]
+           [-p port#] [-q name] [-t type] [-x addr] [-y [hmac:]name:key] [-4]
+           [-6] [name] [type] [class] [queryopt...]
+
+       dig [-h]
+
+       dig [global-queryopt...] [query...]
+</code></pre><h3 id="nslookup">nslookup</h3>
+<pre tabindex="0"><code>NSLOOKUP(1)                          BIND9                         NSLOOKUP(1)
+
+NAME
+       nslookup - query Internet name servers interactively
+
+SYNOPSIS
+       nslookup [-option] [name | -] [server]
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>BIND | Internet Systems Consortium, <a href="http://www.isc.org/software/bind">http://www.isc.org/software/bind</a></li>
+<li>Ubuntu Documentation - Service de nom de domaine (DNS), <a href="https://help.ubuntu.com/16.04/serverguide/dns.html">https://help.ubuntu.com/16.04/serverguide/dns.html</a></li>
+<li>DNS HOWTO (français), <a href="http://www.ibiblio.org/pub/linux/docs/howto/translations/fr/html-1page/DNS-HOWTO.html">http://www.ibiblio.org/pub/linux/docs/howto/translations/fr/html-1page/DNS-HOWTO.html</a></li>
+<li>Wikipedia - Domain Name System, <a href="http://fr.wikipedia.org/wiki/Domain_Name_System">http://fr.wikipedia.org/wiki/Domain_Name_System</a></li>
+<li>Wikipedia - dig (programme informatique), <a href="http://fr.wikipedia.org/wiki/Dig_%28programme_informatique%29">http://fr.wikipedia.org/wiki/Dig_%28programme_informatique%29</a></li>
+<li>rfc1033 - DOMAIN ADMINISTRATORS OPERATIONS GUIDE, <a href="http://tools.ietf.org/html/rfc1033">http://tools.ietf.org/html/rfc1033</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Service Kerberos pour l&#39;authentification et service LDAP pour le stockage </title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-kerberos-ldap/">Service réseau - Service Kerberos pour l&#39;authentification et service LDAP pour le stockage </a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 13:46</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#configuration-du-service-dannuaire-ldap">Configuration du service d&rsquo;annuaire LDAP</a>
+      <ul>
+        <li><a href="#installation-des-paquets">Installation des paquets</a></li>
+        <li><a href="#ajout-du-schéma-kerberos-à-lannuaire">Ajout du schéma Kerberos à l&rsquo;annuaire</a></li>
+        <li><a href="#ajout-dun-index-sur-lattribut-krbprincipalname">Ajout d’un index sur l’attribut <code>krbPrincipalName</code></a></li>
+        <li><a href="#mise-à-jour-des-droits-daccès">Mise à jour des droits d&rsquo;accès</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-du-service-kerberos">Configuration du service kerberos</a>
+      <ul>
+        <li><a href="#configuration-des-accès-à-lannuaire-par-kerberos">Configuration des accès à l&rsquo;annuaire par kerberos</a></li>
+        <li><a href="#création-du-domaine-kerberos">Création du domaine kerberos</a></li>
+        <li><a href="#création-du-fichier-de-mot-de-passe">Création du fichier de mot de passe</a></li>
+        <li><a href="#redémarrer-le-service-kerberos">Redémarrer le service kerberos</a></li>
+        <li><a href="#création-dun-principal-admin">Création d&rsquo;un principal admin</a></li>
+      </ul>
+    </li>
+    <li><a href="#création-dun-nouvelle-utilisateur-dans-lannuaire">Création d&rsquo;un nouvelle utilisateur dans l&rsquo;annuaire</a></li>
+    <li><a href="#problèmes-connus">Problèmes connus</a>
+      <ul>
+        <li><a href="#ordre-de-démarrage-des-processus-lorsque-la-gestion-des-services-par-initd">Ordre de démarrage des processus lorsque la gestion des services par initd</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<p>Utilisation de l&rsquo;annuaire LDAP comme base de données au service Kerberos. Cette configuration permettra de simplifier la configuration de la réplication de la base kerberos. Mais également, de centraliser la gestion des utilisateurs du domaine dans l&rsquo;annuaire.</p>
+<h2 id="configuration-du-service-dannuaire-ldap">Configuration du service d&rsquo;annuaire LDAP</h2>
+<h3 id="installation-des-paquets">Installation des paquets</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo apt-get install krb5-kdc-ldap schema2ldif
+</span></span></code></pre></div><h3 id="ajout-du-schéma-kerberos-à-lannuaire">Ajout du schéma Kerberos à l&rsquo;annuaire</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo su
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># zcat /usr/share/doc/krb5-kdc-ldap/kerberos.openldap.ldif.gz | ldapadd -Q -Y EXTERNAL -H ldapi:/// </span>
+</span></span></code></pre></div><ul>
+<li>Vérification</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapsearch  -LLL -Y EXTERNAL -H ldapi:/// -b cn<span style="color:#f92672">=</span>config dn
+</span></span></code></pre></div><pre tabindex="0"><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+dn: cn=config
+
+dn: cn=module{0},cn=config
+
+dn: cn=schema,cn=config
+
+dn: cn={0}core,cn=schema,cn=config
+
+dn: cn={1}cosine,cn=schema,cn=config
+
+dn: cn={2}nis,cn=schema,cn=config
+
+dn: cn={3}inetorgperson,cn=schema,cn=config
+
+dn: cn={4}kerberos,cn=schema,cn=config
+
+dn: olcDatabase={-1}frontend,cn=config
+
+dn: olcDatabase={0}config,cn=config
+
+dn: olcDatabase={1}mdb,cn=config
+</code></pre><h3 id="ajout-dun-index-sur-lattribut-krbprincipalname">Ajout d&rsquo;un index sur l&rsquo;attribut <code>krbPrincipalName</code></h3>
+<ul>
+<li>Création d&rsquo;un fichier <code>ajoutIndex.ldif</code> avec les directives ci-dessous:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ vim ajoutIndex.ldif
+</span></span></code></pre></div><pre tabindex="0"><code>dn: olcDatabase={1}mdb,cn=config
+add: olcDbIndex
+olcDbIndex: krbPrincipalName eq,pres,sub
+</code></pre><ul>
+<li>Mise à jour de l&rsquo;annuaire</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f ajoutIndex.ldif
+</span></span></code></pre></div><pre tabindex="0"><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &#34;olcDatabase={1}mdb,cn=config&#34;
+</code></pre><ul>
+<li>Vérification</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapsearch  -LLL -Y EXTERNAL -H ldapi:/// <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>        -b olcDatabase<span style="color:#f92672">={</span>1<span style="color:#f92672">}</span>mdb,cn<span style="color:#f92672">=</span>config olcDbIndex
+</span></span></code></pre></div><pre tabindex="0"><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+dn: olcDatabase={1}mdb,cn=config
+olcDbIndex: objectClass eq
+olcDbIndex: cn,uid eq
+olcDbIndex: uidNumber,gidNumber eq
+olcDbIndex: member,memberUid eq
+olcDbIndex: krbPrincipalName eq,pres,sub
+</code></pre><h3 id="mise-à-jour-des-droits-daccès">Mise à jour des droits d&rsquo;accès</h3>
+<ul>
+<li>Création d&rsquo;un fichier <code>majAcl.ldif</code> avec les directives ci-dessous:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ vim majAcl.ldif
+</span></span></code></pre></div><pre tabindex="0"><code>dn: olcDatabase={1}mdb,cn=config
+replace: olcAccess
+olcAccess: 
+     to attrs=userPassword,shadowLastChange,krbPrincipalKey  
+     by dn=&#34;cn=admin,dc=antiterre,dc=lan&#34; write 
+     by anonymous auth 
+     by self write 
+     by * none
+-
+add: olcAccess
+olcAccess: 
+     to dn.base=&#34;&#34; by * read
+-
+add: olcAccess
+olcAccess: 
+     to * 
+     by dn=&#34;cn=admin,dc=antiterre,dc=lan&#34; write 
+     by * read
+</code></pre><ul>
+<li>Mise à jour de l&rsquo;annuaire</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f majAcl.ldif 
+</span></span></code></pre></div><pre tabindex="0"><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &#34;olcDatabase={1}mdb,cn=config&#34;
+</code></pre><ul>
+<li>Vérification</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapsearch  -LLL -Y EXTERNAL -H ldapi:/// <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>        -b olcDatabase<span style="color:#f92672">={</span>1<span style="color:#f92672">}</span>mdb,cn<span style="color:#f92672">=</span>config olcAccess
+</span></span></code></pre></div><pre tabindex="0"><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+dn: olcDatabase={1}mdb,cn=config
+olcAccess: {0}to attrs=userPassword,shadowLastChange,krbPrincipalKey 
+              by dn=&#34;cn=admin,dc=antiterre,dc=lan&#34; write 
+              by anonymous auth by self write by * none
+olcAccess: {1}to dn.base=&#34;&#34; by * read
+olcAccess: {2}to * by dn=&#34;cn=admin,dc=antiterre,dc=lan&#34; write 
+                   by * read
+</code></pre><h2 id="configuration-du-service-kerberos">Configuration du service kerberos</h2>
+<h3 id="configuration-des-accès-à-lannuaire-par-kerberos">Configuration des accès à l&rsquo;annuaire par kerberos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo vim /etc/krb5.conf
+</span></span></code></pre></div><pre tabindex="0"><code>[libdefaults]
+        default_realm = ANTITERRE.LAN
+
+...
+
+[realms]
+        ANTITERRE.LAN = {
+                kdc = kdc1.antiterre.lan
+                admin_server = kdc1.antiterre.lan
+                default_domain = antiterre.lan
+                database_module = openldap_ldapconf
+        }
+        
+...
+
+[domain_realm]
+        .antiterre.lan = ANTITERRE.LAN
+        antiterre.lan = ANTITERRE.LAN
+...
+        
+[login]
+	krb4_convert = true
+	krb4_get_tickets = false
+
+[dbdefaults]
+        ldap_kerberos_container_dn = cn=kerberos,dc=antiterre,dc=lan
+
+[dbmodules]
+        openldap_ldapconf = {
+                db_library = kldap
+                ldap_kdc_dn = &#34;cn=admin,dc=antiterre,dc=lan&#34;
+
+                # this object needs to have read rights on
+                # the realm container, principal container and realm sub-trees
+                ldap_kadmind_dn = &#34;cn=admin,dc=antiterre,dc=lan&#34;
+
+                # this object needs to have read and write rights on
+                # the realm container, principal container and realm sub-trees
+                ldap_service_password_file = /etc/krb5kdc/service.keyfile
+                ldap_servers = ldap://ldap1.antiterre.lan
+                ldap_conns_per_server = 5
+        }
+
+ [logging]
+         kdc = SYSLOG:INFO:DAEMON
+         admin_server = SYSLOG:INFO:DAEMON
+</code></pre><h3 id="création-du-domaine-kerberos">Création du domaine kerberos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo kdb5_ldap_util -D  cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                    -H ldap://ldap1.antiterre.lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                     create <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                        -subtrees dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                        -r ANTITERRE.LAN -s 
+</span></span></code></pre></div><pre tabindex="0"><code>Password for &#34;cn=admin,dc=antiterre,dc=lan&#34;: [adminpass]
+Initializing database for realm &#39;ANTITERRE.LAN&#39;
+You will be prompted for the database Master Password.
+It is important that you NOT FORGET this password.
+Enter KDC database master key: [kdcmasterpass]
+Re-enter KDC database master key to verify: [kdcmasterpass]
+</code></pre><h3 id="création-du-fichier-de-mot-de-passe">Création du fichier de mot de passe</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo kdb5_ldap_util -D  cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan stashsrvpw <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  -f /etc/krb5kdc/service.keyfile cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span></code></pre></div><pre tabindex="0"><code>Password for &#34;cn=admin,dc=antiterre,dc=lan&#34;: [adminpass]
+Password for &#34;cn=admin,dc=antiterre,dc=lan&#34;: [adminpass]
+Re-enter password for &#34;cn=admin,dc=antiterre,dc=lan&#34;: [adminpass]
+</code></pre><h3 id="redémarrer-le-service-kerberos">Redémarrer le service kerberos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo service krb5-kdc stop
+</span></span><span style="display:flex;"><span>$ sudo service krb5-admin-server stop
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo service krb5-kdc start
+</span></span><span style="display:flex;"><span>$ sudo service krb5-admin-server start
+</span></span></code></pre></div><h3 id="création-dun-principal-admin">Création d&rsquo;un principal admin</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo kadmin.local
+</span></span></code></pre></div><pre tabindex="0"><code>Authenticating as principal root/admin@ANTITERRE.LAN with password.
+kadmin.local:  addprinc debian/admin
+WARNING: no policy specified for debian/admin@ANTITERRE.LAN; defaulting to no policy
+Enter password for principal &#34;debian/admin@ANTITERRE.LAN&#34;: [debianadminpass]
+Re-enter password for principal &#34;debian/admin@ANTITERRE.LAN&#34;: [debianadminpass]
+Principal &#34;debian/admin@ANTITERRE.LAN&#34; created.
+kadmin.local:  quit
+</code></pre><ul>
+<li>Vérification avec kdamin</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ kadmin
+</span></span><span style="display:flex;"><span>Authenticating as principal debian/admin@ANTITERRE.LAN with password.
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> debian/admin@ANTITERRE.LAN: 
+</span></span><span style="display:flex;"><span>kadmin:  getprincs
+</span></span><span style="display:flex;"><span>K/M@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>krbtgt/ANTITERRE.LAN@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>kadmin/admin@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>kadmin/changepw@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>kadmin/history@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>kadmin/galatograd.antiterre.lan@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>debian/admin@ANTITERRE.LAN
+</span></span></code></pre></div><ul>
+<li>Vérification dans ldap</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan -b <span style="color:#e6db74">&#34;dc=antiterre,dc=lan&#34;</span> dn
+</span></span></code></pre></div><pre tabindex="0"><code>dn: dc=antiterre,dc=lan
+
+dn: cn=admin,dc=antiterre,dc=lan
+
+dn: ou=people,dc=antiterre,dc=lan
+
+dn: ou=groups,dc=antiterre,dc=lan
+
+dn: uid=robick,ou=people,dc=antiterre,dc=lan
+
+dn: cn=robick,ou=groups,dc=antiterre,dc=lan
+
+dn: cn=vonrathen,ou=groups,dc=antiterre,dc=lan
+
+dn: uid=vonrathen,ou=people,dc=antiterre,dc=lan
+
+dn: cn=ANTITERRE.LAN,dc=antiterre,dc=lan
+
+dn: krbPrincipalName=K/M@ANTITERRE.LAN,cn=ANTITERRE.LAN,dc=antiterre,dc=lan
+
+dn: krbPrincipalName=krbtgt/ANTITERRE.LAN@ANTITERRE.LAN,
+    cn=ANTITERRE.LAN,dc=antiterre,dc=lan
+
+dn: krbPrincipalName=kadmin/admin@ANTITERRE.LAN,cn=ANTITERRE.LAN,
+    dc=antiterre,dc=lan
+
+dn: krbPrincipalName=kadmin/changepw@ANTITERRE.LAN,cn=ANTITERRE.LAN,
+    dc=antiterre,dc=lan
+
+dn: krbPrincipalName=kadmin/history@ANTITERRE.LAN,cn=ANTITERRE.LAN,
+    dc=antiterre,dc=lan
+
+dn: krbPrincipalName=kadmin/galatograd.antiterre.lan@ANTITERRE.LAN,
+    cn=ANTITERRE.LAN,dc=antiterre,dc=lan
+
+dn: krbPrincipalName=debian/admin@ANTITERRE.LAN,cn=ANTITERRE.LAN,
+    dc=antiterre,dc=lan
+</code></pre><h2 id="création-dun-nouvelle-utilisateur-dans-lannuaire">Création d&rsquo;un nouvelle utilisateur dans l&rsquo;annuaire</h2>
+<ul>
+<li>Ajout de l&rsquo;utilisateur robick dans ldap si l&rsquo;information n&rsquo;est pas dans l&rsquo;annuaire</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapaddgroup robick
+</span></span><span style="display:flex;"><span>Successfully added group robick to LDAP
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapadduser robick robick
+</span></span><span style="display:flex;"><span>Successfully added user robick to LDAP
+</span></span></code></pre></div><ul>
+<li>Ajout de l&rsquo;utilisateur vonrathen dans ldap si l&rsquo;information n&rsquo;est pas dans l&rsquo;annuaire</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapaddgroup vonrathen
+</span></span><span style="display:flex;"><span>Successfully added group vonrathen to LDAP
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo ldapadduser vonrathen vonrathen
+</span></span><span style="display:flex;"><span>Successfully added user vonrathen to LDAP
+</span></span></code></pre></div><ul>
+<li>ajout des principals robick et vonrathen</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ kadmin
+</span></span></code></pre></div><pre tabindex="0"><code>Authenticating as principal debian/admin@ANTITERRE.LAN with password.
+Password for debian/admin@ANTITERRE.LAN: [debianadminpass]
+
+kadmin:  addprinc -x dn=&#34;uid=robick,ou=people,dc=antiterre,dc=lan&#34; robick
+WARNING: no policy specified for robick@ANTITERRE.LAN; defaulting to no policy
+Enter password for principal &#34;robick@ANTITERRE.LAN&#34;: [robickpass]
+Re-enter password for principal &#34;robick@ANTITERRE.LAN&#34;: [robickpass]
+Principal &#34;robick@ANTITERRE.LAN&#34; created.
+
+kadmin:  addprinc -x dn=&#34;uid=vonrathen,ou=people,dc=antiterre,dc=lan&#34; vonrathen
+WARNING: no policy specified for vonrathen@ANTITERRE.LAN; defaulting to no policy
+Enter password for principal &#34;vonrathen@ANTITERRE.LAN&#34;: [vonrathenpass]
+Re-enter password for principal &#34;vonrathen@ANTITERRE.LAN&#34;: [vonrathenpass]
+Principal &#34;vonrathen@ANTITERRE.LAN&#34; created.
+
+kadmin:  quit
+</code></pre><ul>
+<li>Vérification</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -xLLL -D cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan -W -b ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>             uid uidNumber gidNumber krbPrincipalName homeDirectory loginShell
+</span></span><span style="display:flex;"><span>             
+</span></span><span style="display:flex;"><span>Enter LDAP Password: <span style="color:#f92672">[</span>adminpass<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>dn: ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>robick,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>uid: robick
+</span></span><span style="display:flex;"><span>uidNumber: <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>gidNumber: <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>loginShell: /bin/bash
+</span></span><span style="display:flex;"><span>homeDirectory: /home/robick
+</span></span><span style="display:flex;"><span>krbPrincipalName: robick@ANTITERRE.LAN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>vonrathen,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>uid: vonrathen
+</span></span><span style="display:flex;"><span>uidNumber: <span style="color:#ae81ff">10001</span>
+</span></span><span style="display:flex;"><span>gidNumber: <span style="color:#ae81ff">10001</span>
+</span></span><span style="display:flex;"><span>homeDirectory: /home/vonrathen
+</span></span><span style="display:flex;"><span>loginShell: /bin/bash
+</span></span><span style="display:flex;"><span>krbPrincipalName: vonrathen@ANTITERRE.LAN
+</span></span></code></pre></div><h2 id="problèmes-connus">Problèmes connus</h2>
+<h3 id="ordre-de-démarrage-des-processus-lorsque-la-gestion-des-services-par-initd">Ordre de démarrage des processus lorsque la gestion des services par initd</h3>
+<p>Lors que le serveur d&rsquo;authentification est redémarré, le service kdc n&rsquo;est pas démarré?</p>
+<ul>
+<li>
+<p>Vérification de la présence de processus.</p>
+<p>La commande devrait afficher les 2 processus ci-dessous</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ps -ef | grep -w <span style="color:#e6db74">&#39;kadmind\|krb5kdc&#39;</span>
+</span></span></code></pre></div><pre tabindex="0"><code>root       743     1  0 10:31 ?        00:00:00 /usr/sbin/kadmind
+root       747     1  0 10:31 ?        00:00:00 /usr/sbin/krb5kdc
+</code></pre><ul>
+<li>
+<p>Démarrage des services kerberos.</p>
+<p>Après le démarrage manuel des services, la commande <code>ps</code> doit afficher les 2 processus.</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo invoke-rc.d krb5-kdc start
+</span></span><span style="display:flex;"><span>$ sudo invoke-rc.d krb5-admin-server start
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ps -ef | grep -w <span style="color:#e6db74">&#39;kadmind\|krb5kdc&#39;</span>
+</span></span></code></pre></div><pre tabindex="0"><code>root       743     1  0 10:31 ?        00:00:00 /usr/sbin/kadmind
+root       747     1  0 10:31 ?        00:00:00 /usr/sbin/krb5kdc
+</code></pre><ul>
+<li>
+<p>Activer la journalisation de kerberos[[7]]</p>
+<p>A la fin du fichier <code>/etc/krb5.conf</code> sur le serveur d&rsquo;authentification ajouter les lignes suivantes:</p>
+</li>
+</ul>
+<pre tabindex="0"><code> [logging]
+         kdc = SYSLOG:INFO:DAEMON
+         admin_server = SYSLOG:INFO:DAEMON
+</code></pre><ul>
+<li>
+<p>Redemmarrer le serveur d&rsquo;authentification</p>
+<p>Les processus kadmind et krb5kdc écrivent des informations dans le journal <code>/var/log/syslog</code>.</p>
+</li>
+<li>
+<p>Si les services Kerberos démarrent avant le service ldap, revoir l&rsquo;ordre de démarrage des processus.\Renommer le script de démarrage du service ldap (S10slapd).</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ls -1 /etc/rc2.d/
+</span></span></code></pre></div><pre tabindex="0"><code>README
+S10slapd
+S18krb5-admin-server
+S18krb5-kdc
+S23ntp
+S50rsync
+S70dns-clean
+S70pppd-dns
+S99grub-common
+S99ondemand
+S99rc.local
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://ubuntu.com/server/docs/kerberos-introduction">Kerberos - Introduction | Ubuntu</a></li>
+<li><a href="https://ubuntu.com/server/docs/service-kerberos-with-openldap-backend">Service - Kerberos with OpenLDAP backend | Ubuntu</a></li>
+<li><a href="http://web.mit.edu/kerberos/krb5-1.5/krb5-1.5.4/doc/krb5-admin/logging.html">logging - Kerberos V5 System Administrator&rsquo;s Guide</a></li>
+<li><a href="https://wiki.debian.org/LDAP/OpenLDAPSetup#Kerberos">Kerberos - LDAP/OpenLDAPSetup - Debian Wiki</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

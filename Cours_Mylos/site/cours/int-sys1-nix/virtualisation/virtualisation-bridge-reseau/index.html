@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation, Configuration d&#39;un pont réseau (bridge)</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-bridge-reseau/">Virtualisation, Configuration d&#39;un pont réseau (bridge)</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:10</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#utilisation">Utilisation</a></li>
+    <li><a href="#installation-et-configuration-du-pont">Installation et configuration du pont</a>
+      <ul>
+        <li><a href="#installation-des-paquets-sur-lhôte">Installation des paquets sur l&rsquo;hôte</a></li>
+        <li><a href="#configurer-le-pont-avec-netplan">Configurer le pont avec <strong>netplan</strong></a></li>
+        <li><a href="#configurer-le-pont-avec-network-manager">Configurer le pont avec <strong>network-manager</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#utilisation-du-pont-par-les-vm">Utilisation du pont par les vm</a>
+      <ul>
+        <li><a href="#configuration-réseau-du-conteneur-c2">Configuration réseau du conteneur C2</a></li>
+        <li><a href="#configuration-réseau-de-la-vm-vm3">Configuration réseau de la vm vm3</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="utilisation">Utilisation</h2>
+<blockquote>
+<p>&hellip;
+Un autre scénario est d&rsquo;utiliser un pont sur un système avec une seule interface pour autoriser plusieurs machines virtuelles à accéder au réseau extérieur. [[3]]</p>
+</blockquote>
+<pre tabindex="0"><code>-------+---------------------------------------------------virbr0 192.168.122.0/24
+       |                                    
+       |                                    
+-------|--+------------------------------------------------lxcbr0 10.1.16.0/24
+ virbr0|  |lxcbr0     
+ nat .-+--+-. nat       .------.     .------.     
+     |      |           |      |     |      |     
+     | hôte |           |  C2  |     | vm3  |     
+     |      |           |(lxc) |     |(KVM) |     
+     `--+---&#39;           `--+---&#39;     `--+---&#39;     
+        |eth0              |eth0        |eth0
+        |                  |            |
+ -------+------------------+------------+---------S2 157.26.229.0/24
+</code></pre><p>Nous aimerions que la machine virtuelle kvm vm3 et le conteneur LXC C2 soient directement connecter sur le réseau de l&rsquo;école S2.</p>
+<p>Test et C2 étant des machines virtuelles tournant dans la machine hôte. Il faut configurer un pont réseau (bridge) sur celle-ci pour permettre aux vm d&rsquo;être accessible depuis l&rsquo;extérieur.</p>
+<h2 id="installation-et-configuration-du-pont">Installation et configuration du pont</h2>
+<h3 id="installation-des-paquets-sur-lhôte">Installation des paquets sur l&rsquo;hôte</h3>
+<pre tabindex="0"><code>hôte:~$ sudo apt-get install bridge-utils
+</code></pre><h3 id="configurer-le-pont-avec-netplan">Configurer le pont avec <strong>netplan</strong></h3>
+<blockquote>
+<p><strong>ATTENTION</strong></p>
+<p><a href="../../mise-en-route-systeme-exploitation/linux-mise-en-reseau-netplan/">Configuration à revoir avec netplan</a></p>
+</blockquote>
+<p>Dans le fichier de configuration de netplan<code>/etc/netplan/01-netcfg.yaml</code>, mettre les configuration ci-dessous:</p>
+<ul>
+<li>si le pont <code>br0</code> possède une adresse fixe <code>192.168.202.xx</code> et partage l&rsquo;interface réseau physique <code>eth0</code></li>
+</ul>
+<pre tabindex="0"><code>network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp5s1:
+      dhcp4: no   
+  bridges:
+    br0:
+      addresses: 
+        - 157.26.229.xxx/24
+      gateway4: 157.26.229.1
+      nameservers:
+        addresses: 
+          - 157.26.229.91
+          - 157.26.229.92
+        search: 
+          - labo.dhu
+      interfaces:
+        - enp5s1
+</code></pre><ul>
+<li>si le pont <code>br0</code> reçoit une ip dynamique du DHCP  et partage l&rsquo;interface réseau physique <code>eth0</code></li>
+</ul>
+<pre tabindex="0"><code>network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp5s1:
+      dhcp4: no
+  bridges:
+    br0:
+      dhcp4: yes
+      interfaces:
+        - enp5s1
+</code></pre><blockquote>
+<p><strong>information</strong></p>
+<p>Configuration valable pour les versions précédentes à ubuntu 18.04
+Dans le fichier <code>/etc/network/interfaces</code>, mettre les configuration ci-dessous:</p>
+<ul>
+<li>si le pont <code>br0</code> possède une adresse fixe <code>192.168.202.xx</code> et partage l&rsquo;interface réseau physique <code>eth0</code></li>
+</ul>
+<pre tabindex="0"><code>auto br0
+iface br0 inet static
+       address 192.168.202.xx
+       netmask 255.255.255.0
+       broadcast 192.168.202.255
+       gateway 192.168.202.1
+       bridge_ports eth0
+</code></pre><ul>
+<li>si le pont <code>br0</code> reçoit une ip dynamique du DHCP  et partage l&rsquo;interface réseau physique <code>eth0</code></li>
+</ul>
+<pre tabindex="0"><code>auto br0
+iface br0 inet dhcp
+       bridge_ports eth0
+</code></pre></blockquote>
+<h3 id="configurer-le-pont-avec-network-manager">Configurer le pont avec <strong>network-manager</strong></h3>
+<p>En suivant les instructions de  <a href="https://www.tecmint.com/create-network-bridge-in-ubuntu/">How to Configure Network Bridge in Ubuntu</a>, voici une configuration d&rsquo;un bridge avec la commande <code>nmcli</code> lorsque la configuration du réseau est géré par network-manager.</p>
+<ul>
+<li>
+<p>afficher les interfaces réseaux avec nmcli</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  09:42:55 
+</span></span><span style="display:flex;"><span>╰─ nmcli 
+</span></span><span style="display:flex;"><span>enx482ae3a0d87b: connecté à Connexion filaire <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Lenovo USB-C Dock&#34;</span>
+</span></span><span style="display:flex;"><span>        ethernet <span style="color:#f92672">(</span>r8152<span style="color:#f92672">)</span>, 48:2A:E3:A0:D8:7B, hw, mtu <span style="color:#ae81ff">1500</span>
+</span></span><span style="display:flex;"><span>        ip4 par défaut, ip6 par défaut
+</span></span><span style="display:flex;"><span>        inet4 192.168.1.121/24
+</span></span><span style="display:flex;"><span>        route4 0.0.0.0/0
+</span></span><span style="display:flex;"><span>        route4 192.168.1.0/24
+</span></span><span style="display:flex;"><span>        inet6 2a02:1210:6ef4:1f00:9e5b:d621:995a:2432/64
+</span></span><span style="display:flex;"><span>        inet6 2a02:1210:6ef4:1f00:ee4d:32b7:3c39:8ef5/64
+</span></span><span style="display:flex;"><span>        inet6 fe80::5713:e6dd:3c41:ee18/64
+</span></span><span style="display:flex;"><span>        route6 2a02:1210:6ef4:1f00::/64
+</span></span><span style="display:flex;"><span>        route6 ::/0
+</span></span><span style="display:flex;"><span>        route6 fe80::/64
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>Utilisez « nmcli device show » pour obtenir des informations complètes sur les périphériques connus et « nmcli connection&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Consultez les pages de manuel nmcli<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> et nmcli-examples<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span> pour les détails complets d<span style="color:#960050;background-color:#1e0010">&#39;</span>utilisation.
+</span></span></code></pre></div></li>
+<li>
+<p>afficher le détail d&rsquo;un interface</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  13s  dom@domp14s  09:43:20 
+</span></span><span style="display:flex;"><span>╰─ nmcli device show enx482ae3a0d87b
+</span></span><span style="display:flex;"><span>GENERAL.DEVICE:                         enx482ae3a0d87b
+</span></span><span style="display:flex;"><span>GENERAL.TYPE:                           ethernet
+</span></span><span style="display:flex;"><span>GENERAL.HWADDR:                         48:2A:E3:A0:D8:7B
+</span></span><span style="display:flex;"><span>GENERAL.MTU:                            <span style="color:#ae81ff">1500</span>
+</span></span><span style="display:flex;"><span>GENERAL.STATE:                          <span style="color:#ae81ff">100</span> <span style="color:#f92672">(</span>connecté<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>GENERAL.CONNECTION:                     Connexion filaire <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/1
+</span></span><span style="display:flex;"><span>WIRED-PROPERTIES.CARRIER:               marche
+</span></span><span style="display:flex;"><span>IP4.ADDRESS<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                         192.168.1.121/24
+</span></span><span style="display:flex;"><span>IP4.GATEWAY:                            192.168.1.1
+</span></span><span style="display:flex;"><span>IP4.ROUTE<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                           dst <span style="color:#f92672">=</span> 0.0.0.0/0, nh <span style="color:#f92672">=</span> 192.168.1.1, mt <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>IP4.ROUTE<span style="color:#f92672">[</span>2<span style="color:#f92672">]</span>:                           dst <span style="color:#f92672">=</span> 192.168.1.0/24, nh <span style="color:#f92672">=</span> 0.0.0.0, mt <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>IP4.DNS<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                             192.168.1.1
+</span></span><span style="display:flex;"><span>IP4.DOMAIN<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                          home
+</span></span><span style="display:flex;"><span>IP6.ADDRESS<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                         2a02:1210:6ef4:1f00:9e5b:d621:995a:2432/64
+</span></span><span style="display:flex;"><span>IP6.ADDRESS<span style="color:#f92672">[</span>2<span style="color:#f92672">]</span>:                         2a02:1210:6ef4:1f00:ee4d:32b7:3c39:8ef5/64
+</span></span><span style="display:flex;"><span>IP6.ADDRESS<span style="color:#f92672">[</span>3<span style="color:#f92672">]</span>:                         fe80::5713:e6dd:3c41:ee18/64
+</span></span><span style="display:flex;"><span>IP6.GATEWAY:                            fe80::1e24:cdff:fe42:3e70
+</span></span><span style="display:flex;"><span>IP6.ROUTE<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                           dst <span style="color:#f92672">=</span> 2a02:1210:6ef4:1f00::/64, nh <span style="color:#f92672">=</span> ::, mt <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>IP6.ROUTE<span style="color:#f92672">[</span>2<span style="color:#f92672">]</span>:                           dst <span style="color:#f92672">=</span> ::/0, nh <span style="color:#f92672">=</span> fe80::1e24:cdff:fe42:3e70, mt <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>IP6.ROUTE<span style="color:#f92672">[</span>3<span style="color:#f92672">]</span>:                           dst <span style="color:#f92672">=</span> fe80::/64, nh <span style="color:#f92672">=</span> ::, mt <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>IP6.DNS<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>:                             2a02:1210:6eb2:da00:1e24:cdff:fe42:3e70
+</span></span></code></pre></div></li>
+<li>
+<p>créer le bridge <code>br0</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  18s  dom@domp14s  09:43:44 
+</span></span><span style="display:flex;"><span>╰─ sudo nmcli conn add type bridge con-name br0 ifname br0
+</span></span><span style="display:flex;"><span>Connexion « br0 » <span style="color:#f92672">(</span>8e5edd49-022f-4f04-8c19-24ab713be3ed<span style="color:#f92672">)</span> ajoutée avec succès.
+</span></span></code></pre></div></li>
+<li>
+<p>attacher le bridge <code>br0</code> à l&rsquo;interface <code>enx482ae3a0d87b</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  09:44:11 
+</span></span><span style="display:flex;"><span>╰─ sudo nmcli conn add type ethernet slave-type bridge con-name bridge-br0 ifname enx482ae3a0d87b master br0
+</span></span><span style="display:flex;"><span>Connexion « bridge-br0 » <span style="color:#f92672">(</span>caa7c90f-3ad3-4bf9-8a9e-5885e60bd3b0<span style="color:#f92672">)</span> ajoutée avec succès.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  09:45:27 
+</span></span><span style="display:flex;"><span>╰─ sudo nmcli conn show --active
+</span></span><span style="display:flex;"><span>NAME                 UUID                                  TYPE      DEVICE          
+</span></span><span style="display:flex;"><span>br0                  8e5edd49-022f-4f04-8c19-24ab713be3ed  bridge    br0             
+</span></span><span style="display:flex;"><span>Connexion filaire <span style="color:#ae81ff">3</span>  7afad3b8-f8a1-3fb9-a276-f996abaa67bd  ethernet  enx482ae3a0d87b 
+</span></span></code></pre></div></li>
+<li>
+<p>activer le bridge <code>br0</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  09:45:44 
+</span></span><span style="display:flex;"><span>╰─ sudo nmcli conn up br0
+</span></span><span style="display:flex;"><span>Connexion activée <span style="color:#f92672">(</span>master waiting <span style="color:#66d9ef">for</span> slaves<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>Chemin D-Bus actif : /org/freedesktop/NetworkManager/ActiveConnection/13<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>déactiver l&rsquo;utilisation de l&rsquo;interface <code>enx482ae3a0d87b</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  09:48:07 
+</span></span><span style="display:flex;"><span>╰─ sudo nmcli conn down 7afad3b8-f8a1-3fb9-a276-f996abaa67bd
+</span></span><span style="display:flex;"><span>Connexion « Connexion filaire <span style="color:#ae81ff">3</span> » désactivée <span style="color:#f92672">(</span>chemin D-Bus actif : /org/freedesktop/NetworkManager/ActiveConnection/1<span style="color:#f92672">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╭─ ~/tmp  ✔  dom@domp14s  09:50:04 
+</span></span><span style="display:flex;"><span>╰─ sudo nmcli conn show --active                            
+</span></span><span style="display:flex;"><span>NAME          UUID                                  TYPE      DEVICE          
+</span></span><span style="display:flex;"><span>br0           8e5edd49-022f-4f04-8c19-24ab713be3ed  bridge    br0             
+</span></span><span style="display:flex;"><span>bridge-br0    caa7c90f-3ad3-4bf9-8a9e-5885e60bd3b0  ethernet  enx482ae3a0d87b 
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="utilisation-du-pont-par-les-vm">Utilisation du pont par les vm</h2>
+<h3 id="configuration-réseau-du-conteneur-c2">Configuration réseau du conteneur C2</h3>
+<pre tabindex="0"><code>hôte:~$ sudo cat /var/lib/lxc/C2/config
+</code></pre><pre tabindex="0"><code>...
+# Network configuration
+lxc.network.type = veth
+lxc.network.flags = up
+lxc.network.link = br0
+lxc.network.hwaddr = 00:16:3e:12:ea:d3
+</code></pre><h3 id="configuration-réseau-de-la-vm-vm3">Configuration réseau de la vm vm3</h3>
+<pre tabindex="0"><code>hôte:~$ virsh dumpxml vm3
+</code></pre><pre tabindex="0"><code>&lt;domain type=&#39;kvm&#39; id=&#39;2&#39;&gt;
+  &lt;name&gt;vm3&lt;/name&gt;
+  ...
+  &lt;devices&gt;
+  ...
+     &lt;interface type=&#39;bridge&#39;&gt;
+      &lt;mac address=&#39;52:54:00:4e:95:6b&#39;/&gt;
+      &lt;source bridge=&#39;br0&#39;/&gt;
+      &lt;model type=&#39;virtio&#39;/&gt;
+    &lt;/interface&gt;
+  ...
+  &lt;/devices&gt;
+  ...
+&lt;/domain&gt;
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://help.ubuntu.com/community/NetworkConnectionBridge">NetworkConnectionBridge - Community Help Wiki</a></li>
+<li><a href="https://help.ubuntu.com/community/KVM/Networking">KVM/Networking - Community Help Wiki</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/network-configuration.html#bridging">Help Ubuntu - Configuration du réseau</a></li>
+<li><a href="https://www.tecmint.com/create-network-bridge-in-ubuntu/">How to Configure Network Bridge in Ubuntu</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

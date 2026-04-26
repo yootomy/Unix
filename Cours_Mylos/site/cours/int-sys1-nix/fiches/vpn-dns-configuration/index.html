@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Configuration de la résolution dns pour un domain</title>
+	<meta name="description" content="Le but de cette fiche est d&#39;ajouter une serveur DNS spécifique pour un domaine particulier accessible via un interface réseau défini. Une application des cette configuration est d&#39;ajouté la résolution du domain *.dhu* lorsque le VPN est activé."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/vpn-dns-configuration/">Configuration de la résolution dns pour un domain</a></h1>
+    <p>Le but de cette fiche est d&#39;ajouter une serveur DNS spécifique pour un domaine particulier accessible via un interface réseau défini. Une application des cette configuration est d&#39;ajouté la résolution du domain *.dhu* lorsque le VPN est activé.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>11.11.2020 08:28</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#configuration">Configuration</a></li>
+    <li><a href="#création-dun-script">Création d&rsquo;un script</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="configuration">Configuration</h2>
+<ul>
+<li>
+<p>Afficher les DNS configurés.</p>
+<pre tabindex="0"><code>dom@domx1:~$ systemd-resolve --status  --no-pager
+Global
+      LLMNR setting: no                  
+MulticastDNS setting: no                  
+  DNSOverTLS setting: no                  
+      DNSSEC setting: no                  
+    DNSSEC supported: no                  
+          DNSSEC NTA: 10.in-addr.arpa     
+                      16.172.in-addr.arpa 
+                      168.192.in-addr.arpa
+                      17.172.in-addr.arpa 
+                      18.172.in-addr.arpa 
+                      19.172.in-addr.arpa 
+                      20.172.in-addr.arpa 
+                      21.172.in-addr.arpa 
+                      22.172.in-addr.arpa 
+                      23.172.in-addr.arpa 
+                      24.172.in-addr.arpa 
+                      25.172.in-addr.arpa 
+                      26.172.in-addr.arpa 
+                      27.172.in-addr.arpa 
+                      28.172.in-addr.arpa 
+                      29.172.in-addr.arpa 
+                      30.172.in-addr.arpa 
+                      31.172.in-addr.arpa 
+                      corp                
+                      d.f.ip6.arpa        
+                      home                
+                      internal            
+                      intranet            
+                      lan                 
+                      local               
+                      private             
+                      test                
+
+...
+
+Link 16 (ppp0)
+      Current Scopes: none
+DefaultRoute setting: no  
+      LLMNR setting: yes 
+MulticastDNS setting: no  
+  DNSOverTLS setting: no  
+      DNSSEC setting: no  
+    DNSSEC supported: no  
+
+...
+
+Link 4 (wlp4s0)
+      Current Scopes: DNS                                    
+DefaultRoute setting: yes                                    
+      LLMNR setting: yes                                    
+MulticastDNS setting: no                                     
+  DNSOverTLS setting: no                                     
+      DNSSEC setting: no                                     
+    DNSSEC supported: no                                     
+  Current DNS Server: 192.168.1.1                            
+        DNS Servers: 192.168.1.1                            
+                      2a02:120b:2c02:3560:1e24:cdff:fe42:3e70
+          DNS Domain: ~.                                     
+                      home                                   
+
+Link 3 (wwan0)
+      Current Scopes: none
+DefaultRoute setting: no  
+      LLMNR setting: yes 
+MulticastDNS setting: no  
+  DNSOverTLS setting: no  
+      DNSSEC setting: no  
+    DNSSEC supported: no  
+
+Link 2 (enp0s31f6)
+      Current Scopes: DNS                                    
+DefaultRoute setting: yes                                    
+      LLMNR setting: yes                                    
+MulticastDNS setting: no                                     
+  DNSOverTLS setting: no                                     
+      DNSSEC setting: no                                     
+    DNSSEC supported: no                                     
+  Current DNS Server: 192.168.1.1                            
+        DNS Servers: 2a02:120b:2c02:3560:1e24:cdff:fe42:3e70
+                      192.168.1.1                            
+          DNS Domain: ~.                                     
+                      home         
+</code></pre></li>
+<li>
+<p>Tester la résolution du domaine srvapp.labo.dhu</p>
+<pre tabindex="0"><code>dom@domx1:~$ dig srvapp.labo.dhu
+
+; &lt;&lt;&gt;&gt; DiG 9.16.1-Ubuntu &lt;&lt;&gt;&gt; srvapp.labo.dhu
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 3225
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 65494
+;; QUESTION SECTION:
+;srvapp.labo.dhu.		IN	A
+
+;; Query time: 4 msec
+;; SERVER: 127.0.0.53#53(127.0.0.53)
+;; WHEN: mer nov 11 08:37:46 CET 2020
+;; MSG SIZE  rcvd: 44
+</code></pre></li>
+<li>
+<p>Ajouter les serveurs DNS pour les résolution des domaines finissant par <em>dhu</em> accessible via le vpn (<em>ppp0</em>)</p>
+<pre tabindex="0"><code>dom@domx1:~$ sudo systemd-resolve --interface ppp0 --set-domain &#39;~dhu&#39; --set-dns 157.26.229.91 --set-dns 157.26.229.92
+</code></pre></li>
+<li>
+<p>Tester la résolution du domaine srvapp.labo.dhu</p>
+<pre tabindex="0"><code>dom@domx1:~$ dig srvapp.labo.dhu
+
+; &lt;&lt;&gt;&gt; DiG 9.16.1-Ubuntu &lt;&lt;&gt;&gt; srvapp.labo.dhu
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 40504
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 65494
+;; QUESTION SECTION:
+;srvapp.labo.dhu.		IN	A
+
+;; ANSWER SECTION:
+srvapp.labo.dhu.	604800	IN	A	157.26.229.96
+
+;; Query time: 28 msec
+;; SERVER: 127.0.0.53#53(127.0.0.53)
+;; WHEN: mer nov 11 08:44:29 CET 2020
+;; MSG SIZE  rcvd: 60
+</code></pre></li>
+<li>
+<p>Afficher les DNS configurés.</p>
+<pre tabindex="0"><code>dom@domx1:~$ systemd-resolve --status  --no-pager
+Global
+      LLMNR setting: no                  
+MulticastDNS setting: no                  
+  DNSOverTLS setting: no                  
+      DNSSEC setting: no                  
+    DNSSEC supported: no                  
+          DNSSEC NTA: 10.in-addr.arpa     
+                      16.172.in-addr.arpa 
+                      168.192.in-addr.arpa
+                      17.172.in-addr.arpa 
+                      18.172.in-addr.arpa 
+                      19.172.in-addr.arpa 
+                      20.172.in-addr.arpa 
+                      21.172.in-addr.arpa 
+                      22.172.in-addr.arpa 
+                      23.172.in-addr.arpa 
+                      24.172.in-addr.arpa 
+                      25.172.in-addr.arpa 
+                      26.172.in-addr.arpa 
+                      27.172.in-addr.arpa 
+                      28.172.in-addr.arpa 
+                      29.172.in-addr.arpa 
+                      30.172.in-addr.arpa 
+                      31.172.in-addr.arpa 
+                      corp                
+                      d.f.ip6.arpa        
+                      home                
+                      internal            
+                      intranet            
+                      lan                 
+                      local               
+                      private             
+                      test                
+
+Link 16 (ppp0)
+      Current Scopes: DNS          
+DefaultRoute setting: no           
+      LLMNR setting: yes          
+MulticastDNS setting: no           
+  DNSOverTLS setting: no           
+      DNSSEC setting: no           
+    DNSSEC supported: no           
+  Current DNS Server: 157.26.229.91
+        DNS Servers: 157.26.229.91
+                      157.26.229.92
+          DNS Domain: ~dhu         
+
+Link 4 (wlp4s0)
+      Current Scopes: DNS                                    
+DefaultRoute setting: yes                                    
+      LLMNR setting: yes                                    
+MulticastDNS setting: no                                     
+  DNSOverTLS setting: no                                     
+      DNSSEC setting: no                                     
+    DNSSEC supported: no                                     
+  Current DNS Server: 192.168.1.1                            
+        DNS Servers: 192.168.1.1                            
+                      2a02:120b:2c02:3560:1e24:cdff:fe42:3e70
+          DNS Domain: ~.                                     
+                      home                                   
+
+Link 3 (wwan0)
+      Current Scopes: none
+DefaultRoute setting: no  
+      LLMNR setting: yes 
+MulticastDNS setting: no  
+  DNSOverTLS setting: no  
+      DNSSEC setting: no  
+    DNSSEC supported: no  
+
+Link 2 (enp0s31f6)
+      Current Scopes: DNS                                    
+DefaultRoute setting: yes                                    
+      LLMNR setting: yes                                    
+MulticastDNS setting: no                                     
+  DNSOverTLS setting: no                                     
+      DNSSEC setting: no                                     
+    DNSSEC supported: no                                     
+  Current DNS Server: 192.168.1.1                            
+        DNS Servers: 2a02:120b:2c02:3560:1e24:cdff:fe42:3e70
+                      192.168.1.1                            
+          DNS Domain: ~.                                     
+                      home             
+</code></pre></li>
+</ul>
+<h2 id="création-dun-script">Création d&rsquo;un script</h2>
+<p>Cette configuration est éphémère. Elle devra être exécuté à chaque démarrage de vpn. Pour simplifier, le script ci-dessous est crée.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Ajout d&#39;une resolution DNS pour les domaines *dhu</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># dominique huguenin (dominique.huguenin AT rpn.ch)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INTERFACE<span style="color:#f92672">=</span>ppp0
+</span></span><span style="display:flex;"><span>DOMAINES<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;~dhu&#39;</span>
+</span></span><span style="display:flex;"><span>OPTIONS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--set-dns 157.26.229.91 --set-dns 157.26.229.92&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>systemd-resolve --interface $INTERFACE --set-domain <span style="color:#e6db74">&#34;</span>$DOMAINES<span style="color:#e6db74">&#34;</span> $OPTIONS
+</span></span></code></pre></div>
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

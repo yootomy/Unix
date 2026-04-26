@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Bash, BNF</title>
+	<meta name="description" content="Description du langage Bash en Backus Norm Form"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/bnf-bash/">Bash, BNF</a></h1>
+    <p>Description du langage Bash en Backus Norm Form</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 15:22</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bnf-et-ebnf">BNF et EBNF</a></li>
+    <li><a href="#le-bnf-décrit-avec-le-bnf">Le BNF décrit avec le BNF</a></li>
+    <li><a href="#caractères-du-ebnf">Caractères du EBNF</a></li>
+    <li><a href="#le-ebnf-décrit-avec-le-ebnf">Le EBNF décrit avec le EBNF</a></li>
+    <li><a href="#bnf-du-bash">BNF du BASH</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="bnf-et-ebnf">BNF et EBNF</h2>
+<blockquote>
+<p>La <strong>forme de Backus-Naur</strong> (souvent abrégée en BNF, de l&rsquo;anglais Backus-Naur Form) est une notation permettant de <strong>décrire les règles syntaxiques des langages de programmation</strong>. C’est donc un <strong>métalangage</strong>. [<a href="https://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">2</a>]</p>
+</blockquote>
+<blockquote>
+<p>L&rsquo;<strong>Extended Backus-Naur Form (EBNF)</strong> est une <strong>extension</strong> du métalangage BNF, créée par Niklaus Wirth. Cette forme permet de condenser la notation BNF et de la rendre <strong>plus lisible</strong>.
+Niklaus Wirth simplifia la forme de Backus-Naur lorsqu&rsquo;il créa le langage Pascal dans les années 1970. [<a href="https://fr.wikipedia.org/wiki/Extended_Backus-Naur_Form">4</a>]</p>
+</blockquote>
+<h2 id="le-bnf-décrit-avec-le-bnf">Le BNF décrit avec le BNF</h2>
+<pre tabindex="0"><code>&lt;syntax&gt;         ::= &lt;rule&gt; | &lt;rule&gt; &lt;syntax&gt;
+
+&lt;rule&gt;           ::= &lt;opt-whitespace&gt; &#34;&lt;&#34; &lt;rule-name&gt; &#34;&gt;&#34; 
+                     &lt;opt-whitespace&gt; &#34;::=&#34; &lt;opt-whitespace&gt; 
+                     &lt;expression&gt; &lt;line-end&gt;
+
+&lt;opt-whitespace&gt; ::= &#34; &#34; &lt;opt-whitespace&gt; | &#34;&#34;
+
+&lt;expression&gt;     ::= &lt;list&gt; | &lt;list&gt; &lt;opt-whitespace&gt; &#34;|&#34; 
+                     &lt;opt-whitespace&gt; &lt;expression&gt;
+
+&lt;line-end&gt;       ::= &lt;opt-whitespace&gt; &lt;EOL&gt; | &lt;line-end&gt; &lt;line-end&gt;
+
+&lt;list&gt;           ::= &lt;term&gt; | &lt;term&gt; &lt;opt-whitespace&gt; &lt;list&gt;
+
+&lt;term&gt;           ::= &lt;literal&gt; | &#34;&lt;&#34; &lt;rule-name&gt; &#34;&gt;&#34;
+
+&lt;literal&gt;        ::= &#39;&#34;&#39; &lt;text1&gt; &#39;&#34;&#39; | &#34;&#39;&#34; &lt;text2&gt; &#34;&#39;&#34;
+
+&lt;text1&gt;          ::= &#34;&#34; | &lt;character1&gt; &lt;text1&gt;
+
+&lt;text2&gt;          ::= &#34;&#34; | &lt;character2&gt; &lt;text2&gt;
+</code></pre><pre tabindex="0"><code>&lt;character&gt;      ::= &lt;letter&gt; | &lt;digit&gt; | &lt;symbol&gt;
+
+&lt;letter&gt;         ::= &#34;A&#34; | &#34;B&#34; | &#34;C&#34; | &#34;D&#34; | &#34;E&#34; | &#34;F&#34; | &#34;G&#34; | &#34;H&#34; | &#34;I&#34; 
+                   | &#34;J&#34; | &#34;K&#34; | &#34;L&#34; | &#34;M&#34; | &#34;N&#34; | &#34;O&#34; | &#34;P&#34; | &#34;Q&#34; | &#34;R&#34; 
+                   | &#34;S&#34; | &#34;T&#34; | &#34;U&#34; | &#34;V&#34; | &#34;W&#34; | &#34;X&#34; | &#34;Y&#34; | &#34;Z&#34; | &#34;a&#34; 
+                   | &#34;b&#34; | &#34;c&#34; | &#34;d&#34; | &#34;e&#34; | &#34;f&#34; | &#34;g&#34; | &#34;h&#34; | &#34;i&#34; | &#34;j&#34; 
+                   | &#34;k&#34; | &#34;l&#34; | &#34;m&#34; | &#34;n&#34; | &#34;o&#34; | &#34;p&#34; | &#34;q&#34; | &#34;r&#34; | &#34;s&#34; 
+                   | &#34;t&#34; | &#34;u&#34; | &#34;v&#34; | &#34;w&#34; | &#34;x&#34; | &#34;y&#34; | &#34;z&#34;
+
+&lt;digit&gt;          ::= &#34;0&#34; | &#34;1&#34; | &#34;2&#34; | &#34;3&#34; | &#34;4&#34; | &#34;5&#34; | &#34;6&#34; | &#34;7&#34; | &#34;8&#34; | &#34;9&#34;
+
+&lt;symbol&gt;         ::=  &#34;|&#34; | &#34; &#34; | &#34;-&#34; | &#34;!&#34; | &#34;#&#34; | &#34;$&#34; | &#34;%&#34; | &#34;&amp;&#34; | &#34;(&#34; | &#34;)&#34; 
+                       | &#34;*&#34; | &#34;+&#34; | &#34;,&#34; | &#34;-&#34; | &#34;.&#34; | &#34;/&#34; | &#34;:&#34; | &#34;;&#34; | &#34;&gt;&#34; 
+                       | &#34;=&#34; | &#34;&lt;&#34; | &#34;?&#34; | &#34;@&#34; | &#34;[&#34; | &#34;\&#34; | &#34;]&#34; | &#34;^&#34; 
+                       | &#34;_&#34; | &#34;`&#34; | &#34;{&#34; | &#34;}&#34; | &#34;~&#34;
+
+&lt;character1&gt;     ::= &lt;character&gt; | &#34;&#39;&#34;
+
+&lt;character2&gt;     ::= &lt;character&gt; | &#39;&#34;&#39;
+
+&lt;rule-name&gt;      ::= &lt;letter&gt; | &lt;rule-name&gt; &lt;rule-char&gt;
+
+&lt;rule-char&gt;      ::= &lt;letter&gt; | &lt;digit&gt; | &#34;-&#34;
+</code></pre><h2 id="caractères-du-ebnf">Caractères du EBNF</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Utilisation</th>
+          <th>Notation</th>
+          <th></th>
+          <th>Utilisation</th>
+          <th>Notation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>définition</td>
+          <td>=</td>
+          <td></td>
+          <td>groupe</td>
+          <td>( &hellip; )</td>
+      </tr>
+      <tr>
+          <td>concaténation</td>
+          <td>,</td>
+          <td></td>
+          <td>chaîne de terminaison</td>
+          <td>&quot; &hellip; &quot;</td>
+      </tr>
+      <tr>
+          <td>terminaison</td>
+          <td>;</td>
+          <td></td>
+          <td>chaîne de terminaison</td>
+          <td>&rsquo; &hellip; '</td>
+      </tr>
+      <tr>
+          <td>alternative</td>
+          <td>```</td>
+          <td>```</td>
+          <td></td>
+          <td>commentaire</td>
+      </tr>
+      <tr>
+          <td>optionnel</td>
+          <td>[[ &hellip; ]</td>
+          <td></td>
+          <td>séquence spécial</td>
+          <td>? &hellip; ?</td>
+      </tr>
+      <tr>
+          <td>répétition</td>
+          <td>{ &hellip; }</td>
+          <td></td>
+          <td>exception</td>
+          <td>-</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="le-ebnf-décrit-avec-le-ebnf">Le EBNF décrit avec le EBNF</h2>
+<pre tabindex="0"><code>letter = &#34;A&#34; | &#34;B&#34; | &#34;C&#34; | &#34;D&#34; | &#34;E&#34; | &#34;F&#34; | &#34;G&#34;
+       | &#34;H&#34; | &#34;I&#34; | &#34;J&#34; | &#34;K&#34; | &#34;L&#34; | &#34;M&#34; | &#34;N&#34;
+       | &#34;O&#34; | &#34;P&#34; | &#34;Q&#34; | &#34;R&#34; | &#34;S&#34; | &#34;T&#34; | &#34;U&#34;
+       | &#34;V&#34; | &#34;W&#34; | &#34;X&#34; | &#34;Y&#34; | &#34;Z&#34; | &#34;a&#34; | &#34;b&#34;
+       | &#34;c&#34; | &#34;d&#34; | &#34;e&#34; | &#34;f&#34; | &#34;g&#34; | &#34;h&#34; | &#34;i&#34;
+       | &#34;j&#34; | &#34;k&#34; | &#34;l&#34; | &#34;m&#34; | &#34;n&#34; | &#34;o&#34; | &#34;p&#34;
+       | &#34;q&#34; | &#34;r&#34; | &#34;s&#34; | &#34;t&#34; | &#34;u&#34; | &#34;v&#34; | &#34;w&#34;
+       | &#34;x&#34; | &#34;y&#34; | &#34;z&#34; ;
+digit = &#34;0&#34; | &#34;1&#34; | &#34;2&#34; | &#34;3&#34; | &#34;4&#34; | &#34;5&#34; | &#34;6&#34; | &#34;7&#34; | &#34;8&#34; | &#34;9&#34; ;
+symbol = &#34;[&#34; | &#34;]&#34; | &#34;{&#34; | &#34;}&#34; | &#34;(&#34; | &#34;)&#34; | &#34;&lt;&#34; | &#34;&gt;&#34;
+       | &#34;&#39;&#34; | &#39;&#34;&#39; | &#34;=&#34; | &#34;|&#34; | &#34;.&#34; | &#34;,&#34; | &#34;;&#34; ;
+character = letter | digit | symbol | &#34;_&#34; ;
+ 
+identifier = letter , { letter | digit | &#34;_&#34; } ;
+terminal = &#34;&#39;&#34; , character , { character } , &#34;&#39;&#34; 
+         | &#39;&#34;&#39; , character , { character } , &#39;&#34;&#39; ;
+</code></pre><pre tabindex="0"><code>lhs = identifier ;
+rhs = identifier
+     | terminal
+     | &#34;[&#34; , rhs , &#34;]&#34;
+     | &#34;{&#34; , rhs , &#34;}&#34;
+     | &#34;(&#34; , rhs , &#34;)&#34;
+     | rhs , &#34;|&#34; , rhs
+     | rhs , &#34;,&#34; , rhs ;
+
+rule = lhs , &#34;=&#34; , rhs , &#34;;&#34; ;
+grammar = { rule } ;
+</code></pre><h2 id="bnf-du-bash">BNF du BASH</h2>
+<p>Extrait de [<a href="http://my.safaribooksonline.com/1-56592-347-2">1</a>]</p>
+<pre tabindex="0"><code>&lt;letter&gt; ::= a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
+             A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z
+             
+&lt;digit&gt; ::= 0|1|2|3|4|5|6|7|8|9
+             
+&lt;number&gt; ::= &lt;digit&gt;
+           | &lt;number&gt; &lt;digit&gt;
+           
+&lt;word&gt; ::= &lt;letter&gt;
+           | &lt;word&gt; &lt;letter&gt;
+           | &lt;word&gt; &#39;_&#39;
+           
+&lt;word_list&gt; ::= &lt;word&gt;
+              | &lt;word_list&gt; &lt;word&gt;
+              
+&lt;assignment_word&gt; ::= &lt;word&gt; &#39;=&#39; &lt;word&gt;
+
+&lt;redirection&gt; ::= &#39;&gt;&#39; &lt;word&gt;
+                | &#39;&lt;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&gt;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&lt;&#39; &lt;word&gt;
+                | &#39;&gt;&gt;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&gt;&gt;&#39; &lt;word&gt;
+                | &#39;&lt;&lt;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&lt;&lt;&#39; &lt;word&gt;
+                | &#39;&lt;&amp;&#39; &lt;number&gt;
+                | &lt;number&gt; &#39;&lt;&amp;&#39; &lt;number&gt;
+                | &#39;&gt;&amp;&#39; &lt;number&gt;
+                | &lt;number&gt; &#39;&gt;&amp;&#39; &lt;number&gt;
+                | &#39;&lt;&amp;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&lt;&amp;&#39; &lt;word&gt;
+                | &#39;&gt;&amp;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&gt;&amp;&#39; &lt;word&gt;
+                | &#39;&lt;&lt;-&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&lt;&lt;-&#39; &lt;word&gt;
+                | &#39;&gt;&amp;&#39; &#39;-&#39;
+                | &lt;number&gt; &#39;&gt;&amp;&#39; &#39;-&#39;
+                | &#39;&lt;&amp;&#39; &#39;-&#39;
+                | &lt;number&gt; &#39;&lt;&amp;&#39; &#39;-&#39;
+                | &#39;&amp;&gt;&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&lt;&gt;&#39; &lt;word&gt;
+                | &#39;&lt;&gt;&#39; &lt;word&gt;
+                | &#39;&gt;|&#39; &lt;word&gt;
+                | &lt;number&gt; &#39;&gt;|&#39; &lt;word&gt;
+                
+&lt;simple_command_element&gt; ::= &lt;word&gt;
+                           | &lt;assignment_word&gt;
+                           | &lt;redirection&gt;
+                           
+&lt;redirection_list&gt; ::= &lt;redirection&gt;
+                     | &lt;redirection_list&gt; &lt;redirection&gt;
+                     
+&lt;simple_command&gt; ::= &lt;simple_command_element&gt;
+                   | &lt;simple_command&gt; &lt;simple_command_element&gt;
+                   
+&lt;command&gt; ::= &lt;simple_command&gt;
+            | &lt;shell_command&gt;
+            | &lt;shell_command&gt; &lt;redirection_list&gt;
+            
+&lt;shell_command&gt; ::= &lt;for_command&gt;
+                  | &lt;case_command&gt;
+                  | while &lt;compound_list&gt; do &lt;compound_list&gt; done
+                  | until &lt;compound_list&gt; do &lt;compound_list&gt; done
+                  | &lt;select_command&gt;
+                  | &lt;if_command&gt;
+                  | &lt;subshell&gt;
+                  | &lt;group_command&gt;
+                  | &lt;function_def&gt;
+                  
+&lt;for_command&gt; ::= for &lt;word&gt; &lt;newline_list&gt; do &lt;compound_list&gt; done
+                | for &lt;word&gt; &lt;newline_list&gt; &#39;{&#39; &lt;compound_list&gt; &#39;}&#39;
+                | for &lt;word&gt; &#39;;&#39; &lt;newline_list&gt; do &lt;compound_list&gt; done
+                | for &lt;word&gt; &#39;;&#39; &lt;newline_list&gt; &#39;{&#39; &lt;compound_list&gt; &#39;}&#39;
+                | for &lt;word&gt; &lt;newline_list&gt; in &lt;word_list&gt; &lt;list_terminator&gt;
+                      &lt;newline_list&gt; do &lt;compound_list&gt; done
+                | for &lt;word&gt; &lt;newline_list&gt; in &lt;word_list&gt; &lt;list_terminator&gt;
+                      &lt;newline_list&gt; &#39;{&#39; &lt;compound_list&gt; &#39;}&#39;
+                      
+&lt;select_command&gt; ::= select &lt;word&gt; &lt;newline_list&gt; do &lt;list&gt; done
+                   | select &lt;word&gt; &lt;newline_list&gt; &#39;{&#39; &lt;list&gt; &#39;}&#39;
+                   | select &lt;word&gt; &#39;;&#39; &lt;newline_list&gt; do &lt;list&gt; done
+                   | select &lt;word&gt; &#39;;&#39; &lt;newline_list&gt; &#39;{&#39; list &#39;}&#39;
+                   | select &lt;word&gt; &lt;newline_list&gt; in &lt;word_list&gt;
+                         &lt;list_terminator&gt; &lt;newline_list&gt; do &lt;list&gt; done
+                   | select &lt;word&gt; &lt;newline_list&gt; in &lt;word_list&gt;
+                         &lt;list_terminator&gt; &lt;newline_list&gt; &#39;{&#39; &lt;list&gt; &#39;}&#39;
+                         
+&lt;case_command&gt; ::= case &lt;word&gt; &lt;newline_list&gt; in &lt;newline_list&gt; esac
+                  | case &lt;word&gt; &lt;newline_list&gt; in &lt;case_clause_sequence&gt;
+                         &lt;newline_list&gt; esac
+                  | case &lt;word&gt; &lt;newline_list&gt; in &lt;case_clause&gt; esac
+                  
+&lt;function_def&gt; ::= &lt;word&gt; &#39;(&#39; &#39;)&#39; &lt;newline_list&gt; &lt;group_command&gt;
+                 | function &lt;word&gt; &#39;(&#39; &#39;)&#39; &lt;newline_list&gt; &lt;group_command&gt;
+                 | function &lt;word&gt; &lt;newline_list&gt; &lt;group_command&gt;
+                 
+&lt;subshell&gt; ::= &#39;(&#39; &lt;compound_list&gt; &#39;)&#39;
+
+&lt;if_command&gt; ::= if &lt;compound_list&gt; then &lt;compound_list&gt; fi
+               | if &lt;compound_list&gt; then &lt;compound_list&gt; else &lt;compound_list&gt; fi
+               | if &lt;compound_list&gt; then &lt;compound_list&gt; &lt;elif_clause&gt; fi
+               
+&lt;group_command&gt; ::= &#39;{&#39; &lt;list&gt; &#39;}&#39;
+
+&lt;elif_clause&gt; ::= elif &lt;compound_list&gt; then &lt;compound_list&gt;
+                | elif &lt;compound_list&gt; then &lt;compound_list&gt; else &lt;compound_list&gt;
+                | elif &lt;compound_list&gt; then &lt;compound_list&gt; &lt;elif_clause&gt;
+                
+&lt;case_clause&gt; ::= &lt;pattern_list&gt;
+                | &lt;case_clause_sequence&gt; &lt;pattern_list&gt;
+                
+&lt;pattern_list&gt; ::= &lt;newline_list&gt; &lt;pattern&gt; &#39;)&#39; &lt;compound_list&gt;
+                 | &lt;newline_list&gt; &lt;pattern&gt; &#39;)&#39; &lt;newline_list&gt;
+                 | &lt;newline_list&gt; &#39;(&#39; &lt;pattern&gt; &#39;)&#39; &lt;compound_list&gt;
+                 | &lt;newline_list&gt; &#39;(&#39; &lt;pattern&gt; &#39;)&#39; &lt;newline_list&gt;
+                 
+&lt;case_clause_sequence&gt; ::= &lt;pattern_list&gt; &#39;;;&#39;
+                         | &lt;case_clause_sequence&gt; &lt;pattern_list&gt; &#39;;;&#39;
+                         
+&lt;pattern&gt; ::= &lt;word&gt;
+            | &lt;pattern&gt; &#39;|&#39; &lt;word&gt;
+            
+&lt;list&gt; ::= &lt;newline_list&gt; &lt;list0&gt;&lt;compound_list&gt; ::= &lt;list&gt;
+                  | &lt;newline_list&gt; &lt;list1&gt;
+                  
+&lt;list0&gt; ::= &lt;list1&gt; &#39;\n&#39; &lt;newline_list&gt;
+          | &lt;list1&gt; &#39;&amp;&#39; &lt;newline_list&gt;
+          | &lt;list1&gt; &#39;;&#39; &lt;newline_list&gt;
+          
+&lt;list1&gt; ::= &lt;list1&gt; &#39;&amp;&amp;&#39; &lt;newline_list&gt; &lt;list1&gt;
+          | &lt;list1&gt; &#39;||&#39; &lt;newline_list&gt; &lt;list1&gt;
+          | &lt;list1&gt; &#39;&amp;&#39; &lt;newline_list&gt; &lt;list1&gt;
+          | &lt;list1&gt; &#39;;&#39; &lt;newline_list&gt; &lt;list1&gt;
+          | &lt;list1&gt; &#39;\n&#39; &lt;newline_list&gt; &lt;list1&gt;
+          | &lt;pipeline_command&gt;
+          
+&lt;list_terminator&gt; ::= &#39;\n&#39;
+                    | &#39;;&#39;
+                    
+&lt;newline_list&gt; ::=
+                 | &lt;newline_list&gt; &#39;\n&#39;
+                 
+&lt;simple_list&gt; ::= &lt;simple_list1&gt;
+                | &lt;simple_list1&gt; &#39;&amp;&#39;
+                | &lt;simple_list1&gt; &#39;;&#39;
+                
+&lt;simple_list1&gt; ::= &lt;simple_list1&gt; &#39;&amp;&amp;&#39; &lt;newline_list&gt; &lt;simple_list1&gt;
+                 | &lt;simple_list1&gt; &#39;||&#39; &lt;newline_list&gt; &lt;simple_list1&gt;
+                 | &lt;simple_list1&gt; &#39;&amp;&#39; &lt;simple_list1&gt;
+                 | &lt;simple_list1&gt; &#39;;&#39; &lt;simple_list1&gt;
+                 | &lt;pipeline_command&gt;
+                 
+&lt;pipeline_command&gt; ::= &lt;pipeline&gt;
+                     | &#39;!&#39; &lt;pipeline&gt;
+                     | &lt;timespec&gt; &lt;pipeline&gt;
+                     | &lt;timespec&gt; &#39;!&#39; &lt;pipeline&gt;
+                     | &#39;!&#39; &lt;timespec&gt; &lt;pipeline&gt;
+                     
+&lt;pipeline&gt; ::= &lt;pipeline&gt; &#39;|&#39; &lt;newline_list&gt; &lt;pipeline&gt;
+             | &lt;command&gt;
+             
+&lt;time_opt&gt; ::= &#39;-p&#39;
+&lt;timespec&gt; ::= time             
+             | time &lt;time_opt&gt;
+
+.XE &#34;BNF (Backus-Naur Form)&#34;
+.XE &#34;bash&#34; &#34;syntax, BNF form of&#34;
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>Cameron Newham and Bill Rosenblatt. Learning the bash Shell, 2nd Edition. O’Reilly Media, Inc., 16 January 1998. Print ISBN-13 : 978-1-565-92347-8 <a href="http://my.safaribooksonline.com/1-56592-347-2">http://my.safaribooksonline.com/1-56592-347-2</a></li>
+<li>Forme de Backus-Naur — Wikipédia. <a href="https://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">https://fr.wikipedia.org/wiki/Forme_de_Backus-Naur</a></li>
+<li>Extended Backus–Naur form - Wikipedia. <a href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form">https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form</a></li>
+<li>Extended Backus-Naur Form — Wikipédia. <a href="https://fr.wikipedia.org/wiki/Extended_Backus-Naur_Form">https://fr.wikipedia.org/wiki/Extended_Backus-Naur_Form</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

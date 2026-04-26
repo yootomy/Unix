@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>SYSNIX - Création d&#39;un disque externe USB bootable</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/ubuntu-disque-externe-bootable/">SYSNIX - Création d&#39;un disque externe USB bootable</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>02.11.2020 12:07</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#note-dinstallation">Note d&rsquo;installation</a>
+      <ul>
+        <li><a href="#installation-du-2021-09-03">installation du 2021-09-03</a></li>
+      </ul>
+    </li>
+    <li><a href="#étapes">Étapes</a></li>
+    <li><a href="#capsule-vidéo">Capsule vidéo</a></li>
+    <li><a href="#création-de-la-partition-uefi">Création de la partition UEFI</a>
+      <ul>
+        <li><a href="#créer-un-partition-uefi-avec-parted">Créer un partition UEFI avec parted</a></li>
+      </ul>
+    </li>
+    <li><a href="#installation-du-système-dexploitation">Installation du système d&rsquo;exploitation</a>
+      <ul>
+        <li><a href="#créer-la-machine-virtuelle-avec-virtualbox">Créer la machine virtuelle avec virtualbox</a></li>
+        <li><a href="#installation-du-système">Installation du système</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-pour-faire-démarrer-la-machine-sur-le-disque-externe">Configuration pour faire démarrer la machine sur le disque externe</a>
+      <ul>
+        <li><a href="#préparation-du-shell">Préparation du shell</a></li>
+        <li><a href="#installation-des-paquets-manquants">installation des paquets manquants</a></li>
+        <li><a href="#configuration-de-la-partition-uefi">Configuration de la partition UEFI</a></li>
+      </ul>
+    </li>
+    <li><a href="#vérification-et-post-installation">Vérification et post-installation</a>
+      <ul>
+        <li><a href="#configurer-le-réseau">Configurer le réseau</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="note-dinstallation">Note d&rsquo;installation</h2>
+<blockquote>
+<p>Il semble que l&rsquo;installation ne fonctionne pas avec Ubuntu 20.04. Nous installerons Ubuntu 18.04 puis nous ferrons une mise à jour du système.</p>
+</blockquote>
+<h3 id="installation-du-2021-09-03">installation du 2021-09-03</h3>
+<h4 id="plan-de-partitionnement">Plan de partitionnement</h4>
+<pre tabindex="0"><code>.------------------------------------------------------------------------------------------------------------------.
+| /dev/sdx                                                                                                         |
++------------------------------------------------------------------------------------------------------+-----------+
+| /dev/sdx1 (partition étendue)                                                                        |
++-----------+-----------+----------------------------------------------------------------+-------------+
+| /dev/sdx5 | /dev/sdx6 | /dev/sdx7                                                      | /dev/sdx8   |
+| 200M      | 1G        | 200G                                                           | 70G         |
+|           |           +----------------------------------------------------------------+-------------+
+|           |           | LVM                                                            | non utilisé |
+|           |           +----------------------------------------------------------------+-------------+
+|           |           | mc0-0315-usb-vg (VG)                                           |           
+|           |           +---------------+----------------+-----------------+-------------+
+|           |           | swap (2G)(LV) | root (50G)(LV) | home (100G)(LV) |
++-----------+-----------+---------------+----------------+-----------------+
+|EFI(fat32) | ext2      | swap          | ext4           | ext4            |
++-----------+-----------+---------------+----------------+-----------------+
+|/boot/efi  | /boot     |               | /root          | /home           |
++-----------+-----------+---------------+----------------+-----------------+                        
+</code></pre><h2 id="étapes">Étapes</h2>
+<ol>
+<li>Créer un partition UEFI</li>
+<li>Installation du système d&rsquo;exploitation</li>
+<li>Configuration pour faire démarrer la machine sur le disque externe</li>
+</ol>
+<h2 id="capsule-vidéo">Capsule vidéo</h2>
+<p>Les vidéos ci-dessous montrent les manipulations décrites dans ce document.</p>
+<p><a href="./video-part-1.mp4">vidéo partie 1</a></p>
+<p><a href="./video-part-2.mp4">vidéo partie 2</a></p>
+<h2 id="création-de-la-partition-uefi">Création de la partition UEFI</h2>
+<blockquote>
+<p><strong>Cette étape pourra également durant l&rsquo;installation</strong></p>
+</blockquote>
+<ul>
+<li>
+<p>Rechercher le nom du disque externe. Dans notre cas c&rsquo;est <strong>/dev/sda</strong></p>
+<pre tabindex="0"><code>dom@domx1:~$ sudo fdisk -l
+[sudo] Mot de passe de dom : 
+
+...
+
+Disque /dev/sda : 465.7 GiB, 500074283008 octets, 976707584 secteurs
+Unités : secteur de 1 × 512 = 512 octets
+Taille de secteur (logique / physique) : 512 octets / 512 octets
+taille d&#39;E/S (minimale / optimale) : 512 octets / 512 octets
+Type d&#39;étiquette de disque : gpt
+Identifiant de disque : D3F31D3C-1C22-44E9-8805-A7AB870D83A6
+</code></pre></li>
+</ul>
+<h3 id="créer-un-partition-uefi-avec-parted">Créer un partition UEFI avec parted</h3>
+<ul>
+<li>
+<p>démarrer parted sur le disque /dev/sda</p>
+<pre tabindex="0"><code>dom@domx1:~$ sudo parted /dev/sda
+GNU Parted 3.2
+Utilisation de /dev/sda
+Bienvenue sur GNU Parted ! Tapez « help » pour voir la liste des commandes.
+(parted) print                                                            
+Modèle : WD Elements 25A2 (scsi)
+Disque /dev/sda : 500GB
+Taille des secteurs (logiques/physiques) : 512B/512B
+Table de partitions : gpt
+Drapeaux de disque : 
+</code></pre></li>
+<li>
+<p>créer un table de type gpt</p>
+<pre tabindex="0"><code>(parted) help mktable
+mklabel,mktable LABEL-TYPE               crée une nouvelle étiquette de disque (table de partition)
+
+        LABEL-TYPE est une des valeurs : atari, aix, amiga, bsd, dvh, gpt, mac, msdos, pc98, sun, loop
+
+(parted) mktable gpt                                                      
+Avertissement: Le type du disque /dev/sda va être effacé et toutes les données vont être perdues. Voulez-vous continuer ?
+Oui/Yes/Non/No? y                                                         
+</code></pre></li>
+<li>
+<p>créer une partion primaire de 200M</p>
+<pre tabindex="0"><code>(parted) help mkpart
+mkpart PART-TYPE [FS-TYPE] DEBUT FIN      créer une partition
+
+        PART-TYPE est une des valeurs : primaire, logique, étendue
+        FS-TYPE est parmi : zfs, btrfs, nilfs2, ext4, ext3, ext2, fat32, fat16, hfsx, hfs+, hfs, jfs, swsusp, linux-swap(v1), linux-swap(v0), ntfs, reiserfs, freebsd-ufs, hp-ufs, sun-ufs, xfs, apfs2, apfs1, asfs,
+        amufs5, amufs4, amufs3, amufs2, amufs1, amufs0, amufs, affs7, affs6, affs5, affs4, affs3, affs2, affs1, affs0, linux-swap, linux-swap(new), linux-swap(old)
+        DEBUT et FIN sont des emplacements sur un disque, comme 4GB ou 10%. Les valeurs négatives se comptent à partir de la fin du disque. Par exemple, =-1s spécifie précisément le dernier secteur.
+
+        « mkpart » crée une partition sans créer un nouveau système de fichiers sur la partition. FS-TYPE doit être spécifié pour initialiser le type de partition approprié.
+
+(parted) mkpart primaire fat32 0 200M
+Avertissement: L&#39;alignement de la partition ainsi définie n&#39;est pas optimal au niveau performance.
+Ignorer/Ignore/Annuler/Cancel? Ignore                                     
+
+(parted) print                                                            
+Modèle : WD Elements 25A2 (scsi)
+Disque /dev/sda : 500GB
+Taille des secteurs (logiques/physiques) : 512B/512B
+Table de partitions : gpt
+Drapeaux de disque : 
+
+Numéro  Début   Fin    Taille  Système de fichiers  Nom       Drapeaux
+1      17.4kB  200MB  200MB   fat32                primaire
+</code></pre></li>
+<li>
+<p>définir les flags <code>boot</code> et <code>esp</code> de la partition</p>
+<pre tabindex="0"><code>(parted) help set                                                         
+set NUMÉRO DRAPEAU ÉTAT                  modifier le DRAPEAU de la partition NUMÉRO
+
+        NUMÉRO est le numéro de partition utilisé par Linux. Avec une étiquette de disque MS-DOS, les partitions primaires sont numérotées de 1 à 4 et les partitions logiques à partir de 5.
+        DRAPEAU est une des valeurs : démarrage, racine, swap, caché, raid, lvm, lba, hp-service, palo, prep, msftres, bios_grub, atvrecv, diag, legacy_boot, msftdata, irst, esp
+        ÉTAT est une des valeurs : on, off
+(parted) set 1 boot on                                                    
+(parted) set 1 esp on                                                 
+(parted) print                                                            
+Modèle : WD Elements 25A2 (scsi)
+Disque /dev/sda : 500GB
+Taille des secteurs (logiques/physiques) : 512B/512B
+Table de partitions : gpt
+Drapeaux de disque : 
+
+Numéro  Début   Fin    Taille  Système de fichiers  Nom       Drapeaux
+1      17.4kB  200MB  200MB   fat32                primaire  démarrage, esp
+</code></pre></li>
+</ul>
+<h2 id="installation-du-système-dexploitation">Installation du système d&rsquo;exploitation</h2>
+<p>Faire une installation du système d&rsquo;exploitation sur le disque externe à l&rsquo;aide de virtualbox</p>
+<ul>
+<li>Télécharger  <a href="http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/current/images/netboot/mini.iso">Ubuntu 18.04 LTS (Bionic Beaver) Netboot</a>. Renommer le fichier <code>mini.iso</code> en <code>ubuntu-18.04-netinstall.iso</code></li>
+</ul>
+<blockquote>
+<p>Utiliser la dernière version LTS <a href="http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/legacy-images/netboot/mini.iso">Ubuntu 20.04 LTS (Focal Fossa) Netboot (legacy)</a>
+Il semble que l&rsquo;installation ne fonctionne pas avec 20.04</p>
+</blockquote>
+<ul>
+<li>
+<p>Installer les paquets pour virtualbox</p>
+<pre tabindex="0"><code>$ sudo apt install virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack
+$ sudo usermod -a -G vboxusers $USER
+$ sudo modprobe vboxdrv
+</code></pre><p>Après l&rsquo;installation redémarrer la machine</p>
+</li>
+<li>
+<p>vérifier la accessibilité du disque externe par virtualbox</p>
+<pre tabindex="0"><code>dom@domx1:~$  VBoxManage list usbhost
+Host USB Devices:
+
+...
+
+UUID:               f3135cb8-e9fd-49b7-a933-daa361dfabc1
+VendorId:           0x1058 (1058)
+ProductId:          0x25a2 (25A2)
+Revision:           16.33 (1633)
+Port:               2
+USB version/speed:  3/Super
+Manufacturer:       Western Digital
+Product:            Elements 25A2
+SerialNumber:       5758393145413735465A5544
+Address:            sysfs:/sys/devices/pci0000:00/0000:00:14.0/usb2/2-3//device:/dev/vboxusb/002/002
+Current State:      Busy
+
+...
+</code></pre></li>
+</ul>
+<h3 id="créer-la-machine-virtuelle-avec-virtualbox">Créer la machine virtuelle avec virtualbox</h3>
+<ul>
+<li>
+<p>Création de la machine virtuel</p>
+<p><img src="./01-creation-vm.png" alt="création-vm"></p>
+</li>
+<li>
+<p>Configuration de la taille mémoire. Cette valeur permet d&rsquo;accélérer l&rsquo;installation</p>
+<p><img src="./02-taille-memoire.png" alt="taille mémoire"></p>
+</li>
+<li>
+<p>Ajout d&rsquo;aucun disque n&rsquo;est ajouter à notre vm. Le stockage se fera sur notre disque externe usb</p>
+<p><img src="./03-disque-dur.png" alt="disque dur"></p>
+</li>
+<li>
+<p>Validation de l&rsquo;avertissement</p>
+<p><img src="./04-avertissement.png" alt="avertissement"></p>
+</li>
+<li>
+<p>Configuration des nombres de processeurs. Cette valeur permet d&rsquo;accélérer l&rsquo;installation</p>
+<p><img src="./05-processeur.png" alt="processeur"></p>
+</li>
+<li>
+<p>Configuration de la mémoire vidéo et l&rsquo;activation de l&rsquo;accélération 3D. Cette valeur permet d&rsquo;accélérer l&rsquo;installation</p>
+<p><img src="./06-ecran.png" alt="mémoire vidéo"></p>
+</li>
+<li>
+<p>Configuration du CD-ROM d&rsquo;installation. Ce image iso a été téléchargé préalablement.</p>
+<p><img src="./07-cd-netboot.png" alt="cd-netboot"></p>
+</li>
+<li>
+<p>Configuration du stockage USB. Le périphérique est celui identifié avec la commande <code>VBoxManage</code>. J&rsquo;ai également activé le <strong>controleur 3.0 (xHCI)</strong></p>
+<p><img src="./08-disque-externe-usb.png" alt="disque externe usb"></p>
+</li>
+<li>
+<p>Configuration final de la machine virtuelle</p>
+<p><img src="./10-configuration.png" alt="configuration finale"></p>
+</li>
+<li>
+<p>Démarrer la machine virtuelle</p>
+<p><img src="./11-installation.png" alt="installation"></p>
+</li>
+</ul>
+<h3 id="installation-du-système">Installation du système</h3>
+<p>Pour l&rsquo;installation du système suivre le document <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix/mise-en-route-systeme-exploitation/linux-installation/">SYSNIX - OS - Installation GNU/Linux Ubuntu Server</a></p>
+<p><strong>Si la partition UEFI n&rsquo;est pas créé au préalable, il faudra la créer durant la phase de partitionnement.</strong></p>
+<p><img src="./20-partitionnement.png" alt="partitionnement"></p>
+<ul>
+<li>
+<p>Répondre <strong>non</strong> à la question Installer le programme de démarrage GRUB.</p>
+</li>
+<li>
+<p>Terminer l&rsquo;installation.</p>
+</li>
+</ul>
+<p>La machine virtuelle va redémarrer. A ce momment, choisir <em>Advanced options&gt;Rescue mode</em> et valider.
+Le mode récupération est démarré. Il va poser les mêmes questions qu&rsquo;au début de l&rsquo;installation.</p>
+<p><img src="./21-rescue-mode.png" alt="mode rescue"></p>
+<h2 id="configuration-pour-faire-démarrer-la-machine-sur-le-disque-externe">Configuration pour faire démarrer la machine sur le disque externe</h2>
+<p>Dans <em>Entrer dans le mode récupération</em></p>
+<ul>
+<li>
+<p><em>Périphérique à monter comme système de fichier racine (/)</em>, dans notre installation choisir <strong>/dev/vg/root</strong></p>
+<p><img src="./22-peripherique-root.png" alt="periphérique root"></p>
+</li>
+<li>
+<p>Exécuter un shell dans /dev/vg/root</p>
+<p><img src="./23-shell.png" alt="shell"></p>
+<p><img src="./24-shell-mode-recuperation.png" alt="shell de récupération"></p>
+</li>
+</ul>
+<h3 id="préparation-du-shell">Préparation du shell</h3>
+<ul>
+<li>
+<p>monter des ressources</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# mount
+</span></span></code></pre></div><p><img src="./30-mount.png" alt="mount"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# mount -o remount,rw /
+</span></span><span style="display:flex;"><span>root@ubuntu-usb:/# mount --all
+</span></span><span style="display:flex;"><span>root@ubuntu-usb:/# mount -B /dev /dev
+</span></span><span style="display:flex;"><span>root@ubuntu-usb:/# mount -B /dev/pts /dev/pts
+</span></span></code></pre></div><p><img src="./31-mount-all.png" alt="mount all"></p>
+</li>
+</ul>
+<h3 id="installation-des-paquets-manquants">installation des paquets manquants</h3>
+<ul>
+<li>
+<p>Rechercher les adresses ip pour les domaine <code>ch.archive.ubuntu.com</code> et <code>security.ubuntu.com</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>dom@domx1:intprog1ap1$ dig ch.archive.ubuntu.com
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.11.3-1ubuntu1.11-Ubuntu &lt;&lt;&gt;&gt; ch.archive.ubuntu.com
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>;; Got answer:
+</span></span><span style="display:flex;"><span>;; -&gt;&gt;HEADER<span style="color:#e6db74">&lt;&lt;- opcode: QUERY, status: NOERROR, id: 63161
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; OPT PSEUDOSECTION:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">; EDNS: version: 0, flags:; udp: 65494
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; QUESTION SECTION:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;ch.archive.ubuntu.com.		IN	A
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; ANSWER SECTION:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ch.archive.ubuntu.com.	467	IN	CNAME	mirror.init7.net.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">mirror.init7.net.	1275	IN	A	109.202.202.202
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; Query time: 8 msec
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; SERVER: 127.0.0.53#53(127.0.0.53)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; WHEN: Thu Mar 19 11:24:51 CET 2020
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; MSG SIZE  rcvd: 96
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">dom@domx1:intprog1ap1$ dig security.ubuntu.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">; &lt;&lt;&gt;&gt; DiG 9.11.3-1ubuntu1.11-Ubuntu &lt;&lt;&gt;&gt; security.ubuntu.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; global options: +cmd
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; Got answer:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">;; -&gt;&gt;HEADER&lt;&lt;- opcode</span>: QUERY, status: NOERROR, id: <span style="color:#ae81ff">7841</span>
+</span></span><span style="display:flex;"><span>;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; OPT PSEUDOSECTION:
+</span></span><span style="display:flex;"><span>; EDNS: version: 0, flags:; udp: <span style="color:#ae81ff">65494</span>
+</span></span><span style="display:flex;"><span>;; QUESTION SECTION:
+</span></span><span style="display:flex;"><span>;security.ubuntu.com.		IN	A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>security.ubuntu.com.	40	IN	A	91.189.88.152
+</span></span><span style="display:flex;"><span>security.ubuntu.com.	40	IN	A	91.189.91.39
+</span></span><span style="display:flex;"><span>security.ubuntu.com.	40	IN	A	91.189.88.142
+</span></span><span style="display:flex;"><span>security.ubuntu.com.	40	IN	A	91.189.91.38
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; Query time: <span style="color:#ae81ff">7</span> msec
+</span></span><span style="display:flex;"><span>;; SERVER: 127.0.0.53#53<span style="color:#f92672">(</span>127.0.0.53<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>;; WHEN: Thu Mar <span style="color:#ae81ff">19</span> 11:25:20 CET <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>;; MSG SIZE  rcvd: <span style="color:#ae81ff">112</span>
+</span></span></code></pre></div></li>
+<li>
+<p>ajouter dans le fichier <code>/etc/hosts</code> de la vm les lignes suivantes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# vim /etc/hosts
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>109.202.202.202 ch.archive.ubuntu.com
+</span></span><span style="display:flex;"><span>91.189.88.152 security.ubuntu.com
+</span></span></code></pre></div><p><img src="./32-hosts.png" alt="hosts"></p>
+</li>
+<li>
+<p>mise à jour du catalogue</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# apt update
+</span></span></code></pre></div><p><img src="./33-apt-update.png" alt="hosts"></p>
+</li>
+<li>
+<p>installation du paquet <code>grub-efi-amd64</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# apt install grub-efi-amd64
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="configuration-de-la-partition-uefi">Configuration de la partition UEFI</h3>
+<p>Si la partition n&rsquo;a pas été créer au préalable, créer la.</p>
+<p><img src="./40-parted.png" alt="parted"></p>
+<ul>
+<li>
+<p>ajouter la partition UEFI dans le fichier <code>/etc/fstab</code></p>
+<ul>
+<li>
+<p>repérer UUID de la partion UEFI</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# blkid
+</span></span></code></pre></div><p><img src="./41-blkid.png" alt="blkid"></p>
+<p>Ajout ligne ci-dessous dans le fichier /etc/fstab</p>
+<pre tabindex="0"><code>UUID=3656-DE05 /boot/efi vfat defaults 0 1
+</code></pre><p><img src="./42-fstab.png" alt="fstab"></p>
+</li>
+<li>
+<p>monter la partition UEFI</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# mkdir /boot/efi
+</span></span><span style="display:flex;"><span>root@ubuntu-usb:/# mount /dev/sda1 /boot/efi
+</span></span></code></pre></div><p><img src="./43-mount-uefi.png" alt="mount uefi"></p>
+</li>
+</ul>
+</li>
+<li>
+<p>installation du grub</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# grub-install -d /usr/lib/grub/x86_64-efi --efi-directory<span style="color:#f92672">=</span>/boot/efi/ --removable /dev/sda
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="vérification-et-post-installation">Vérification et post-installation</h2>
+<ul>
+<li>Démarrer votre machine sur le disque externe USB</li>
+</ul>
+<h3 id="configurer-le-réseau">Configurer le réseau</h3>
+<ul>
+<li>
+<p>retirer dans le fichier <code>/etc/hosts</code> de la vm les lignes suivantes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@ubuntu-usb:/# vim /etc/hosts
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>109.202.202.202 ch.archive.ubuntu.com
+</span></span><span style="display:flex;"><span>91.189.88.152 security.ubuntu.com
+</span></span></code></pre></div></li>
+<li>
+<p>modifier le nom du périphérique réseau</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ubuntu@ubuntu-usb:/$ ip a
+</span></span></code></pre></div><p>répérer le nom du périphérique réseau  par exemple <code>enp0s31f6</code></p>
+</li>
+<li>
+<p>Remplacer  le nom du périphérique réseau dans le fichier <code>/etc/netplan/*.yaml</code> par celui répéré dans la commande précédante.</p>
+</li>
+</ul>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/current/images/netboot/mini.iso">Ubuntu 18.04 LTS (Bionic Beaver) Netboot</a></li>
+<li><a href="http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/legacy-images/netboot/mini.iso">Ubuntu 20.04 LTS (Focal Fossa) Netboot (legacy)</a></li>
+<li><a href="https://linuxhint.com/install_ubuntu_external_drive_virtualbox/">How to Permanently Install Ubuntu on Any External Drive Using VirtualBox – Linux Hint</a></li>
+<li><a href="https://www.dionysopoulos.me/portable-ubuntu-on-usb-hdd/">Making a portable full installation of Ubuntu on a USB HDD – Dionysopoulos.me</a></li>
+<li><a href="https://wiki.debian-fr.xyz/Debian_%26_UEFI">Debian &amp; UEFI - Le Wiki de debian-fr.xyz</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

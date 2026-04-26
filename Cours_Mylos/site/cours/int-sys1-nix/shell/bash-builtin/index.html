@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Bash, commandes internes</title>
+	<meta name="description" content="Liste des commandes internes à l&#39;interpréteur bash"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/bash-builtin/">Bash, commandes internes</a></h1>
+    <p>Liste des commandes internes à l&#39;interpréteur bash</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.08.2020 15:56</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bash-built-in-commands-and-reserved-words">Bash, built-in Commands and Reserved Words</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="bash-built-in-commands-and-reserved-words">Bash, built-in Commands and Reserved Words</h2>
+<p>Extrait de [<a href="http://my.safaribooksonline.com/1-56592-347-2">1</a>]</p>
+<table>
+  <thead>
+      <tr>
+          <th>Command</th>
+          <th>Summary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>!</td>
+          <td>Reserved word. Logical NOT of a command exit status.</td>
+      </tr>
+      <tr>
+          <td>:</td>
+          <td>Do nothing (just do expansions of any arguments).</td>
+      </tr>
+      <tr>
+          <td>.</td>
+          <td>Read file and execute its contents in current shell.</td>
+      </tr>
+      <tr>
+          <td>alias</td>
+          <td>Set up shorthand for command or command line.</td>
+      </tr>
+      <tr>
+          <td>bg</td>
+          <td>Put job in background.</td>
+      </tr>
+      <tr>
+          <td>bind</td>
+          <td>Bind a key sequence to a readline function or macro.</td>
+      </tr>
+      <tr>
+          <td>break</td>
+          <td>Exit from surrounding for, select, while, or until loop.</td>
+      </tr>
+      <tr>
+          <td>builtin</td>
+          <td>Execute the specified shell built-in.</td>
+      </tr>
+      <tr>
+          <td>case</td>
+          <td>Reserved word. Multi-way conditional construct.</td>
+      </tr>
+      <tr>
+          <td>cd</td>
+          <td>Change working directory.</td>
+      </tr>
+      <tr>
+          <td>command</td>
+          <td>Run a command bypassing shell function lookup.</td>
+      </tr>
+      <tr>
+          <td>continue</td>
+          <td>Skip to next iteration of for, select, while, or until loop.</td>
+      </tr>
+      <tr>
+          <td>declare</td>
+          <td>Declare variables and give them attributes.</td>
+      </tr>
+      <tr>
+          <td>dirs</td>
+          <td>Display the list of currently remembered directories.</td>
+      </tr>
+      <tr>
+          <td>disown</td>
+          <td>Remove a job from the job table.</td>
+      </tr>
+      <tr>
+          <td>do</td>
+          <td>Reserved word. Part of a for, select, while, or until looping construct.</td>
+      </tr>
+      <tr>
+          <td>done</td>
+          <td>Reserved word. Part of a for, select, while, or until looping construct.</td>
+      </tr>
+      <tr>
+          <td>echo</td>
+          <td>Expand and print any arguments.</td>
+      </tr>
+      <tr>
+          <td>elif</td>
+          <td>Reserved word. Part of an if construct.</td>
+      </tr>
+      <tr>
+          <td>else</td>
+          <td>Reserved word. Part of an if construct.</td>
+      </tr>
+      <tr>
+          <td>enable</td>
+          <td>Enable and disable built-in shell commands.</td>
+      </tr>
+      <tr>
+          <td>esac</td>
+          <td>Reserved word. Part of a case construct.</td>
+      </tr>
+      <tr>
+          <td>eval</td>
+          <td>Run the given arguments through command-line processing.</td>
+      </tr>
+      <tr>
+          <td>exec</td>
+          <td>Replace the shell with the given program.</td>
+      </tr>
+      <tr>
+          <td>exit</td>
+          <td>Exit from the shell.</td>
+      </tr>
+      <tr>
+          <td>export</td>
+          <td>Create environment variables.</td>
+      </tr>
+      <tr>
+          <td>fc</td>
+          <td>Fix command (edit history file).</td>
+      </tr>
+      <tr>
+          <td>fg</td>
+          <td>Put background job in foreground.</td>
+      </tr>
+      <tr>
+          <td>fi</td>
+          <td>Reserved word. Part of an if construct.</td>
+      </tr>
+      <tr>
+          <td>for</td>
+          <td>Reserved word. Looping construct.</td>
+      </tr>
+      <tr>
+          <td>function</td>
+          <td>Define a function.</td>
+      </tr>
+      <tr>
+          <td>getopts</td>
+          <td>Process command-line options.</td>
+      </tr>
+      <tr>
+          <td>hash</td>
+          <td>Full pathnames are determined and remembered.</td>
+      </tr>
+      <tr>
+          <td>help</td>
+          <td>Display helpful information on built-in commands.</td>
+      </tr>
+      <tr>
+          <td>history</td>
+          <td>Display command history.</td>
+      </tr>
+      <tr>
+          <td>if</td>
+          <td>Reserved word. Conditional construct.</td>
+      </tr>
+      <tr>
+          <td>in</td>
+          <td>Reserved word. Part of a case construct.</td>
+      </tr>
+      <tr>
+          <td>jobs</td>
+          <td>List any background jobs.</td>
+      </tr>
+      <tr>
+          <td>kill</td>
+          <td>Send a signal to a process.</td>
+      </tr>
+      <tr>
+          <td>let</td>
+          <td>Arithmetic variable assignment.</td>
+      </tr>
+      <tr>
+          <td>local</td>
+          <td>Create a local variable.</td>
+      </tr>
+      <tr>
+          <td>logout</td>
+          <td>Exits a login shell.</td>
+      </tr>
+      <tr>
+          <td>popd</td>
+          <td>Removes a directory from the directory stack.</td>
+      </tr>
+      <tr>
+          <td>pushd</td>
+          <td>Adds a directory to the directory stack.</td>
+      </tr>
+      <tr>
+          <td>pwd</td>
+          <td>Print the working directory.</td>
+      </tr>
+      <tr>
+          <td>read</td>
+          <td>Read a line from standard input.</td>
+      </tr>
+      <tr>
+          <td>readonly</td>
+          <td>Make variables read-only (unassignable).</td>
+      </tr>
+      <tr>
+          <td>return</td>
+          <td>Return from the surrounding function or script.</td>
+      </tr>
+      <tr>
+          <td>select</td>
+          <td>Reserved word. Menu-generation construct.</td>
+      </tr>
+      <tr>
+          <td>set</td>
+          <td>Set options.</td>
+      </tr>
+      <tr>
+          <td>shift</td>
+          <td>Shift command-line arguments.</td>
+      </tr>
+      <tr>
+          <td>suspend</td>
+          <td>Suspend execution of a shell.</td>
+      </tr>
+      <tr>
+          <td>test</td>
+          <td>Evaluates a conditional expression.</td>
+      </tr>
+      <tr>
+          <td>then</td>
+          <td>Reserved word. Part of an if construct.</td>
+      </tr>
+      <tr>
+          <td>time</td>
+          <td>Reserved word. Run command pipeline and print execution times. The format of the output can be controlled with TIMEFORMAT.</td>
+      </tr>
+      <tr>
+          <td>times</td>
+          <td>Print the accumulated user and system times for processes run from the shell.</td>
+      </tr>
+      <tr>
+          <td>trap</td>
+          <td>Set up a signal-catching routine.</td>
+      </tr>
+      <tr>
+          <td>type</td>
+          <td>Identify the source of a command.</td>
+      </tr>
+      <tr>
+          <td>typeset</td>
+          <td>Declare variables and give them attributes. Same as declare.</td>
+      </tr>
+      <tr>
+          <td>ulimit</td>
+          <td>Set/show process resource limits.</td>
+      </tr>
+      <tr>
+          <td>umask</td>
+          <td>Set/show file permission mask.</td>
+      </tr>
+      <tr>
+          <td>unalias</td>
+          <td>Remove alias definitions.</td>
+      </tr>
+      <tr>
+          <td>unset</td>
+          <td>Remove definitions of variables or functions.</td>
+      </tr>
+      <tr>
+          <td>until</td>
+          <td>Reserved word. Looping construct.</td>
+      </tr>
+      <tr>
+          <td>wait</td>
+          <td>Wait for background job(s) to finish.</td>
+      </tr>
+      <tr>
+          <td>while</td>
+          <td>Reserved word. Looping construct.</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>La commande <code>help</code> retourne la liste des commandes build-in du bash. En faisant la commande <code>help &lt;commande&gt;</code>, on obtient le manuel de la commande.</p>
+</blockquote>
+<h2 id="références">Références</h2>
+<ol>
+<li>Cameron Newham and Bill Rosenblatt. Learning the bash Shell, 2nd Edition. O’Reilly Media, Inc., 16 January 1998. Print ISBN-13 : 978-1-565-92347-8 <a href="http://my.safaribooksonline.com/1-56592-347-2">http://my.safaribooksonline.com/1-56592-347-2</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

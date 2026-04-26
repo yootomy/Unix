@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Systeme Fichier</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/systeme-fichier/">Systeme Fichier</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 15:43</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#navigation-dans-le-système-de-fichier">Navigation dans le système de fichier</a></li>
+    <li><a href="#nom-absolu-dun-chemin-absolute-pathname">Nom absolu d&rsquo;un chemin (Absolute Pathname)</a></li>
+    <li><a href="#nom-relatif-dun-chemin-relative-pathname">Nom relatif d&rsquo;un chemin (Relative Pathname)</a>
+      <ul>
+        <li><a href="#exemples">Exemples</a></li>
+      </ul>
+    </li>
+    <li><a href="#dossier-personnel">Dossier personnel</a></li>
+    <li><a href="#nom-dun-fichier-chemin">Nom d&rsquo;un fichier (chemin)</a></li>
+    <li><a href="#exploration-du-système">Exploration du système</a></li>
+    <li><a href="#type-de-fichiers">Type de fichiers</a>
+      <ul>
+        <li><a href="#fichier-texte">Fichier texte</a></li>
+        <li><a href="#fichier-binaire">Fichier binaire</a></li>
+        <li><a href="#répertoires-dossiers">Répertoires, dossiers</a></li>
+        <li><a href="#liens-et-liens-symboliques">Liens et liens symboliques</a></li>
+        <li><a href="#fichier-spéciaux-caractère-ou-block-périphérique">Fichier spéciaux (caractère ou block), périphérique</a></li>
+      </ul>
+    </li>
+    <li><a href="#afficher-le-contenu-dun-fichier-texte">Afficher le contenu d&rsquo;un fichier texte</a></li>
+    <li><a href="#organisation-système-de-fichiers">Organisation système de fichiers</a></li>
+    <li><a href="#dossiers-standards">Dossiers standards</a></li>
+    <li><a href="#manipulation-des-dossiers">Manipulation des dossiers</a></li>
+    <li><a href="#manipulation-des-fichiers">Manipulation des fichiers</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="navigation-dans-le-système-de-fichier">Navigation dans le système de fichier</h2>
+<p>Dans TLCL voir [<a href="http://linuxcommand.org/tlcl.php">2</a>].</p>
+<pre tabindex="0"><code>pwd - Afficher le nom du répertoire de travail actuel
+cd - Change the shell working directory.
+ls - Afficher le contenu de répertoires
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man pwd
+
+PWD(1)                             Commandes                            PWD(1)
+
+NOM
+       pwd - Afficher le nom du répertoire de travail actuel
+
+SYNOPSIS
+       pwd [OPTION]...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ help cd
+
+cd: cd [-L|-P] [dir]
+    Change the shell working directory.
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man ls
+
+LS(1)                              Commandes                             LS(1)
+
+NOM
+       ls - Afficher le contenu de répertoires
+
+SYNOPSIS
+       ls [OPTION]... [FICHIER]...
+</code></pre><h2 id="nom-absolu-dun-chemin-absolute-pathname">Nom absolu d&rsquo;un chemin (Absolute Pathname)</h2>
+<p>Le nom absolu d&rsquo;un chemin commence le dossier racine (root), c&rsquo;est-à-dire par / (barre oblique, slash).</p>
+<pre tabindex="0"><code>huguenindo@lozan:~$ cd /usr/bin/
+huguenindo@lozan:bin$ pwd
+/usr/bin
+</code></pre><h2 id="nom-relatif-dun-chemin-relative-pathname">Nom relatif d&rsquo;un chemin (Relative Pathname)</h2>
+<p>Le nom relatif d&rsquo;un chemin commence à partir du dossier courant (working dorectory), c&rsquo;est-à-dire commence <strong>par l&rsquo;&lsquo;&lsquo;absence&rsquo;&rsquo; de <code>/</code> (barre oblique, slash)</strong> ou par <code>./</code></p>
+<ul>
+<li>Le symbole &ldquo;<code>..</code>&rdquo; représente de dossier parent.</li>
+<li>Le symbole &ldquo;<code>.</code>&rdquo; représente de dossier courant.</li>
+</ul>
+<h3 id="exemples">Exemples</h3>
+<h4 id="déplacement-avec-nom-de-fichier-absolu">Déplacement avec nom de fichier absolu</h4>
+<pre tabindex="0"><code>huguenindo@lozan:~$ cd /usr/bin/
+huguenindo@lozan:bin$ pwd
+/usr/bin
+</code></pre><h4 id="déplacement-vers-le-parent">Déplacement vers le parent</h4>
+<pre tabindex="0"><code>huguenindo@lozan:bin$ cd ..
+huguenindo@lozan:usr$ pwd
+/usr
+</code></pre><h4 id="déplacement-vers-un-dossier-contenu-dans-le-dossier-courant-nom-de-fichier-relatif">Déplacement vers un dossier contenu dans le dossier courant (nom de fichier relatif)</h4>
+<pre tabindex="0"><code>huguenindo@lozan:usr$ cd ./bin
+huguenindo@lozan:bin$ pwd
+/usr/bin
+</code></pre><h2 id="dossier-personnel">Dossier personnel</h2>
+<p>Le symbole &ldquo;~&rdquo; représente un raccourci  du chemin vers le dossier personnel de l&rsquo;utilisateur.</p>
+<pre tabindex="0"><code>huguenindo@lozan:bin$ cd ~
+huguenindo@lozan:~$ pwd
+/home/S2/huguenindo
+</code></pre><p>ou</p>
+<pre tabindex="0"><code>huguenindo@lozan:~$ cd /home/S2/huguenindo
+huguenindo@lozan:~$ pwd
+/home/S2/huguenindo
+</code></pre><h2 id="nom-dun-fichier-chemin">Nom d&rsquo;un fichier (chemin)</h2>
+<p>Le <strong>nom d&rsquo;un fichier</strong> est le <strong>chemin</strong> pour trouver le ficher avec l&rsquo;extension (suffix).</p>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls /usr/include/aliases.h
+/usr/include/aliases.h
+</code></pre><h2 id="exploration-du-système">Exploration du système</h2>
+<p>Dans TLCL voir [<a href="http://linuxcommand.org/tlcl.php">3</a>].</p>
+<pre tabindex="0"><code>ls - Afficher le contenu de répertoires.
+file - Determine file type.
+less - Filtre lecteur de fichier.
+more — Filtre lecteur de fichier.
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man ls
+
+LS(1)                              Commandes                             LS(1)
+
+NOM
+       ls - Afficher le contenu de répertoires
+
+SYNOPSIS
+       ls [OPTION]... [FICHIER]...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man file
+
+FILE(1)                   BSD General Commands Manual                  FILE(1)
+
+NAME
+     file — determine file type
+
+SYNOPSIS
+     file [-bchikLnNprsvz] [--mime-type] [--mime-encoding] [-f namefile]
+          [-F separator] [-m magicfiles] file
+     file -C [-m magicfile]
+     file [--help]
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man less
+
+LESS(1)                                                                LESS(1)
+
+NAME
+       less - opposite of more
+
+SYNOPSIS
+       less -?
+       less --help
+       less -V
+       less --version
+       less [-[+]aBcCdeEfFgGiIJKLmMnNqQrRsSuUVwWX~]
+            [-b space] [-h lines] [-j line] [-k keyfile]
+            [-{oO} logfile] [-p pattern] [-P prompt] [-t tag]
+            [-T tagsfile] [-x tab,...] [-y lines] [-[z] lines]
+            [-# shift] [+[+]cmd] [--] [filename]...
+       (See  the  OPTIONS section for alternate option syntax with long option
+       names.)
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man more
+
+MORE(1)               Manuel des commandes générales BSD               MORE(1)
+
+NOM
+     more — Filtre lecteur de fichier.
+
+SYNOPSIS
+     more [-dlfpcsu] [-num] [+/ motif] [+ numligne] [file ...]
+</code></pre><h2 id="type-de-fichiers">Type de fichiers</h2>
+<ul>
+<li>(-) Fichiers normaux</li>
+<li>(d) Répertoires, dossiers</li>
+<li>(l) Liens et liens symboliques</li>
+<li>(c,b) Fichier spéciaux (caractère ou block), périphérique</li>
+</ul>
+<h3 id="fichier-texte">Fichier texte</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ file /usr/include/aliases.h 
+/usr/include/aliases.h: ASCII C program text
+</code></pre><h3 id="fichier-binaire">Fichier binaire</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ file /bin/date
+/bin/date: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV),
+ dynamically linked (uses shared libs), for GNU/Linux 2.6.15, stripped
+</code></pre><h3 id="répertoires-dossiers">Répertoires, dossiers</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ file /bin
+/bin: directory
+</code></pre><h3 id="liens-et-liens-symboliques">Liens et liens symboliques</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ file /bin/netcat 
+/bin/netcat: symbolic link to `/etc/alternatives/netcat&#39;
+</code></pre><h3 id="fichier-spéciaux-caractère-ou-block-périphérique">Fichier spéciaux (caractère ou block), périphérique</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ file /dev/tty
+/dev/tty: character special
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ file /dev/sda
+/dev/sda: block special
+</code></pre><h2 id="afficher-le-contenu-dun-fichier-texte">Afficher le contenu d&rsquo;un fichier texte</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ less /etc/passwd
+</code></pre><pre tabindex="0"><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+bin:x:2:2:bin:/bin:/bin/sh
+sys:x:3:3:sys:/dev:/bin/sh
+...
+</code></pre><h2 id="organisation-système-de-fichiers">Organisation système de fichiers</h2>
+<p>voir [<a href="http://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/Linux-Filesystem-Hierarchy.html">1</a>]</p>
+<pre tabindex="0"><code> +---------+-----------------+-------------+
+ |         | shareable       | unshareable |
+ +---------+-----------------+-------------+
+ |static   | /usr            | /etc        |
+ |         | /opt            | /boot       |
+ +---------+-----------------+-------------+
+ |variable | /var/mail       | /var/run    |
+ |         | /var/spool/news | /var/lock   |
+ +---------+-----------------+-------------+
+</code></pre><ul>
+<li>&ldquo;Shareable&rdquo; files are defined as those that can be stored on one host and used on others.</li>
+<li>&ldquo;Unshareable&rdquo; files are those that are not shareable. For example, the files in user home directories are shareable whereas device lock files are not.</li>
+<li>&ldquo;Static&rdquo; files include binaries, libraries, documentation files and other files that do not change without system
+administrator intervention.</li>
+<li>&ldquo;Variable&rdquo; files are defined as files that are not static.</li>
+</ul>
+<h2 id="dossiers-standards">Dossiers standards</h2>
+<pre tabindex="0"><code>huguenindo@lozan:/$ tree -L 1
+.
+├── bin
+├── boot
+├── dev
+├── etc
+├── home
+├── lib
+├── mnt
+├── opt
+├── proc
+├── root
+├── sbin
+├── tmp
+├── usr
+├── var
+</code></pre><p>Les répertoires les plus fréquemment rencontrés sous les systèmes UNIX sont</p>
+<ul>
+<li><code>/bin</code> contient commandes utilisés par tous les utilisateurs (ls, cd ,…)</li>
+<li><code>/usr</code> contient les programmes et utilitaires en relation avec l’utilisateur</li>
+<li><code>/etc</code> contient les fichiers de configuration et d’administration système</li>
+<li><code>/dev</code> contient les fichiers spéciaux</li>
+<li><code>/home</code> contient les répertoires personnels des utilisateurs</li>
+</ul>
+<h2 id="manipulation-des-dossiers">Manipulation des dossiers</h2>
+<p>Dans TLCL voir [<a href="http://linuxcommand.org/tlcl.php">4</a>].</p>
+<pre tabindex="0"><code>mkdir - Créer des répertoires
+rmdir - Supprimer des répertoires vides
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man mkdir
+
+MKDIR(1)                           Commandes                          MKDIR(1)
+
+NOM
+       mkdir - Créer des répertoires
+
+SYNOPSIS
+       mkdir [OPTION]... RÉPERTOIRE...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man rmdir
+
+RMDIR(1)                           Commandes                          RMDIR(1)
+
+NOM
+       rmdir - Supprimer des répertoires vides
+
+SYNOPSIS
+       rmdir [OPTION]... RÉPERTOIRE...
+</code></pre><h2 id="manipulation-des-fichiers">Manipulation des fichiers</h2>
+<p>Dans TLCL voir [<a href="http://linuxcommand.org/tlcl.php">4</a>].</p>
+<pre tabindex="0"><code>cp - Copier des fichiers et des répertoires
+mv - Déplacer ou renommer des fichiers
+rm - Effacer des fichiers et des répertoires
+ln - Créer des liens entre des fichiers
+cat - Concaténer des fichiers et les afficher sur la sortie standard
+touch - Modifier l&#39;horodatage d&#39;un fichier
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man cp
+
+CP(1)                              Commandes                             CP(1)
+
+NOM
+       cp - Copier des fichiers et des répertoires
+
+SYNOPSIS
+       cp [OPTION]... [-T] SOURCE CIBLE
+       cp [OPTION]... SOURCE... RÉPERTOIRE
+       cp [OPTION]... -t RÉPERTOIRE SOURCE...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man mv
+
+MV(1)                              Commandes                             MV(1)
+
+NOM
+       mv - Déplacer ou renommer des fichiers
+
+SYNOPSIS
+       mv [OPTION]... [-T] SOURCE CIBLE
+       mv [OPTION]... SOURCE... RÉPERTOIRE
+       mv [OPTION]... -t RÉPERTOIRE SOURCE...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man rm
+
+RM(1)                              Commandes                             RM(1)
+
+NOM
+       rm - Effacer des fichiers et des répertoires
+
+SYNOPSIS
+       rm [OPTION]... FICHIER...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man ln
+
+LN(1)                              Commandes                             LN(1)
+
+NOM
+       ln - Créer des liens entre des fichiers
+
+SYNOPSIS
+       ln [OPTION]... [-T] CIBLE NOM_DU_LIEN (1er format)
+       ln [OPTION]... CIBLE (2e format)
+       ln [OPTION]... CIBLE... RÉPERTOIRE (3e format)
+       ln [OPTION]... -t RÉPERTOIRE CIBLE...  (4e format)
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man cat
+
+CAT(1)                             Commandes                            CAT(1)
+
+NOM
+       cat - Concaténer des fichiers et les afficher sur la sortie standard
+
+SYNOPSIS
+       cat [OPTION]... [FICHIER]...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man touch
+
+TOUCH(1)                           Commandes                          TOUCH(1)
+
+NOM
+       touch - Modifier l&#39;horodatage d&#39;un fichier
+
+SYNOPSIS
+       touch [OPTION]... FICHIER...
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>Linux Filesystem Hierarchy<a href="http://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/Linux-Filesystem-Hierarchy.html">http://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/Linux-Filesystem-Hierarchy.html</a></li>
+<li>3-Navigation, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>4-Exploring The system, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>5-Manipulating Files And Directories, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>Filesystem Hierarchy Standard — Wikipédia, <a href="https://fr.wikipedia.org/wiki/Filesystem_Hierarchy_Standard">https://fr.wikipedia.org/wiki/Filesystem_Hierarchy_Standard</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

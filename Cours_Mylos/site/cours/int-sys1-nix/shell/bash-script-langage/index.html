@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Langage de programmation Bash</title>
+	<meta name="description" content="Écrire un programme avec le langage bash"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/bash-script-langage/">Langage de programmation Bash</a></h1>
+    <p>Écrire un programme avec le langage bash</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>08.08.2020 15:58</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#script-simple">Script simple</a></li>
+    <li><a href="#exemple">Exemple:</a></li>
+    <li><a href="#variable">Variable</a></li>
+    <li><a href="#apostrophe--ou-guillemet-">Apostrophe (&rsquo;) ou guillemet (&quot;)</a></li>
+    <li><a href="#commandes-algorithmique---ifthenelif">Commandes algorithmique - if/then/elif</a></li>
+    <li><a href="#opérateur-logique--n">Opérateur logique <code>-n</code></a></li>
+    <li><a href="#opérateur-logique--z">Opérateur logique <code>-z</code></a></li>
+    <li><a href="#opérateur-logique--d">Opérateur logique <code>-d</code></a></li>
+    <li><a href="#opérateur-logique--f">Opérateur logique <code>-f</code></a></li>
+    <li><a href="#opérateur-logique--eq">Opérateur logique <code>-eq</code></a></li>
+    <li><a href="#opérateur-logique--ne">Opérateur logique <code>-ne</code></a></li>
+    <li><a href="#opérateur-logique-">Opérateur logique <code>=</code></a></li>
+    <li><a href="#opérateur-logique--1">Opérateur logique <code>!=</code></a></li>
+    <li><a href="#opérateur-logique--lt">Opérateur logique <code>-lt</code></a></li>
+    <li><a href="#opérateur-logique--gt">Opérateur logique <code>-gt</code></a></li>
+    <li><a href="#opérateur-logique--ge">Opérateur logique <code>-ge</code></a></li>
+    <li><a href="#opérateur-logique--le">Opérateur logique <code>-le</code></a></li>
+    <li><a href="#case">case</a></li>
+    <li><a href="#boucle-pour">boucle POUR</a>
+      <ul>
+        <li><a href="#exemple-1">exemple 1</a></li>
+        <li><a href="#exemple-2">exemple 2</a></li>
+      </ul>
+    </li>
+    <li><a href="#boucle-tant-que">boucle TANT QUE</a>
+      <ul>
+        <li><a href="#exemple-1-1">exemple 1</a></li>
+      </ul>
+    </li>
+    <li><a href="#substitution-de-commandes">Substitution de commandes</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="script-simple">Script simple</h2>
+<p>Un script doit toujours commencer par une ligne indiquant l&rsquo;interpréteur à utiliser:</p>
+<pre tabindex="0"><code>#!/bin/bash
+</code></pre><p>ou</p>
+<pre tabindex="0"><code>#!/bin/sh
+</code></pre><h2 id="exemple">Exemple:</h2>
+<pre tabindex="0"><code>#!/bin/bash
+
+echo &#34;hello, $USER. I wish to list some files of yours&#34;
+
+echo &#34;listing files in the current directory, $PWD&#34;
+
+ls # list files
+</code></pre><blockquote>
+<p>$USER, $PWD sont des variables.</p>
+</blockquote>
+<h2 id="variable">Variable</h2>
+<ul>
+<li>Définition d&rsquo;une variable</li>
+</ul>
+<pre tabindex="0"><code>X=&#34;Hello&#34;
+X = Hello #erreur
+X=Hello world # erreur
+X=&#34;Hello world&#34; # ok
+</code></pre><ul>
+<li>Référer dans un script par :</li>
+</ul>
+<pre tabindex="0"><code>$X
+</code></pre><h2 id="apostrophe--ou-guillemet-">Apostrophe (&rsquo;) ou guillemet (&quot;)</h2>
+<p>En principe, les noms de variable sont substituées lors qu&rsquo;ils se trouvent entre deux guillemets (double quotes) mais pas entre deux apostrophes (single quotes)</p>
+<pre tabindex="0"><code>#!/bin/bash
+echo -n &#39;$USER=&#39; # -n supprime le saut de ligne
+echo &#34;$USER&#34;
+echo &#34;\$USER=$USER&#34;
+</code></pre><p>La sortie est la suivante ( l&rsquo;utilisateur est huguenin)</p>
+<pre tabindex="0"><code>$USER=huguenin
+$USER=huguenin
+</code></pre><h2 id="commandes-algorithmique---ifthenelif">Commandes algorithmique - if/then/elif</h2>
+<pre tabindex="0"><code>if condition; then
+  statement1
+  statement2
+fi
+</code></pre><pre tabindex="0"><code>if condition; then
+  statement1
+  statement2
+else
+  statement3
+fi
+</code></pre><pre tabindex="0"><code>if condition1; then
+  statement1
+  statement2
+elif condition2; then
+  statement3
+  statement4
+elif condition3; then
+  statement5
+  statement6
+fi
+</code></pre><h2 id="opérateur-logique--n">Opérateur logique <code>-n</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>la longueur d&rsquo;opérande est différente de 0.</li>
+</ul>
+<pre tabindex="0"><code>if [ -n &#34;123&#34; ]
+then
+  echo vrai
+fi	
+</code></pre><h2 id="opérateur-logique--z">Opérateur logique <code>-z</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>la longueur d&rsquo;opérande est égale de 0.</li>
+</ul>
+<pre tabindex="0"><code>if [ -z &#34;&#34; ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--d">Opérateur logique <code>-d</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>il existe un répertoire avec le nom de l&rsquo;opérande.</li>
+</ul>
+<pre tabindex="0"><code>if [ -d &#34;/etc&#34; ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--f">Opérateur logique <code>-f</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>il existe un fichier avec le nom de l&rsquo;opérande.</li>
+</ul>
+<pre tabindex="0"><code>if [ -f &#34;/etc/passwd&#34; ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--eq">Opérateur logique <code>-eq</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>les opérandes sont des entier et qu&rsquo;ils sont égaux.</li>
+</ul>
+<pre tabindex="0"><code>if [ 1 -eq 1 ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--ne">Opérateur logique <code>-ne</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>contraire de -eq</li>
+</ul>
+<pre tabindex="0"><code>if [ 1 -ne 2 ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique-">Opérateur logique <code>=</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>les opérandes sont des chaînes de caractère et qu&rsquo;ils sont égaux</li>
+</ul>
+<pre tabindex="0"><code>if [ &#34;1&#34; = &#34;1&#34; ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--1">Opérateur logique <code>!=</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>contraire de =</li>
+</ul>
+<pre tabindex="0"><code>if [ &#34;1&#34; != &#34;2&#34; ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--lt">Opérateur logique <code>-lt</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>operand1 est strictement plus petit que operand2 (les deux opérandes doivent être des entiers)</li>
+</ul>
+<pre tabindex="0"><code>if [ 1 -lt 2 ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--gt">Opérateur logique <code>-gt</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>operand1 est strictement plus grand que operand2 (les deux opérandes doivent être des entiers)</li>
+</ul>
+<pre tabindex="0"><code>if [ 2 -gt 1 ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--ge">Opérateur logique <code>-ge</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>operand1 est plus grand ou égale à operand2 (les deux opérandes doivent être des entiers)</li>
+</ul>
+<pre tabindex="0"><code>if [ 1 -ge 1 ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="opérateur-logique--le">Opérateur logique <code>-le</code></h2>
+<p>vrai si&hellip;</p>
+<ul>
+<li>operand1 est plus petit ou égale à operand2 (les deux opérandes doivent être des entiers)</li>
+</ul>
+<pre tabindex="0"><code>if [ 1 -le 1 ]
+then
+  echo vrai
+fi
+</code></pre><h2 id="case">case</h2>
+<ul>
+<li>synoptique</li>
+</ul>
+<pre tabindex="0"><code>case word in
+  [pattern [| pattern]...) commands ;;]...
+esac
+</code></pre><ul>
+<li>Exemple</li>
+</ul>
+<pre tabindex="0"><code>case $variable in
+   valeur1) echo &#34;valeur une&#34;
+   ;;
+   valeur2) echo &#34;valeur deux&#34;
+   ;;
+   *) echo &#34;valeur par defaut&#34;
+   ;;
+esac
+</code></pre><h2 id="boucle-pour">boucle POUR</h2>
+<h3 id="exemple-1">exemple 1</h3>
+<pre tabindex="0"><code>#!/bin/bash
+for X in red green blue
+do
+  echo $X
+done
+</code></pre><p>Affichage</p>
+<pre tabindex="0"><code>red
+green
+blue
+</code></pre><h3 id="exemple-2">exemple 2</h3>
+<pre tabindex="0"><code>#!/bin/bash
+for X in *.html
+do
+  grep -L &#39;&lt;UL&gt;&#39; &#34;$X&#34;
+done
+</code></pre><blockquote>
+<p>Affiche tous les fichiers html contenant la balise <UL>.</p>
+</blockquote>
+<h2 id="boucle-tant-que">boucle TANT QUE</h2>
+<h3 id="exemple-1-1">exemple 1</h3>
+<pre tabindex="0"><code>#!/bin/bash
+X=0
+while [ $X -le 20 ]
+do
+  echo $X
+  X=$((X+1))
+done
+</code></pre><blockquote>
+<p>Affiche les nombres de 0 à 20. Tant que la condition est vrai, le script exécute les traitements dans la boucle.</p>
+</blockquote>
+<h2 id="substitution-de-commandes">Substitution de commandes</h2>
+<pre tabindex="0"><code>#!/bin/bash
+files=&#34;$(ls)&#34;
+web_files=$(ls ~/tmp)
+echo $files
+echo $web_files
+X=$((3 * 2 + 4)) 
+echo $X
+</code></pre><blockquote>
+<p>Les $( commande ) et `commande` permettent une imbrication des commandes.</p>
+</blockquote>
+<p>Le script affiche les noms des fichiers du répertoire courant et ceux du répertoire public_html et évalue l&rsquo;expression 3 * 2 + 4</p>
+<h2 id="références">Références</h2>
+<ol>
+<li>A quick guide to writing scripts using the bash shell. <a href="http://www.panix.com/~elflord/unix/bash-tute.html">http://www.panix.com/~elflord/unix/bash-tute.html</a></li>
+<li>Apprendre les conditions pour les scripts Linux en bash, <a href="http://buzut.developpez.com/tutoriels/maitriser-conditions-bash/">http://buzut.developpez.com/tutoriels/maitriser-conditions-bash/</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Configuration du serveur de fichier et client </title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-nfsv4/">Service réseau - Configuration du serveur de fichier et client </a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:26</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#configuration-du-serveur-de-fichier-nfsv4">Configuration du serveur de fichier NFSv4</a>
+      <ul>
+        <li><a href="#emplacement-du-dossier-personnel">Emplacement du dossier personnel</a></li>
+        <li><a href="#installations-côté-serveur">Installations côté serveur</a></li>
+        <li><a href="#configuration-de-lexposition-des-partages">Configuration de l&rsquo;exposition des partages</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-du-client-nfsv4">Configuration du client NFSv4</a>
+      <ul>
+        <li><a href="#installations-côté-client">Installations côté client</a></li>
+        <li><a href="#montage-du-partage">Montage du partage</a></li>
+        <li><a href="#création-dun-utilisateur">Création d&rsquo;un utilisateur</a></li>
+      </ul>
+    </li>
+    <li><a href="#commandes">Commandes</a>
+      <ul>
+        <li><a href="#exportfs---maintenir-la-liste-des-systèmes-de-fichiers-exportés-nfs">exportfs - maintenir la liste des systèmes de fichiers exportés NFS</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="configuration-du-serveur-de-fichier-nfsv4">Configuration du serveur de fichier NFSv4</h2>
+<blockquote>
+<p><em>Pour que le serveur de fichier connaisse les nom des utilisateurs au lieu de leur id, il faut également installer sur ce serveur le client kerberos+ldap</em></p>
+</blockquote>
+<blockquote>
+<h3 id="emplacement-du-dossier-personnel">Emplacement du dossier personnel</h3>
+<p>Pour ne pas faire de confusion entre les utilisateurs locaux et ceux du domaine, le dossier personnel des utilisateurs du domaine sont placé dans le dossier <code>/home/ANTITERRE</code>. La configuration ci-dessous définit l&rsquo;emplacement par défaut du dossier d&rsquo;utilisateur.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@galatograd:~$ cat /etc/adduser.conf
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>DHOME<span style="color:#f92672">=</span>/home/ANTITERRE
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>Le dossier personnel des utilisateurs du domaine ANTITERRE seront stocké dans le dossier <code>/home/ANTITERRE</code> du serveur de fichier <code>fs.antiterre.lan</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo mkdir /home/ANTITERRE
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ ls -l /home
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">2</span> root   root   <span style="color:#ae81ff">4096</span> Mar <span style="color:#ae81ff">27</span> 08:31 ANTITERRE
+</span></span></code></pre></div></blockquote>
+<h3 id="installations-côté-serveur">Installations côté serveur</h3>
+<ul>
+<li>Installation des paquets</li>
+</ul>
+<pre tabindex="0"><code>sudo apt-get install nfs-kernel-server
+</code></pre><h3 id="configuration-de-lexposition-des-partages">Configuration de l&rsquo;exposition des partages</h3>
+<p>Nous voulons exposé le dossier <code>/home/ANTITERRE</code> du serveur <code>fs.antiterre.lan</code>.</p>
+<ul>
+<li>Exporter nos dossiers pour les machines connu de kerberos, il faut ajouter les lignes suivantes dans le fichier <strong>/etc/exports</strong> :</li>
+</ul>
+<pre tabindex="0"><code># &#39;fsid=0&#39; designates this path as the nfs4 root
+# &#39;crossmnt&#39; is necessary to properly expose the paths
+# &#39;no_subtree_check&#39; is specified to get rid of warning messages
+#    about the default value changing. This is the default value
+/home/ANTITERRE   192.168.100.0/24(rw,sync,no_subtree_check)
+</code></pre><blockquote>
+<p><strong>information</strong></p>
+<ul>
+<li>
+<p><strong>rw</strong> : Allow both read and write  requests  on  this  NFS  volume.  The default is to disallow any request which changes the filesystem. This can also be made explicit by using the ro option.</p>
+</li>
+<li>
+<p><strong>async</strong> : This option allows the NFS server to violate  the  NFS  protocol and  reply  to  requests before any changes made by that request have been committed to stable storage (e.g. disc drive).</p>
+<p>Using this option usually improves performance, but at the  cost that  an unclean server restart (i.e. a crash) can cause data to be lost or corrupted.</p>
+</li>
+<li>
+<p><strong>sync</strong> : Reply to requests only after the changes have been committed  to stable storage (see async above).</p>
+</li>
+<li>
+<p><strong>nohide</strong> : This option is based on the option of the same name provided in IRIX NFS.  Normally, if a server exports two filesystems one  of  which  is  mounted  on  the  other, then the client will have to mount both filesystems explicitly to get access to them.  If  it  just  mounts  the  parent, it will see an empty directory at the place where the other filesystem is mounted.  That filesystem is &ldquo;hidden&rdquo;.</p>
+<p>Setting  the  nohide  option on a filesystem causes it not to be  hidden, and an appropriately authorised client will be  able  to move  from  the  parent  to that filesystem without noticing the change.</p>
+<p>However, some NFS clients do not cope well with  this  situation as,  for  instance, it is then possible for two files in the one apparent filesystem to have the same inode number.</p>
+<p>The nohide option is currently only  effective  on  single  host  exports.   It  does  not work reliably with netgroup, subnet, or  wildcard exports.</p>
+<p>This option can be very useful in some situations, but it should be used with due care, and only after confirming that the client system copes with the situation effectively.</p>
+<p>The option can be explicitly disabled with hide.</p>
+</li>
+<li>
+<p><strong>crossmnt</strong> : This option is similar to nohide but it makes  it  possible  for clients  to  move  from  the  filesystem marked with crossmnt to exported filesystems mounted on it.  Thus when a child  filesystem  &ldquo;B&rdquo; is mounted on a parent &ldquo;A&rdquo;, setting crossmnt on &ldquo;A&rdquo; has the same effect as setting &ldquo;nohide&rdquo; on B.</p>
+</li>
+<li>
+<p><strong>no_subtree_check</strong> : This option disables subtree checking, which has  mild  security implications, but can improve reliability in some circumstances.</p>
+<p>If  a  subdirectory  of  a filesystem is exported, but the whole filesystem isn&rsquo;t then whenever a NFS request arrives, the server must check not only that the accessed file is in the appropriate filesystem (which is easy) but also that it is in  the  exported tree (which is harder). This check is called the subtree_check.</p>
+<p>In  order  to  perform  this check, the server must include some information about the location of the file in  the  &ldquo;filehandle&rdquo; that  is  given  to  the  client.   This can cause problems with accessing files that are renamed while a client  has  them  open (though in many simple cases it will still work).</p>
+<p>subtree  checking  is  also  used to make sure that files inside directories to which only root has access can only  be  accessed if  the  filesystem is exported with no_root_squash (see below), even if the file itself allows more general access.</p>
+<p>As a general guide, a home directory filesystem, which  is  normally  exported  at  the  root and may see lots of file renames,  should be exported with subtree checking disabled.  A filesystem which  is  mostly  readonly,  and at least doesn&rsquo;t see many file renames (e.g. /usr or /var) and for which subdirectories may  be exported,  should  probably  be  exported  with  subtree  checks enabled.</p>
+<p>The default of having subtree checks enabled, can be  explicitly requested with subtree_check.</p>
+<p>From  release  1.1.0  of  nfs-utils onwards, the default will be no_subtree_check as subtree_checking tends to cause  more  problems  than it is worth.  If you genuinely require subtree checking, you should explicitly put that option in the exports  file. If  you  put  neither  option,  exportfs  will warn you that the change is pending.</p>
+</li>
+<li>
+<p><strong>fsid</strong>=num|root|uuid: NFS needs to  be  able  to  identify  each  filesystem  that  it exports.  Normally it will use a UUID for the filesystem (if the filesystem has such a thing) or the device number of the  device holding  the  filesystem  (if  the  filesystem  is stored on the device).</p>
+<p>As not all filesystems  are  stored  on  devices,  and  not  all filesystems  have UUIDs, it is sometimes necessary to explicitly tell NFS how to identify a filesystem.  This is  done  with  the fsid= option.</p>
+<p>For NFSv4, there is a distinguished filesystem which is the root of all exported filesystem.  This is specified with fsid=root or fsid=0 both of which mean exactly the same thing.</p>
+<p>Other  filesystems  can be identified with a small integer, or a UUID which should contain 32 hex digits and  arbitrary  punctuation.</p>
+<p>Linux  kernels  version 2.6.20 and earlier do not understand the UUID setting so a small integer must be used if an  fsid  option needs  to  be set for such kernels.  Setting both a small number and a UUID is supported so the same configuration can be made to  work on old and new kernels alike.</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>Redémarrage du service :</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo systemctl restart nfs-kernel-server.service 
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ sudo systemctl status nfs-kernel-server.service 
+</span></span><span style="display:flex;"><span>● nfs-server.service - NFS server and services
+</span></span><span style="display:flex;"><span>   Loaded: loaded <span style="color:#f92672">(</span>/lib/systemd/system/nfs-server.service; enabled; vendor preset: enabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   Active: active <span style="color:#f92672">(</span>exited<span style="color:#f92672">)</span> since Tue 2019-05-21 10:00:59 CEST; 2s ago
+</span></span><span style="display:flex;"><span>  Process: <span style="color:#ae81ff">684</span> ExecStopPost<span style="color:#f92672">=</span>/usr/sbin/exportfs -f <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  Process: <span style="color:#ae81ff">683</span> ExecStopPost<span style="color:#f92672">=</span>/usr/sbin/exportfs -au <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  Process: <span style="color:#ae81ff">682</span> ExecStop<span style="color:#f92672">=</span>/usr/sbin/rpc.nfsd <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  Process: <span style="color:#ae81ff">692</span> ExecStart<span style="color:#f92672">=</span>/usr/sbin/rpc.nfsd $RPCNFSDARGS <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  Process: <span style="color:#ae81ff">691</span> ExecStartPre<span style="color:#f92672">=</span>/usr/sbin/exportfs -r <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span> Main PID: <span style="color:#ae81ff">692</span> <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mai <span style="color:#ae81ff">21</span> 10:00:59 urbicande systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Starting NFS server and services...
+</span></span><span style="display:flex;"><span>mai <span style="color:#ae81ff">21</span> 10:00:59 urbicande systemd<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Started NFS server and services.
+</span></span></code></pre></div><ul>
+<li>
+<p>Exportation - maintenance de la liste des partages</p>
+<pre><code> ```shell
+ debian@urbicande:~$ sudo exportfs -ra
+ debian@urbicande:~$ sudo exportfs -v
+ /home/ANTITERRE        192.168.100.0/24(rw,wdelay,root_squash,no_subtree_check,sec=sys,rw,secure,root_squash,no_all_squash)
+ ```
+</code></pre>
+</li>
+</ul>
+<h4 id="test-de-montage-depuis-le-serveur">Test de montage depuis le serveur</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo mount -t nfs4 fs.antiterre.lan:/home/ANTITERRE /mnt
+</span></span></code></pre></div><blockquote>
+<p>Si la commande retourne :</p>
+<pre tabindex="0"><code>debian@urbicande:~$ sudo mount -t nfs4 fs.antiterre.lan:/home/ANTITERRE /mnt
+mount.nfs4: No such device
+</code></pre><p>Redémarrer la machine.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ mount -t nfs4
+</span></span><span style="display:flex;"><span>fs.antiterre.lan:/home/ANTITERRE on /mnt type nfs4 <span style="color:#f92672">(</span>rw,relatime,vers<span style="color:#f92672">=</span>4.0,rsize<span style="color:#f92672">=</span>131072,
+</span></span><span style="display:flex;"><span>                         wsize<span style="color:#f92672">=</span>131072,namlen<span style="color:#f92672">=</span>255,hard,proto<span style="color:#f92672">=</span>tcp,port<span style="color:#f92672">=</span>0,timeo<span style="color:#f92672">=</span>600,
+</span></span><span style="display:flex;"><span>                         retrans<span style="color:#f92672">=</span>2,sec<span style="color:#f92672">=</span>sys,clientaddr<span style="color:#f92672">=</span>192.168.100.30,local_lock<span style="color:#f92672">=</span>none,addr<span style="color:#f92672">=</span>192.168.100.30<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h2 id="configuration-du-client-nfsv4">Configuration du client NFSv4</h2>
+<h3 id="installations-côté-client">Installations côté client</h3>
+<ul>
+<li>installation de paquets</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>client:~$ sudo apt-get install nfs-common
+</span></span></code></pre></div><h3 id="montage-du-partage">Montage du partage</h3>
+<ul>
+<li>Montage</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>client:~$ sudo mount -t nfs4 fs.antiterre.lan:/home/ANTITERRE /home/ANTITERRE
+</span></span></code></pre></div><blockquote>
+<p>Si la commande retourne :</p>
+<pre tabindex="0"><code>client:~$ sudo mount -t nfs4 fs.antiterre.lan:/home /mnt
+mount.nfs4: No such device
+</code></pre><p>Redémarrer la machine.</p>
+</blockquote>
+<ul>
+<li>Vérification</li>
+</ul>
+<pre tabindex="0"><code>client:~$ mount -t nfs4
+fs.antiterre.lan:/home/ANTITERRE on /home/ANTITERRE type nfs4 (rw,relatime,vers=4.0,rsize=131072,wsize=131072,
+                 namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,
+                 sec=sys,clientaddr=192.168.100.150,local_lock=none,addr=192.168.100.30,_netdev
+</code></pre><h4 id="montage-permanent-dans-etcfstab">Montage permanent dans /etc/fstab</h4>
+<blockquote>
+<p><strong>ATTENTION</strong>
+inscrire le montage dans fstab uniquement si le système fonctionne bien!</p>
+</blockquote>
+<ul>
+<li>configurer</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim /etc/fstab 
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>fs.antiterre.lan:/home/ANTITERRE   /home/ANTITERRE   nfs4    _netdev,auto  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><blockquote>
+<p>L&rsquo;option <code>_netdev</code> indique que le montage doit être effectué après l&rsquo;activation du réseau</p>
+</blockquote>
+<ul>
+<li>Pour tester redémarrer le client et vérifier l&rsquo;existence du montage.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mount -t nfs4
+</span></span><span style="display:flex;"><span>fs.antiterre.lan:/home/ANTITERRE on /home/ANTITERRE type nfs4 <span style="color:#f92672">(</span>rw,relatime,vers<span style="color:#f92672">=</span>4.0,rsize<span style="color:#f92672">=</span>131072,wsize<span style="color:#f92672">=</span>131072,
+</span></span><span style="display:flex;"><span>                 namlen<span style="color:#f92672">=</span>255,hard,proto<span style="color:#f92672">=</span>tcp,port<span style="color:#f92672">=</span>0,timeo<span style="color:#f92672">=</span>600,retrans<span style="color:#f92672">=</span>2,
+</span></span><span style="display:flex;"><span>                 sec<span style="color:#f92672">=</span>sys,clientaddr<span style="color:#f92672">=</span>192.168.100.150,local_lock<span style="color:#f92672">=</span>none,addr<span style="color:#f92672">=</span>192.168.100.30,_netdev
+</span></span></code></pre></div><ul>
+<li>création d&rsquo;un fichier de test sur le client</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>robick@client$ sudo touch /home/ANTITERRE/robick/client.test
+</span></span><span style="display:flex;"><span>robick@client$ ls -l /home/ANTITERRE/robick
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>-rw-r--r-- <span style="color:#ae81ff">1</span> robick robick <span style="color:#ae81ff">0</span> 2011-02-24 10:24 client.test
+</span></span></code></pre></div><ul>
+<li>Vérification de la présence sur le serveur</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>robick@client$ ssh robick@fs.antiterre.lan ls -l /home/ANTITERRE/robick
+</span></span><span style="display:flex;"><span>debian@fs.antiterre.lan<span style="color:#960050;background-color:#1e0010">&#39;</span>s password: 
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>-rw-r--r-- <span style="color:#ae81ff">1</span> robick robick <span style="color:#ae81ff">0</span> 2011-02-24 10:24 client.test
+</span></span></code></pre></div><h3 id="création-dun-utilisateur">Création d&rsquo;un utilisateur</h3>
+<p><a href="../gestion-utilisateurs">voir aussi</a></p>
+<blockquote>
+<p><strong>ATTENTION</strong>
+Lors de la création d&rsquo;un nouvel utilisateur, il faut créer son dossier personnel sur le serveur de fichier NFS. Ce dossier ne sera pas créer automatiquement!</p>
+</blockquote>
+<ul>
+<li>
+<p>afficher la configuration de l&rsquo;utilisateur du domain</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ getent passwd vonrathen
+</span></span><span style="display:flex;"><span>vonrathen:*:10001:10001:vonrathen:/home/ANTITERRE/vonrathen:/bin/bash
+</span></span></code></pre></div></li>
+<li>
+<p>créer son dossier personnel</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>debian@urbicande:~$ sudo cp -av /etc/skel /home/ANTITERRE/vonrathen
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ ls -l /home/ANTITERRE
+</span></span><span style="display:flex;"><span>drwxr-xr-x  <span style="color:#ae81ff">2</span> root   root   <span style="color:#ae81ff">4096</span> 2011-05-05 13:39 vonrathen
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ sudo chown vonrathen:vonrathen /home/vonrathen/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ ls -l /home
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">6</span> root   root   <span style="color:#ae81ff">4096</span> Mar <span style="color:#ae81ff">27</span> 10:21 ANTITERRE
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">5</span> debian debian <span style="color:#ae81ff">4096</span> Mar <span style="color:#ae81ff">27</span> 10:12 debian
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>debian@urbicande:~$ ls -l /home/ANTITERRE
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">2</span> vonrathen  vonrathen  <span style="color:#ae81ff">4096</span> Mar <span style="color:#ae81ff">27</span> 10:21 vonrathen
+</span></span></code></pre></div></li>
+</ul>
+<blockquote>
+<p>Créer également un dossier pour robick</p>
+</blockquote>
+<h2 id="commandes">Commandes</h2>
+<h3 id="exportfs---maintenir-la-liste-des-systèmes-de-fichiers-exportés-nfs">exportfs - maintenir la liste des systèmes de fichiers exportés NFS</h3>
+<pre tabindex="0"><code>exportfs(8)
+
+NAME
+       exportfs - maintain list of NFS exported file systems
+
+SYNOPSIS
+       /usr/sbin/exportfs [-avi] [-o options,..] [client:/path ..]
+       /usr/sbin/exportfs -r [-v]
+       /usr/sbin/exportfs [-av] -u [client:/path ..]
+       /usr/sbin/exportfs [-v]
+       /usr/sbin/exportfs -f
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="https://ubuntu.com/server/docs/service-nfs">Network File System (NFS) | Ubuntu</a></li>
+<li><a href="https://help.ubuntu.com/community/NFSv4Howto">NFSv4Howto - Community Ubuntu Documentation</a></li>
+<li><a href="http://nfs.sourceforge.net/">Linux NFS faq</a></li>
+<li><a href="https://wiki.linux-nfs.org/wiki/index.php/Nfsv4_configuration_fr">Nfsv4 configuration fr</a></li>
+<li><a href="http://fr.wikipedia.org/wiki/Network_File_System">Network File System - Wikipédia.</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

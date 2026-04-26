@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Mise en place de l&#39;infrastructure de virtualisation</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/infrastructure-virtualisation/">Service réseau - Mise en place de l&#39;infrastructure de virtualisation</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:20</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#infrastructure">Infrastructure</a></li>
+    <li><a href="#création-et-configuration-du-réseau-virtuel-antibr0">Création et configuration du réseau virtuel <code>antibr0</code></a></li>
+    <li><a href="#création-et-configuration-du-profile-antiterre">Création et configuration du profile <code>antiterre</code></a></li>
+    <li><a href="#création-du-conteneur-blossfeldtstad-utilisant-le-profile-antiterre">Création du conteneur <code>blossfeldtstad</code> utilisant le profile <code>antiterre</code></a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <blockquote>
+<p><strong>Blossfeldstad</strong> Anciennement BRENTANO. Cité Obscure du centre du CONTINENT, en bordure Sud de la JUNGLE SEPTENTRIONALE (GC). Complètement remodelée à partir de 697 AT d&rsquo;après les photographies de Karl BLOSSFELDT, à l&rsquo;exception de la petite maison oubliée des NIERENDORF  (EC). Beaucoup d&rsquo;édifices y disposent d&rsquo;un accès aérien et la ville est connue pour ses très beaux exemples de STYLE VÉGÉTALISANT (GC, ODH). Site d&rsquo;une fameuse controverse scientifique (GC), possiblement reliée à la disparition de la TAXANDRIE.  On y parle français couramment, mais il semble que l&rsquo;italien y soit également très répandu.  Plusieurs commercants de la ville font campagne pour réinstaurer son ancien nom, plus facile à prononcer pour les étrangers. La banlieue dans laquelle Albert CHAMISSO s&rsquo;exila ne fait probablement pas techniquement partie de la municipalité (ODH).[[1]]</p>
+</blockquote>
+<h2 id="infrastructure">Infrastructure</h2>
+<pre tabindex="0"><code>-------+--------------+------------+-----------+-----------+----------+---------antibr0 192.168.100.0/24
+       |              |            |           |           |          |         réseau avec nat
+       |              |            |           |           |          |         sans DHCP
+       |              |            |           |           |ip        |ip
+     .1|              |.10         |.20        |.30        |dynamique |dynamique
+     .-+--+-.       .-+--+-.     .-+----.    .-+----.    .-+----.   .-+----.
+ NAT |      |       |      |NS   |      |AS  |      |FS  |      |   |      |
+     | hôte |       |cont. |     |cont. |    |  vm  |    |  vm  |   |  vm  |
+     |      |       |      |     |      |    |      |    |      |   |      |
+     `--+---&#39;       `------&#39;     `------&#39;    `------&#39;    `------&#39;   `------&#39;
+        |eth0    blossfeldtstad galatograd   urbicande     cavi       luna
+        |            serveur      serveur     serveur     desktop    desktop
+        |
+ -------+----------------------------------------S2 157.26.229.0/24
+</code></pre><h2 id="création-et-configuration-du-réseau-virtuel-antibr0">Création et configuration du réseau virtuel <code>antibr0</code></h2>
+<blockquote>
+<p>Le réseau virtuel utilisé est un réseau de type NAT sans DHCP. Le service DHCP sera installé sur une des machines virtuelle.</p>
+</blockquote>
+<ul>
+<li>
+<p>Création du réseau</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus network create antibr0 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                              ipv4.address<span style="color:#f92672">=</span>192.168.100.1/24 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                              ipv4.nat<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                              ipv6.address<span style="color:#f92672">=</span>none <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>                              ipv4.dhcp<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>Network antibr1 created
+</span></span></code></pre></div></li>
+<li>
+<p>affichage de la configuration</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus network show antibr0
+</span></span><span style="display:flex;"><span>config:
+</span></span><span style="display:flex;"><span>  ipv4.address: 192.168.101.1/24
+</span></span><span style="display:flex;"><span>  ipv4.dhcp: <span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>  ipv4.nat: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>  ipv6.address: none
+</span></span><span style="display:flex;"><span>description: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>name: antibr0
+</span></span><span style="display:flex;"><span>type: bridge
+</span></span><span style="display:flex;"><span>used_by: <span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>managed: true
+</span></span><span style="display:flex;"><span>status: Created
+</span></span><span style="display:flex;"><span>locations:
+</span></span><span style="display:flex;"><span>- none
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="création-et-configuration-du-profile-antiterre">Création et configuration du profile <code>antiterre</code></h2>
+<blockquote>
+<p>le profile permettra de partager de configuration commune entre les machines</p>
+</blockquote>
+<ul>
+<li>
+<p>création du profile</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus profile create antiterre                                    
+</span></span><span style="display:flex;"><span>Profile antiterre created
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus profile show antiterre                     
+</span></span><span style="display:flex;"><span>config: <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>description: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>devices: <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>name: antiterre
+</span></span><span style="display:flex;"><span>used_by: <span style="color:#f92672">[]</span>
+</span></span></code></pre></div></li>
+<li>
+<p>ajout du stockage au profile</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus profile device add antiterre root disk path<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;/&#39;</span> pool<span style="color:#f92672">=</span>default   
+</span></span><span style="display:flex;"><span>Device root added to antiterre
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus profile show antiterre
+</span></span><span style="display:flex;"><span>config: <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>description: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>devices:
+</span></span><span style="display:flex;"><span>  root:
+</span></span><span style="display:flex;"><span>    path: /
+</span></span><span style="display:flex;"><span>    pool: default
+</span></span><span style="display:flex;"><span>    type: disk
+</span></span><span style="display:flex;"><span>name: antiterre
+</span></span><span style="display:flex;"><span>used_by: <span style="color:#f92672">[]</span>  
+</span></span></code></pre></div></li>
+<li>
+<p>ajout du réseau</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus profile device add antiterre eth0 nic nictype<span style="color:#f92672">=</span>bridged parent<span style="color:#f92672">=</span>antibr0
+</span></span><span style="display:flex;"><span>Device eth0 added to antiterre
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus profile show antiterre                                         
+</span></span><span style="display:flex;"><span>config: <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>description: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>devices:
+</span></span><span style="display:flex;"><span>  eth0:
+</span></span><span style="display:flex;"><span>    nictype: bridged
+</span></span><span style="display:flex;"><span>    parent: antibr0
+</span></span><span style="display:flex;"><span>    type: nic
+</span></span><span style="display:flex;"><span>  root:
+</span></span><span style="display:flex;"><span>    path: /
+</span></span><span style="display:flex;"><span>    pool: default
+</span></span><span style="display:flex;"><span>    type: disk
+</span></span><span style="display:flex;"><span>name: antiterre
+</span></span><span style="display:flex;"><span>used_by: <span style="color:#f92672">[]</span>
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="création-du-conteneur-blossfeldtstad-utilisant-le-profile-antiterre">Création du conteneur <code>blossfeldtstad</code> utilisant le profile <code>antiterre</code></h2>
+<ul>
+<li>
+<p>Créer le conteneur avec le profile <code>antiterre</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus launch images:debian/bookworm/cloud blossfeldtstad -p antiterre
+</span></span><span style="display:flex;"><span>Creating blossfeldtstad
+</span></span><span style="display:flex;"><span>Starting blossfeldtstad  
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus list blossfeldtstad
+</span></span><span style="display:flex;"><span>+----------------+---------+-----------------------+------+-----------+-----------+
+</span></span><span style="display:flex;"><span>|      NAME      |  STATE  |         IPV4          | IPV6 |   TYPE    | SNAPSHOTS |
+</span></span><span style="display:flex;"><span>+----------------+---------+-----------------------+------+-----------+-----------+
+</span></span><span style="display:flex;"><span>| blossfeldtstad | RUNNING |                       |      | CONTAINER | <span style="color:#ae81ff">0</span>         |
+</span></span><span style="display:flex;"><span>+----------------+---------+-----------------------+------+-----------+-----------+
+</span></span></code></pre></div></li>
+<li>
+<p>accès à la console</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:cast$ incus exec blossfeldtstad -- su -l debian
+</span></span><span style="display:flex;"><span>debian@blossfeldtstad:~$ 
+</span></span></code></pre></div></li>
+<li>
+<p>configuration de l&rsquo;adresse IP ( <a href="https://www.debian.org/doc/manuals/debian-reference/ch05.fr.html">configuration réseau pour debian</a><a href="https://manpages.debian.org/bookworm/systemd/systemd.network.5.en.html">SYSTEMD.NETWORK(5)</a> )</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>debian@blossfeldtstad:~$ cat /etc/systemd/network/10-cloud-init-eth0.network.network
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Address<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Address<span style="color:#f92672">=</span>192.168.100.10/24
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Match<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Name<span style="color:#f92672">=</span>eth0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Network<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>DHCP<span style="color:#f92672">=</span>no
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>192.168.100.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Route<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Gateway<span style="color:#f92672">=</span>192.168.100.1
+</span></span></code></pre></div><blockquote>
+<p>une autre option consiste à supprimer le fichier <code>10-cloud-init-eth0.network.network</code> et de faire la configuration ci-dessus dans un fichier <code>static.network</code></p>
+</blockquote>
+<pre tabindex="0"><code>debian@blossfeldtstad:~$ sudo systemctl restart systemd-networkd
+debian@blossfeldtstad:~$ sudo systemctl status systemd-networkd
+● systemd-networkd.service - Network Configuration
+    Loaded: loaded (/lib/systemd/system/systemd-networkd.service; 
+disabled; preset: enabled)
+    Drop-In: /run/systemd/system/service.d
+            └─zzz-lxc-service.conf
+    Active: active (running) since Mon 2024-04-22 15:01:33 UTC; 6s ago
+TriggeredBy: ● systemd-networkd.socket
+      Docs: man:systemd-networkd.service(8)
+            man:org.freedesktop.network1(5)
+  Main PID: 2704 (systemd-network)
+    Status: &#34;Processing requests...&#34;
+      Tasks: 1 (limit: 18934)
+    Memory: 1.9M
+        CPU: 39ms
+    CGroup: /system.slice/systemd-networkd.service
+            └─2704 /lib/systemd/systemd-networkd
+
+Apr 22 15:01:33 blossfeldtstad systemd[1]: Starting systemd-networkd.service - Network Configuration...
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: Failed to increase receive buffer size for general netlink soc
+ket, ignoring: Operation not permitted
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: eth0: Link UP
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: eth0: Gained carrier
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: lo: Link UP
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: lo: Gained carrier
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: eth0: Gained IPv6LL
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: Enumeration completed
+Apr 22 15:01:33 blossfeldtstad systemd[1]: Started systemd-networkd.service - Network Configuration.
+Apr 22 15:01:33 blossfeldtstad systemd-networkd[2704]: eth0: Configuring with /etc/systemd/network/10-cloud-init-eth0.network.
+
+
+
+debian@blossfeldtstad:~$ ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+      valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+      valid_lft forever preferred_lft forever
+27: eth0@if28: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:83:3d:ba brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 192.168.100.8/24 brd 10.1.0.255 scope global eth0
+      valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe83:3dba/64 scope link 
+      valid_lft forever preferred_lft forever
+</code></pre><ul>
+<li>afficher la liste des machines</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>huguenindo@mc0-0315-00:~$ incus list blossfeldtstad
+</span></span><span style="display:flex;"><span>+----------------+---------+-----------------------+------+-----------+-----------+
+</span></span><span style="display:flex;"><span>|      NAME      |  STATE  |         IPV4          | IPV6 |   TYPE    | SNAPSHOTS |
+</span></span><span style="display:flex;"><span>+----------------+---------+-----------------------+------+-----------+-----------+
+</span></span><span style="display:flex;"><span>| blossfeldtstad | RUNNING | 192.168.100.10 <span style="color:#f92672">(</span>eth0<span style="color:#f92672">)</span> |      | CONTAINER | <span style="color:#ae81ff">0</span>         |
+</span></span><span style="display:flex;"><span>+----------------+---------+-----------------------+------+-----------+-----------+
+</span></span></code></pre></div></li>
+</ul>
+<p>Ensuite, il faut :</p>
+<ol>
+<li>configurer les accès ssh.</li>
+<li>installation du service dhcp, <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix/services-reseaux/srv-dhcp/">Service réseau - Service DHCP, Dynamic Host Configuration Protocol</a></li>
+<li>installation du service dns, <a href="https://mylos.s2.rpn.ch/cours/int-sys1-nix/services-reseaux/srv-dns/">Service réseau - Service DNS, Domaine Name System</a></li>
+</ol>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="https://linuxcontainers.org/">Linux Containers</a></li>
+<li><a href="https://linuxcontainers.org/incus/docs/main/">incus - documentation</a></li>
+<li><a href="https://www.altaplana.be/fr/dictionary/blossfeldtstad">Blossfeldtstad | François Schuiten &amp; Benoît Peeter</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

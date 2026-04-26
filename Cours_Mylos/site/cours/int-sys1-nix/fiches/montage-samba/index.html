@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Montage Samba - Accès aux ressources S2</title>
+	<meta name="description" content="Accès aux dossiers partagés du S2"/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/fiches/montage-samba/">Montage Samba - Accès aux ressources S2</a></h1>
+    <p>Accès aux dossiers partagés du S2</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 15:45</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#paquets-à-installer">Paquets à installer</a></li>
+    <li><a href="#smbclient">smbclient</a>
+      <ul>
+        <li><a href="#manuel---smbclient">manuel - smbclient</a></li>
+        <li><a href="#authentification-kerberos">Authentification kerberos</a></li>
+        <li><a href="#liste-des-partages-sur-le-serveur-élèves">Liste des partages sur le serveur élèves</a></li>
+        <li><a href="#parcours-des-dossiers-sur-le-partage-de-classe">Parcours des dossiers sur le partage de classe</a></li>
+        <li><a href="#parcours-des-dossiers-du-dossier-personnel">Parcours des dossiers du dossier personnel</a></li>
+      </ul>
+    </li>
+    <li><a href="#montage-samba">Montage Samba</a>
+      <ul>
+        <li><a href="#manuel---mount-mountcifs-umount">manuel - mount, mount.cifs, umount</a></li>
+        <li><a href="#dossier-partages-élèves">Dossier Partages Élèves</a></li>
+        <li><a href="#dossier-personnel-élèves">Dossier personnel Élèves</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="paquets-à-installer">Paquets à installer</h2>
+<pre tabindex="0"><code>sudo apt-get install smbclient cifs-utils
+</code></pre><h2 id="smbclient">smbclient</h2>
+<h3 id="manuel---smbclient">manuel - smbclient</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ man smbclient
+
+SMBCLIENT(1)                     User Commands                    SMBCLIENT(1)
+
+NAME
+       smbclient - ftp-like client to access SMB/CIFS resources on servers
+
+SYNOPSIS
+       smbclient [-b &lt;buffer size&gt;] [-d debuglevel] [-e] [-L &lt;netbios name&gt;]
+        [-U username] [-I destinationIP] [-M &lt;netbios name&gt;] [-m maxprotocol]
+        [-A authfile] [-N] [-g] [-i scope] [-O &lt;socket options&gt;] [-p port]
+        [-R &lt;name resolve order&gt;] [-s &lt;smb config file&gt;] [-k] [-P]
+        [-c &lt;command&gt;]
+
+       smbclient {servicename} [password] [-b &lt;buffer size&gt;] [-d debuglevel]
+        [-e] [-D Directory] [-U username] [-W workgroup] [-M &lt;netbios name&gt;]
+        [-m maxprotocol] [-A authfile] [-N] [-g] [-l log-basename]
+        [-I destinationIP] [-E] [-c &lt;command string&gt;] [-i scope]
+        [-O &lt;socket options&gt;] [-p port] [-R &lt;name resolve order&gt;]
+        [-s &lt;smb config file&gt;] [-T&lt;c|x&gt;IXFqgbNan] [-k]
+</code></pre><h3 id="authentification-kerberos">Authentification kerberos</h3>
+<ul>
+<li>Authentification</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ kinit
+Password for huguenindo@S2.RPN.CH: [Mot de passe cifom]
+</code></pre><ul>
+<li>Vérification du TGT</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ klist
+Ticket cache: FILE:/tmp/krb5cc_10001
+Default principal: huguenindo@S2.RPN.CH
+
+Valid starting       Expires              Service principal
+17. 09. 14 13:35:16  17. 09. 14 23:35:16  krbtgt/S2.RPN.CH@S2.RPN.CH
+	renew until 18. 09. 14 13:35:05
+</code></pre><h3 id="liste-des-partages-sur-le-serveur-élèves">Liste des partages sur le serveur élèves</h3>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ smbclient -L //s2msrvelell.s2.rpn.ch -U huguenindoe -W S2
+WARNING: The &#34;idmap uid&#34; option is deprecated
+WARNING: The &#34;idmap gid&#34; option is deprecated
+Enter S2\huguenindoe&#39;s password: 
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	...
+	Classes         Disk      
+	...
+	Partages        Disk      
+	...
+Reconnecting with SMB1 for workgroup listing.
+Connection to s2msrvelell.s2.rpn.ch failed (Error NT_STATUS_NETWORK_UNREACHABLE)
+Failed to connect with SMB1 -- no workgroup available
+</code></pre><ul>
+<li>Avec authentification kerberos (<code>-k</code>)</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ smbclient -L //s2msrvelell.s2.rpn.ch -k
+</code></pre><h3 id="parcours-des-dossiers-sur-le-partage-de-classe">Parcours des dossiers sur le partage de classe</h3>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ smbclient  //s2msrvelell.s2.rpn.ch/partages -U huguenindoe -W S2
+WARNING: The &#34;idmap uid&#34; option is deprecated
+WARNING: The &#34;idmap gid&#34; option is deprecated
+Enter S2\huguenindoe&#39;s password: 
+Try &#34;help&#34; to get a list of possible commands.
+smb: \&gt; ls
+
+  ...
+  Boite                              DR        0  Fri Jan 31 10:21:56 2020
+  BoitesClasses                       D        0  Thu Jan 30 16:52:57 2020
+  ...
+
+		536870143 blocks of size 4096. 131879183 blocks available
+smb: \&gt; cd BoitesClasses
+smb: \BoitesClasses\&gt; ls
+  .                                   D        0  Thu Jan 30 16:52:57 2020
+  ..                                  D        0  Thu Jan 30 16:52:57 2020
+  PT-TIN-IT                           D        0  Wed Jul 10 11:42:30 2019
+
+		536870143 blocks of size 4096. 131878768 blocks available
+smb: \BoitesClasses\&gt; cd PT-TIN-IT
+smb: \BoitesClasses\PT-TIN-IT\&gt; ls
+  .                                   D        0  Wed Jul 10 11:42:30 2019
+  ..                                  D        0  Wed Jul 10 11:42:30 2019
+  1INT-SP                             D        0  Thu Nov 21 09:39:36 2019
+  2INT-SP                             D        0  Tue Jan 28 14:33:20 2020
+
+		536870143 blocks of size 4096. 131878762 blocks available
+smb: \BoitesClasses\PT-TIN-IT\&gt; 
+</code></pre><h3 id="parcours-des-dossiers-du-dossier-personnel">Parcours des dossiers du dossier personnel</h3>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ smbclient  //s2msrvelell.s2.rpn.ch/classes -U huguenindoe -W S2
+WARNING: The &#34;idmap uid&#34; option is deprecated
+WARNING: The &#34;idmap gid&#34; option is deprecated
+Enter S2\huguenindoe&#39;s password: 
+Try &#34;help&#34; to get a list of possible commands.
+smb: \&gt; cd huguenindoe
+smb: \huguenindoe\&gt; pwd
+Current directory is \\s2msrvelell.s2.rpn.ch\classes\huguenindoe\
+smb: \huguenindoe\&gt; 
+</code></pre><h2 id="montage-samba">Montage Samba</h2>
+<h3 id="manuel---mount-mountcifs-umount">manuel - mount, mount.cifs, umount</h3>
+<pre tabindex="0"><code>MOUNT(8)                       Administration système                  MOUNT(8)
+
+NOM
+       mount - Monter un système de fichiers
+
+SYNOPSIS
+       mount [-lhV]
+
+       mount -a [-fFnrsvw] [-t vfstype] [-O liste_options]
+
+       mount [-fnrsvw] [-o option[,option] ...] périphérique|rép
+
+       mount [-fnrsvw] [-t vfstype] [-o options] périphérique rép
+</code></pre><pre tabindex="0"><code>MOUNT.CIFS(8)                System Administration tools               MOUNT.CIFS(8)
+
+NAME
+       mount.cifs - mount using the Common Internet File System (CIFS)
+
+SYNOPSIS
+       mount.cifs {service} {mount-point} [-o options]
+</code></pre><pre tabindex="0"><code>UMOUNT(8)                      Administration système                      UMOUNT(8)
+
+NOM
+       umount - Démonter des systèmes de fichiers
+
+SYNOPSIS
+       umount [-hV]
+
+       umount -a [-dflnrv] [-t vfstype] [-O options]
+       umount [-dflnrv] {rép|périphérique} ...
+</code></pre><h3 id="dossier-partages-élèves">Dossier Partages Élèves</h3>
+<ul>
+<li>identifiant de l&rsquo;utilisateur</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ id
+uid=10002(huguenindoe) gid=10000(domain users) groups=10000(domain users),...
+</code></pre><ul>
+<li>Création du point de montage</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ mkdir ~/S2PartagesEleves
+</code></pre><ul>
+<li>Montage du partage</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ sudo mount -t cifs //s2msrvelell.s2.rpn.ch/Partages/BoitesClasses \
+                ~/S2PartagesEleves -o username=huguenindoe,domain=S2,uid=10002,gid=10000
+Password for huguenindoe@//s2msrvelell.s2.rpn.ch/Partages/BoitesClasses:  ************ 
+</code></pre><ul>
+<li>vérification</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$  mount | grep S2PartagesEleves
+...
+//s2msrvelell.s2.rpn.ch/Partages/BoitesClasses on /home/S2/huguenindoe/S2PartagesEleves type cifs
+(rw,relatime,vers=default,cache=strict,username=huguenindoe,domain=S2,uid=10002,forceuid,gid=10000,
+forcegid,addr=157.26.224.12,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,rsize=1048576,
+wsize=1048576,echo_interval=60,actimeo=1)
+</code></pre><ul>
+<li>Démontage</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ sudo umount ~/S2PartagesEleves
+</code></pre><h3 id="dossier-personnel-élèves">Dossier personnel Élèves</h3>
+<ul>
+<li>identifiant de l&rsquo;utilisateur</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ id
+uid=10002(huguenindoe) gid=10000(domain users) groups=10000(domain users),...
+</code></pre><ul>
+<li>Création du point de montage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ mkdir ~/S2MesDocuments
+</code></pre><ul>
+<li>Montage du partage</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ sudo mount -t cifs //s2msrvelell.s2.rpn.ch/Classes/huguenindoe \
+                         ~/S2MesDocuments -o username=huguenindoe,domain=S2,uid=19004,gid=10004
+Password for huguenindoe@//s2msrvelell.s2.rpn.ch/Classes/huguenindoe:  ************ 
+</code></pre><ul>
+<li>vérification</li>
+</ul>
+<pre tabindex="0"><code>huguenindoe@lozan:~$ mount | grep S2MesDocuments
+//s2msrvelell.s2.rpn.ch/Classes/huguenindoe on /home/S2/huguenindoe/S2MesDocuments type cifs
+(rw,relatime,vers=default,cache=strict,username=huguenindoe,domain=S2,uid=19004,forceuid,gid=10004,
+forcegid,addr=157.26.224.12,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,
+rsize=1048576,wsize=1048576,echo_interval=60,actimeo=1)
+</code></pre><ul>
+<li>Démontage</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ sudo umount ~/S2MesDocuments
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li><a href="../montage-samba-enseignant">Quelques configurations pour les enseignants</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/fiches/">Fiches</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

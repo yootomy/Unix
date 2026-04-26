@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - Linux Container (LXC)</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-lxc/">Virtualisation - Linux Container (LXC)</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:09</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#définition">Définition</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#les-différentes-commandes">Les différentes commandes</a></li>
+    <li><a href="#création-dun-conteneur">Création d&rsquo;un conteneur</a>
+      <ul>
+        <li><a href="#initialiser-le-mot-de-passe">Initialiser le mot de passe</a></li>
+      </ul>
+    </li>
+    <li><a href="#lister-les-conteneurs-existants">Lister les conteneurs existants</a></li>
+    <li><a href="#emplacement-des-fichiers-dun-conteneur">Emplacement des fichiers d&rsquo;un conteneur</a></li>
+    <li><a href="#démarrer-le-conteneur-cn">Démarrer le conteneur CN</a></li>
+    <li><a href="#accéder-au-conteneur">Accéder au conteneur</a>
+      <ul>
+        <li><a href="#via-à-la-console">via à la console</a></li>
+        <li><a href="#via-ssh">via ssh</a></li>
+      </ul>
+    </li>
+    <li><a href="#cloner-un-conteneur">Cloner un conteneur</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="définition">Définition</h2>
+<blockquote>
+<p>LXC, contraction de l’anglais Linux Containers est un système de virtualisation, utilisant l&rsquo;<strong>isolation</strong> comme méthode de cloisonnement au niveau du système d&rsquo;exploitation. Il est utilisé pour faire fonctionner des environnements Linux isolés les uns des autres dans des conteneurs partageant le même noyau et une plus ou moins grande partie du système hôte. Le conteneur apporte une virtualisation de l&rsquo;environnement d&rsquo;exécution (Processeur, Mémoire vive, réseau, système de fichier…) et non pas de la machine. Pour cette raison, on parle de « conteneur » et non de machine virtuelle.</p>
+<p>Ce système est similaire aux autres systèmes de virtualisations au niveau du système d&rsquo;exploitation comme openVZ, Linux-VServer sur Linux ou comme les BSD jails de FreeBSD, ou encore les zones Solaris.</p>
+<p>LXC repose sur les fonctionnalités des Cgroups du noyau Linux disponibles depuis la version 2.6.2 du noyau. Il repose également sur d&rsquo;autres fonctionnalités de cloisonnement comme le cloisonnement des espaces de nommage du noyau, permettant d&rsquo;éviter à un système de connaître les ressources utilisées par le système hôte ou un autre conteneur.</p>
+<p>[<a href="https://fr.wikipedia.org/wiki/LXC">3</a>]</p>
+</blockquote>
+<h2 id="installation">Installation</h2>
+<pre tabindex="0"><code>$ sudo apt-get install lxc
+</code></pre><h2 id="les-différentes-commandes">Les différentes commandes</h2>
+<pre tabindex="0"><code>lxc-attach           lxc-config           lxc-execute          lxc-snapshot
+lxc-unshare
+lxc-autostart        lxc-console          lxc-freeze           lxc-start
+lxc-usernsexec
+lxc-cgroup           lxc-copy             lxcfs                lxc-start-ephemeral
+lxc-wait
+lxc-checkconfig      lxc-create           lxc-info             lxc-stop             
+lxc-checkpoint       lxc-destroy          lxc-ls               lxc-top              
+lxc-clone            lxc-device           lxc-monitor          lxc-unfreeze         
+</code></pre><h2 id="création-dun-conteneur">Création d&rsquo;un conteneur</h2>
+<pre tabindex="0"><code># lxc-create --name CN --template download 
+Setting up the GPG keyring
+Downloading the image index
+WARNING: Failed to download the file over HTTPs.
+         The file was instead download over HTTP. 
+         A server replay attack may be possible!
+
+---
+DIST	RELEASE	ARCH	VARIANT	BUILD
+---
+...
+ubuntu	bionic	amd64	default	20190212_07:43
+ubuntu	bionic	arm64	default	20190212_07:44
+ubuntu	bionic	armhf	default	20190212_07:45
+ubuntu	bionic	i386	default	20190212_07:43
+ubuntu	bionic	ppc64el	default	20190212_07:44
+ubuntu	bionic	s390x	default	20190212_07:43
+...
+---
+
+Distribution: ubuntu
+Release: bionic
+Architecture: amd64
+</code></pre><ul>
+<li>ou bien</li>
+</ul>
+<pre tabindex="0"><code># lxc-create -n CN -t download -- -d ubuntu -r bionic -a amd64
+Using image from local cache
+Unpacking the rootfs
+
+---
+You just created an Ubuntu bionic amd64 (20190212_07:43) container.
+
+To enable SSH, run: apt install openssh-server
+No default root or user password are set by LXC.
+</code></pre><ul>
+<li>ou encore</li>
+</ul>
+<pre tabindex="0"><code># lxc-create -n CN -t ubuntu
+</code></pre><blockquote>
+<p><strong>information</strong></p>
+<p>La première installation télécharge les fichiers du template d&rsquo;un dépôt centralisé. Ces fichiers sont ensuite stockés dans <code>/var/cache/lxc</code>:</p>
+<pre tabindex="0"><code>$ sudo  tree /var/cache/lxc -L 3
+/var/cache/lxc
+├── download
+│   └── ubuntu
+│       ├── xenial
+│       └── zesty
+└── xenial
+   └── rootfs-amd64
+       ├── bin
+       ├── boot
+       ├── dev
+       ├── etc
+       ├── home
+       ├── lib
+       ├── lib64
+       ├── media
+       ├── mnt
+       ├── opt
+       ├── proc
+       ├── root
+       ├── run
+       ├── sbin
+       ├── srv
+       ├── sys
+       ├── tmp
+       ├── usr
+       └── var
+
+25 directories, 0 files
+</code></pre></blockquote>
+<h3 id="initialiser-le-mot-de-passe">Initialiser le mot de passe</h3>
+<ul>
+<li>Démarrer le conteneur</li>
+</ul>
+<pre tabindex="0"><code># lxc-start -n CN
+</code></pre><ul>
+<li>Initialiser le mot de passe</li>
+</ul>
+<pre tabindex="0"><code># lxc-attach -n CN -- passwd ubuntu
+Enter new UNIX password: [ubuntu]
+Retype new UNIX password: [ubuntu]
+passwd: password updated successfully
+</code></pre><blockquote>
+<p><strong>information</strong></p>
+<p>Ou en utilisant la commande <code>chroot</code></p>
+<pre tabindex="0"><code># chroot /var/lib/lxc/CN/rootfs
+chroot # passwd ubuntu
+chroot # exit
+</code></pre></blockquote>
+<h2 id="lister-les-conteneurs-existants">Lister les conteneurs existants</h2>
+<pre tabindex="0"><code># lxc-ls --fancy
+NAME  STATE    IPV4  IPV6  AUTOSTART  
+------------------------------------
+CN    STOPPED  -     -     NO         
+</code></pre><h2 id="emplacement-des-fichiers-dun-conteneur">Emplacement des fichiers d&rsquo;un conteneur</h2>
+<pre tabindex="0"><code># tree /var/lib/lxc/CN/ -L 2
+/var/lib/lxc/CN/
+├── config       #fichier de configuration du conteneur
+└── rootfs       #dossier root du système
+    ├── bin
+    ├── boot
+    ├── dev
+    ├── etc
+    ├── home
+    ├── lib
+    ├── lib64
+    ├── media
+    ├── mnt
+    ├── opt
+    ├── proc
+    ├── root
+    ├── run
+    ├── sbin
+    ├── srv
+    ├── sys
+    ├── tmp
+    ├── usr
+    └── var
+</code></pre><h2 id="démarrer-le-conteneur-cn">Démarrer le conteneur CN</h2>
+<pre tabindex="0"><code># lxc-start -n CN -d
+</code></pre><blockquote>
+<p>-d : option permettant de démarrer le conteneur en tâche de fond.</p>
+</blockquote>
+<pre tabindex="0"><code># lxc-ls --fancy
+NAME  STATE    IPV4        IPV6  AUTOSTART  
+------------------------------------------
+CN    RUNNING  10.0.3.125  -     NO         
+</code></pre><h2 id="accéder-au-conteneur">Accéder au conteneur</h2>
+<h3 id="via-à-la-console">via à la console</h3>
+<pre tabindex="0"><code># lxc-console -n CN
+</code></pre><blockquote>
+<p>Pour quitter la console faire <code>ctrl-a q</code></p>
+</blockquote>
+<h3 id="via-ssh">via ssh</h3>
+<pre tabindex="0"><code>$ ssh ubuntu@10.0.3.125
+</code></pre><h2 id="cloner-un-conteneur">Cloner un conteneur</h2>
+<pre tabindex="0"><code># lxc-copy -n CN -N C2
+</code></pre><blockquote>
+<p><strong>information</strong></p>
+<p>l&rsquo;instruction <code>lxc-copy</code> modifie le nom de la machine, c-à-d change le nom de la machine dans les fichiers <code>/etc/hostname</code> et <code>/etc/hosts</code>, ainsi que la mac address de l&rsquo;interface réseau</p>
+</blockquote>
+<h2 id="références">Références</h2>
+<ol start="3">
+<li>LXC — Wikipédia, <a href="https://fr.wikipedia.org/wiki/LXC">https://fr.wikipedia.org/wiki/LXC</a></li>
+<li>Ubuntu Documentation - Virtualisation, <a href="https://help.ubuntu.com/14.04/serverguide/virtualization.html">https://help.ubuntu.com/14.04/serverguide/virtualization.html</a></li>
+<li>LXC - Linux Containers, <a href="https://linuxcontainers.org/">https://linuxcontainers.org/</a></li>
+<li>LXC 1.0: Blog post series 0/10 | Stéphane Graber's website, <a href="https://www.stgraber.org/2013/12/20/lxc-1-0-blog-post-series/">https://www.stgraber.org/2013/12/20/lxc-1-0-blog-post-series/</a></li>
+<li>LXC 1.0: Your second container 2/10 | Stéphane Graber's website, <a href="https://www.stgraber.org/2013/12/21/lxc-1-0-your-second-container/">https://www.stgraber.org/2013/12/21/lxc-1-0-your-second-container/</a></li>
+<li>LXC and LXD: Explaining Linux Containers, <a href="https://www.sumologic.com/blog-code/lxc-lxd-explaining-linux-containers/">https://www.sumologic.com/blog-code/lxc-lxd-explaining-linux-containers/</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

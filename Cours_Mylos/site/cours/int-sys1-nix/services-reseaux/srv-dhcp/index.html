@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Service DHCP, Dynamic Host Configuration Protocol</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-dhcp/">Service réseau - Service DHCP, Dynamic Host Configuration Protocol</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:22</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#installation-et-configuration-du-service-dhcp">Installation et configuration du service DHCP</a>
+      <ul>
+        <li><a href="#installation-des-paquets">Installation des paquets</a></li>
+        <li><a href="#configuration-de-base">Configuration de base</a></li>
+      </ul>
+    </li>
+    <li><a href="#auto-configuration-du-service-ntp-par-le-dhcp">Auto-configuration du service NTP par le DHCP</a>
+      <ul>
+        <li><a href="#configuration-du-dhcp">Configuration du DHCP</a></li>
+      </ul>
+    </li>
+    <li><a href="#exemple-de-configuration">Exemple de configuration</a></li>
+    <li><a href="#correction-problème-même-adresse-ip-pour-les-machines-luna-cavi-netplan">Correction problème même adresse ip pour les machines luna cavi (netplan)</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<blockquote>
+<p>Dynamic Host Configuration Protocol (DHCP) est un terme anglais désignant un protocole réseau dont le rôle est d’assurer la configuration automatique des paramètres IP d’une station, notamment en lui affectant automatiquement une adresse IP et un masque de sous-réseau. DHCP peut aussi configurer l’adresse de la passerelle par défaut, des serveurs de noms DNS et des serveurs de noms NBNS (connus sous le nom de serveurs WINS sur les réseaux de la société Microsoft).</p>
+</blockquote>
+<p>Le protocole DHCP fait partie de la couche 7 (Application) du modèle OSI.</p>
+<h2 id="installation-et-configuration-du-service-dhcp">Installation et configuration du service DHCP</h2>
+<p>Pour plus de détail voir [[2]].</p>
+<h3 id="installation-des-paquets">Installation des paquets</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt-get install isc-dhcp-server
+</span></span></code></pre></div><h3 id="configuration-de-base">Configuration de base</h3>
+<ul>
+<li>
+<p>Sauvegarde du fichier de configuration original</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.ori
+</span></span></code></pre></div></li>
+<li>
+<p>Éditer la configuration</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo vim /etc/dhcp/dhcpd.conf
+</span></span></code></pre></div><pre tabindex="0"><code>#
+# DHCP antiterre.lan
+#
+option subnet-mask 255.255.255.0;
+option broadcast-address 192.168.100.255;
+option routers 192.168.100.1;
+option domain-name-servers 192.168.100.1; #ip de la passerelle, valeur temporaire
+# option domain-name-servers 192.168.100.10; #id du serveur DNS à installer
+
+option domain-name &#34;antiterre.lan&#34;;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+authoritative;
+
+subnet 192.168.100.0 netmask 255.255.255.0 {
+  range 192.168.100.100 192.168.100.254;
+}
+</code></pre></li>
+</ul>
+<p>Le serveur DHCP distribuera aux clients des adresses IP dans les intervalles 192.168.100.100-192.168.100.254. L’attribution de l’adresse IP se fera pour une durée de 600 secondes si le client ne demande pas une durée différente, la durée maximale du bail étant de 7200 secondes. Le serveur va également ”conseiller” au client d’utiliser le masque de sous-réseau 255.255.255.0, l’adresse de diffusion 192.168.100.255, 192.168.100.1 comme routeur/passerelle et 192.168.100.1 comme serveurs DNS (configuration temporaire, l&rsquo;adresse du DNS sera par la suite 192.168.100.10). Ce service DHCP fait autorité.</p>
+<ul>
+<li>
+<p>vérification de la syntax du fichier <code>dhcpd.conf</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ dhcpd -t -cf /etc/dhcp/dhcpd.conf
+</span></span><span style="display:flex;"><span>Internet Systems Consortium DHCP Server 4.4.1
+</span></span><span style="display:flex;"><span>Copyright 2004-2018 Internet Systems Consortium.
+</span></span><span style="display:flex;"><span>All rights reserved.
+</span></span><span style="display:flex;"><span>For info, please visit https://www.isc.org/software/dhcp/
+</span></span><span style="display:flex;"><span>Config file: /etc/dhcp/dhcpd.conf
+</span></span><span style="display:flex;"><span>Database file: /var/lib/dhcp/dhcpd.leases
+</span></span><span style="display:flex;"><span>PID file: /var/run/dhcpd.pid
+</span></span></code></pre></div></li>
+<li>
+<p>Redémarrer le service</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo systemctl status isc-dhcp-server
+</span></span></code></pre></div></li>
+</ul>
+<blockquote>
+<p><strong>INFORMATION</strong> <code>sudo journalctl -u isc-dhcp-server</code> permet de consulter les messages du service DHCP.</p>
+</blockquote>
+<h2 id="auto-configuration-du-service-ntp-par-le-dhcp">Auto-configuration du service NTP par le DHCP</h2>
+<p>L&rsquo;adresse du serveur NTP peut également être retourner par le serveur DHCP. Pour plus de détail voir [[6]][[7]][[8]]</p>
+<h3 id="configuration-du-dhcp">Configuration du DHCP</h3>
+<p>Dans <code>/etc/dhcp/dhcpd.conf</code></p>
+<pre tabindex="0"><code>...
+   # Set the NTP server to be used by the
+   # DHCP clients
+
+  option ntp-servers 192.168.100.1;
+...
+</code></pre><h2 id="exemple-de-configuration">Exemple de configuration</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat /etc/dhcp/dhcpd.conf
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># DHCP </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>option subnet-mask 255.255.255.0;
+</span></span><span style="display:flex;"><span>option broadcast-address 192.168.100.255;
+</span></span><span style="display:flex;"><span>option routers 192.168.100.1;
+</span></span><span style="display:flex;"><span>option domain-name-servers 192.168.100.10;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>option domain-name <span style="color:#e6db74">&#34;antiterre.lan&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>default-lease-time 600;
+</span></span><span style="display:flex;"><span>max-lease-time 7200;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>authoritative;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>subnet 192.168.100.0 netmask 255.255.255.0 <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  range 192.168.100.100 192.168.100.254;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>host galatograd <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  hardware ethernet 00:16:3e:21:4c:c0;
+</span></span><span style="display:flex;"><span>  fixed-address 192.168.100.20;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>host urbicande <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  hardware ethernet 00:16:3e:6f:1b:6d;
+</span></span><span style="display:flex;"><span>  fixed-address 192.168.100.30;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<h2 id="correction-problème-même-adresse-ip-pour-les-machines-luna-cavi-netplan">Correction problème même adresse ip pour les machines luna cavi (netplan)</h2>
+<pre tabindex="0"><code>network:
+ version: 2
+ renderer: networkd
+ ethernets:
+   eth0:
+     dhcp4: yes
+     dhcp-identifier: mac
+</code></pre><ul>
+<li><a href="https://netplan.io/reference/">https://netplan.io/reference/</a></li>
+</ul>
+<blockquote>
+<p>dhcp-identifier (scalar)</p>
+<p>(networkd backend only) Sets the source of DHCPv4 client identifier. If mac
+is specified, the MAC address of the link is used. If this option is omitted,
+or if duid is specified, networkd will generate an RFC4361-compliant client
+identifier for the interface by combining the link’s IAID and DUID.</p>
+</blockquote>
+</blockquote>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="http://fr.wikipedia.org/wiki/DHCP">Wikipedia - Dynamic Host Configuration Protocol</a></li>
+<li><a href="https://ubuntu.com/server/docs/network-dhcp">Dynamic Host Configuration Protocol (DHCP) | Ubuntu</a></li>
+<li><a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/translations/fr/pdf/DHCP.pdf">mini-HOWTO DHCP (DHCPd/DHCPcd)</a></li>
+<li><a href="http://www.isc.org/software/dhcp">DHCP | Internet Systems Consortium</a></li>
+<li><a href="https://ubuntu.com/server/docs/network-ntp">Time synchronisation | Ubuntu</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

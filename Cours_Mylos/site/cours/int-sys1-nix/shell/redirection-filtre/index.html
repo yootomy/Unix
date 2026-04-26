@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Redirection et filtres</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/redirection-filtre/">Redirection et filtres</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 15:47</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#redirection">Redirection</a></li>
+    <li><a href="#écrire-dans-lslog">Écrire dans <code>ls.log</code>…</a>
+      <ul>
+        <li><a href="#la-liste-de-fichier-du-dossier-var">la liste de fichier du dossier <code>/var</code></a></li>
+        <li><a href="#la-liste-de-fichier-du-dossier-binusr-qui-n">la liste de fichier du dossier <code>/bin/usr</code> <strong>qui n’existe pas</strong>.</a></li>
+      </ul>
+    </li>
+    <li><a href="#ajouter-dans-lslog">Ajouter dans <code>ls.log</code>…</a>
+      <ul>
+        <li><a href="#la-liste-de-fichier-du-dossier-var-1">la liste de fichier du dossier <code>/var</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#afficher-le-nombre-de-mot-du-fichier">Afficher le nombre de mot du fichier</a></li>
+    <li><a href="#écrire-dans-wclog-le-nombre-de-mot-du-fichier">Écrire dans <code>wc.log</code> le nombre de mot du fichier</a></li>
+    <li><a href="#créer-un-canal-pipe-tuyau">Créer un canal (pipe, tuyau)</a></li>
+    <li><a href="#écrire-le-message-derreur">Écrire le message d&rsquo;erreur&hellip;</a>
+      <ul>
+        <li><a href="#dans-le-fichier-ls-errorlog">dans le fichier <code>ls-error.log</code></a></li>
+        <li><a href="#dans-le-même-fichier-que-la-sortie-standard-stdout">dans le même fichier que la sortie standard (stdout)</a></li>
+      </ul>
+    </li>
+    <li><a href="#filtres">Filtres</a></li>
+    <li><a href="#recherche-de-fichiers">Recherche de fichiers</a></li>
+    <li><a href="#grep"><code>grep</code></a>
+      <ul>
+        <li><a href="#afficher-les-lignes-correspondant-à-un-motif-donné">Afficher les lignes correspondant à un motif donné.</a></li>
+      </ul>
+    </li>
+    <li><a href="#find"><code>find</code></a>
+      <ul>
+        <li><a href="#rechercher-des-fichiers-dans-une-hiérarchie-de-répertoires">Rechercher des fichiers dans une hiérarchie de répertoires</a></li>
+      </ul>
+    </li>
+    <li><a href="#wc"><code>wc</code></a>
+      <ul>
+        <li><a href="#afficher-le-nombre-de-lignes-de-mots-et-doctets-dun-fichier">Afficher le nombre de lignes, de mots et d&rsquo;octets d&rsquo;un fichier</a></li>
+      </ul>
+    </li>
+    <li><a href="#sort"><code>sort</code></a>
+      <ul>
+        <li><a href="#trier-les-lignes-de-fichiers-texte">Trier les lignes de fichiers texte</a></li>
+      </ul>
+    </li>
+    <li><a href="#uniq"><code>uniq</code></a>
+      <ul>
+        <li><a href="#signaler-ou-éliminer-les-lignes-répétées">Signaler ou éliminer les lignes répétées</a></li>
+      </ul>
+    </li>
+    <li><a href="#tee"><code>tee</code></a>
+      <ul>
+        <li><a href="#lire-depuis-lentrée-standard-et-écrire-sur-la-sortie-standard-et-dans-des-fichiers">Lire depuis l&rsquo;entrée standard et écrire sur la sortie standard et dans des fichiers</a></li>
+      </ul>
+    </li>
+    <li><a href="#tail"><code>tail</code></a>
+      <ul>
+        <li><a href="#afficher-la-dernière-partie-de-fichiers">Afficher la dernière partie de fichiers</a></li>
+      </ul>
+    </li>
+    <li><a href="#head"><code>head</code></a>
+      <ul>
+        <li><a href="#afficher-le-début-des-fichiers">Afficher le début des fichiers</a></li>
+      </ul>
+    </li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="redirection">Redirection</h2>
+<p>Dans TLCL voir [<a href="http://linuxcommand.org/tlcl.php">1</a>].</p>
+<pre tabindex="0"><code> &#34;&lt;&#34;                &#34;&gt;&#34;, &#34;&gt;&gt;&#34;   &#34;|&#34;  &#34;&lt;&#34;                &#34;&gt;&#34;, &#34;&gt;&gt;&#34;
+ stdin   .-----------. stdout        stdin   .-----------. stdout
+--------&gt;| commandes |--------&gt;     --------&gt;| commandes |--------&gt;
+        0`-----------´1                     0`-----------´1
+               |stderr                             |stderr
+               |2                                  |2
+               |                                   |
+               V                                   V
+</code></pre><ul>
+<li>&ldquo;&gt;&rdquo; - redirige stdout dans le fichier, crée un nouveau fichier.</li>
+<li>&ldquo;&raquo;&rdquo; - redirige stdout dans le fichier, ajoute à la fin du fichier existant.</li>
+<li>&ldquo;&lt;&rdquo; - envoie le contenu du ficher dans stdin.</li>
+<li>&ldquo;|&rdquo; - envoie le contenu de stdout dans stdin.</li>
+</ul>
+<h2 id="écrire-dans-lslog">Écrire dans <code>ls.log</code>&hellip;</h2>
+<h3 id="la-liste-de-fichier-du-dossier-var">la liste de fichier du dossier <code>/var</code></h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /var &gt;ls.log
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ ls -l ls.log
+-rw------- 1 huguenindo domain users 72 2010-10-21 11:39 ls.log
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ cat ls.log
+backups  cache  crash  lib  local  lock  log  mail  opt  run  spool  tmp
+</code></pre><h3 id="la-liste-de-fichier-du-dossier-binusr-qui-n">la liste de fichier du dossier <code>/bin/usr</code> <strong>qui n&rsquo;existe pas</strong>.</h3>
+<ul>
+<li>Affiche un message d&rsquo;erreur</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /bin/usr &gt;ls.log
+ls: impossible d&#39;accéder à /bin/usr: Aucun fichier ou dossier de ce type
+</code></pre><ul>
+<li>Crée un fichier vide</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -l ls.log
+-rw------- 1 huguenindo domain users 0 2010-10-21 11:41 ls.log
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ cat ls.log
+</code></pre><h2 id="ajouter-dans-lslog">Ajouter dans <code>ls.log</code>&hellip;</h2>
+<h3 id="la-liste-de-fichier-du-dossier-var-1">la liste de fichier du dossier <code>/var</code></h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /var &gt;&gt; ls.log
+huguenindo@lozan:~$ ls -C /var &gt;&gt; ls.log
+huguenindo@lozan:~$ ls -C /var &gt;&gt; ls.log
+huguenindo@lozan:~$ ls -l ls.log 
+-rw------- 1 huguenindo domain users 216 2010-10-21 11:47 ls.log
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ cat ls.log
+backups  cache	crash  lib  local  lock  log  mail  opt  run  spool  tmp
+backups  cache	crash  lib  local  lock  log  mail  opt  run  spool  tmp
+backups  cache	crash  lib  local  lock  log  mail  opt  run  spool  tmp
+</code></pre><h2 id="afficher-le-nombre-de-mot-du-fichier">Afficher le nombre de mot du fichier</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ wc -w &lt; ls.log
+36
+</code></pre><h2 id="écrire-dans-wclog-le-nombre-de-mot-du-fichier">Écrire dans <code>wc.log</code> le nombre de mot du fichier</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ wc -w &lt; ls.log &gt;wc.log
+huguenindo@lozan:~$ cat wc.log
+36
+</code></pre><h2 id="créer-un-canal-pipe-tuyau">Créer un canal (pipe, tuyau)</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /var | wc -w
+36
+huguenindo@lozan:~$ ls -C /var | wc -w &gt; wc.log
+huguenindo@lozan:~$ cat wc.log
+36
+</code></pre><h2 id="écrire-le-message-derreur">Écrire le message d&rsquo;erreur&hellip;</h2>
+<h3 id="dans-le-fichier-ls-errorlog">dans le fichier <code>ls-error.log</code></h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /bin/usr 2&gt;ls-error.log
+huguenindo@lozan:~$ ls -l ls-error.log 
+-rw------- 1 huguenindo domain users 75 2010-10-21 11:50 ls-error.log
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ cat ls-error.log 
+ls: impossible d&#39;accéder à /bin/usr: Aucun fichier ou dossier de ce type
+</code></pre><h3 id="dans-le-même-fichier-que-la-sortie-standard-stdout">dans le même fichier que la sortie standard (stdout)</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /bin/usr &gt;ls.log 2&gt;&amp;1
+</code></pre><p>ou</p>
+<pre tabindex="0"><code>huguenindo@lozan:~$ ls -C /bin/usr &amp;&gt;ls.log
+</code></pre><h2 id="filtres">Filtres</h2>
+<pre tabindex="0"><code>grep - Afficher les lignes correspondant à un motif donné.
+wc - Afficher le nombre de lignes, de mots et d&#39;octets d&#39;un fichier
+tee - Lire depuis l&#39;entrée standard et écrire sur la sortie standard et dans des fichiers
+sort - Trier les lignes de fichiers texte
+uniq - Signaler ou éliminer les lignes répétées
+tail - Afficher la dernière partie de fichiers
+head - Afficher le début des fichiers
+</code></pre><h2 id="recherche-de-fichiers">Recherche de fichiers</h2>
+<pre tabindex="0"><code>find - Rechercher des fichiers dans une hiérarchie de répertoires
+</code></pre><h2 id="grep"><code>grep</code></h2>
+<h3 id="afficher-les-lignes-correspondant-à-un-motif-donné">Afficher les lignes correspondant à un motif donné.</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ cat &lt; /usr/include/aliases.h  |  grep -n &#39;include&#39;
+22:#include &lt;features.h&gt;
+24:#include &lt;sys/types.h&gt;
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ grep -n &#39;include&#39; /usr/include/aliases.h 
+22:#include &lt;features.h&gt;
+24:#include &lt;sys/types.h&gt;
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man grep
+
+GREP(1)                   Commandes de l&#39;utilisateur                   GREP(1)
+
+NOM
+       grep,  egrep,  fgrep,  rgrep  -  Afficher les lignes correspondant à un
+       motif donné.
+
+SYNOPSIS
+       grep [OPTIONS] MOTIF [FICHIER...]
+       grep [OPTIONS] [-e MOTIF | -f FICHIER] [FICHIER...]
+</code></pre><h2 id="find"><code>find</code></h2>
+<h3 id="rechercher-des-fichiers-dans-une-hiérarchie-de-répertoires">Rechercher des fichiers dans une hiérarchie de répertoires</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ find /usr/include -name &#39;al*.h&#39;
+/usr/include/aliases.h
+/usr/include/alloca.h
+/usr/include/c++/4.4/parallel/algo.h
+/usr/include/c++/4.4/parallel/algobase.h
+/usr/include/c++/4.4/parallel/algorithmfwd.h
+/usr/include/c++/4.4/bits/allocator.h
+/usr/include/c++/4.4/bits/algorithmfwd.h
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man find
+
+FIND(1)                                                                FIND(1)
+
+NOM
+       find - Rechercher des fichiers dans une hiérarchie de répertoires
+
+SYNOPSIS
+       find   [-H]  [-L]  [-P]  [-D  option-debogage]  [-Oniveau]  [chemin...]
+       [expression]
+</code></pre><h2 id="wc"><code>wc</code></h2>
+<h3 id="afficher-le-nombre-de-lignes-de-mots-et-doctets-dun-fichier">Afficher le nombre de lignes, de mots et d&rsquo;octets d&rsquo;un fichier</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ cat /usr/include/aliases.h | wc
+  64  306 2115 /usr/include/aliases.h
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ wc /usr/include/aliases.h
+  64  306 2115 /usr/include/aliases.h
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man wc
+WC(1)                              Commandes                             WC(1)
+
+NOM
+       wc - Afficher le nombre de lignes, de mots et d&#39;octets d&#39;un fichier
+
+SYNOPSIS
+       wc [OPTION]... [FICHIER]...
+       wc [OPTION]... --files0-from=FICHIER
+</code></pre><h2 id="sort"><code>sort</code></h2>
+<h3 id="trier-les-lignes-de-fichiers-texte">Trier les lignes de fichiers texte</h3>
+<pre tabindex="0"><code>huguenindo@lozan0:~/tmp$ ls -1 /
+bin
+boot
+dev
+etc
+home
+initrd.img
+initrd.img.old
+lib
+lib64
+lost+found
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+vmlinuz
+vmlinuz.old
+
+huguenindo@lozan0:~/tmp$ ls -1 / | sort
+bin
+boot
+dev
+etc
+home
+initrd.img
+initrd.img.old
+lib
+lib64
+lost+found
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+vmlinuz
+vmlinuz.old
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man sort
+
+SORT(1)                            Commandes                           SORT(1)
+
+NOM
+       sort - Trier les lignes de fichiers texte
+
+SYNOPSIS
+       sort [OPTION]... [FICHIER]...
+       sort [OPTION]... --files0-from=F
+</code></pre><h2 id="uniq"><code>uniq</code></h2>
+<h3 id="signaler-ou-éliminer-les-lignes-répétées">Signaler ou éliminer les lignes répétées</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ man uniq
+
+UNIQ(1)                            Commandes                           UNIQ(1)
+
+NOM
+       uniq - Signaler ou éliminer les lignes répétées
+
+SYNOPSIS
+       uniq [OPTION]... [ENTRÉE [SORTIE]]
+</code></pre><h2 id="tee"><code>tee</code></h2>
+<h3 id="lire-depuis-lentrée-standard-et-écrire-sur-la-sortie-standard-et-dans-des-fichiers">Lire depuis l&rsquo;entrée standard et écrire sur la sortie standard et dans des fichiers</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ man tee
+
+TEE(1)                             Commandes                            TEE(1)
+
+NOM
+       tee - Lire depuis l&#39;entrée standard et écrire sur la sortie standard et
+       dans des fichiers
+
+SYNOPSIS
+       tee [OPTION]... [FICHIER]...
+</code></pre><h2 id="tail"><code>tail</code></h2>
+<h3 id="afficher-la-dernière-partie-de-fichiers">Afficher la dernière partie de fichiers</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ man tail
+
+TAIL(1)                            Commandes                           TAIL(1)
+
+NOM
+       tail - Afficher la dernière partie de fichiers
+
+SYNOPSIS
+       tail [OPTION]... [FICHIER]...
+</code></pre><h2 id="head"><code>head</code></h2>
+<h3 id="afficher-le-début-des-fichiers">Afficher le début des fichiers</h3>
+<pre tabindex="0"><code>huguenindo@lozan:~$ man head
+
+HEAD(1)                            Commandes                           HEAD(1)
+
+NOM
+       head - Afficher le début des fichiers
+
+SYNOPSIS
+       head [OPTION]... [FICHIER]...
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>7-Redirection, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

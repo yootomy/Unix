@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Déplacement du dossier personnel d&#39;un utilisateur</title>
+	<meta name="description" content="Cette fiche montre comment changer l&#39;emplacement du dossier personnel d&#39;un utilisateur. Nous avons besoin de faire ces manipulations pour séparer les dossiers personnels des comptes locaux et ceux du domaine."/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/srv-deplacement-dossier-home/">Service réseau - Déplacement du dossier personnel d&#39;un utilisateur</a></h1>
+    <p>Cette fiche montre comment changer l&#39;emplacement du dossier personnel d&#39;un utilisateur. Nous avons besoin de faire ces manipulations pour séparer les dossiers personnels des comptes locaux et ceux du domaine.</p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>26.03.2024 00:00</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#changement-de-lemplacement-du-dossier-personnel">Changement de l&rsquo;emplacement du dossier personnel</a>
+      <ul>
+        <li><a href="#pour-un-utilisateur-local-existant">pour un utilisateur local existant</a></li>
+        <li><a href="#pour-un-utilisateur-existant-dans-ldap">pour un utilisateur existant dans LDAP</a></li>
+        <li><a href="#pour-les-nouveaux-utilisateurs-locaux">pour les nouveaux utilisateurs locaux</a></li>
+        <li><a href="#pour-les-nouveaux-utilisateurs-dans-ldap">pour les nouveaux utilisateurs dans LDAP</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+
+    <h2 id="changement-de-lemplacement-du-dossier-personnel">Changement de l&rsquo;emplacement du dossier personnel</h2>
+<h3 id="pour-un-utilisateur-local-existant">pour un utilisateur local existant</h3>
+<ol>
+<li>Modifier le chemin du dossier personnel dans <code>/etc/passwd</code>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ usermod -m -d /home/ANTITERRE/robick robick
+</span></span></code></pre></div></li>
+<li>Déplacer le dossier personnel vers le nouvel emplacement (l&rsquo;option -m déplace le dossier) en local</li>
+</ol>
+<h3 id="pour-un-utilisateur-existant-dans-ldap">pour un utilisateur existant dans LDAP</h3>
+<ol>
+<li>
+<p>Modifier le chemin du dossier personnel dans ldap. Par exemple avec <em>Apache directory Studio</em> ou une commamde <code>ldapmodify</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@galatograd:~$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan -D cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan -W -b uid<span style="color:#f92672">=</span>robick,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan homeDirectory
+</span></span><span style="display:flex;"><span>Enter LDAP Password: 
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>robick,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>homeDirectory: /home/robick
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ubuntu@galatograd:~$ cat changeHome.ldif 
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>robick,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>changetype: modify
+</span></span><span style="display:flex;"><span>replace: homeDirectory
+</span></span><span style="display:flex;"><span>homeDirectory: /home/ANTITERRE/robick
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ubuntu@galatograd:~$ ldapmodify -x -H ldap://ldap1.antiterre.lan -D cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan -W -f changeHome.ldif 
+</span></span><span style="display:flex;"><span>Enter LDAP Password: 
+</span></span><span style="display:flex;"><span>modifying entry <span style="color:#e6db74">&#34;uid=robick,ou=people,dc=antiterre,dc=lan&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ubuntu@galatograd:~$ ldapsearch -xLLL -H ldap://ldap1.antiterre.lan -D cn<span style="color:#f92672">=</span>admin,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan  -W -b uid<span style="color:#f92672">=</span>robick,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan homeDirectory
+</span></span><span style="display:flex;"><span>Enter LDAP Password: 
+</span></span><span style="display:flex;"><span>dn: uid<span style="color:#f92672">=</span>robick,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>antiterre,dc<span style="color:#f92672">=</span>lan
+</span></span><span style="display:flex;"><span>homeDirectory: /home/ANTITERRE/robick
+</span></span></code></pre></div></li>
+<li>
+<p>Déplacer le dossier personnel vers le nouvel emplacement en local ou sur le serveur de fichier, si le dossier se trouve de le serveur de fichier</p>
+</li>
+</ol>
+<h3 id="pour-les-nouveaux-utilisateurs-locaux">pour les nouveaux utilisateurs locaux</h3>
+<ol>
+<li>
+<p>Spécifier le chemin du dossier personnel dans la commande à la création de l&rsquo;utilisateur</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ adduser --home /home/ANTITERRE/pier pier
+</span></span></code></pre></div></li>
+<li>
+<p>En changeant les paramètres par défaut</p>
+<ul>
+<li>Fichier de configuration pour <code>adduser</code> et <code>addgroup</code>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat /etc/adduser.conf
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>DHOME<span style="color:#f92672">=</span>/home/ANTITERRE
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div></li>
+<li>Fichier de configuration pour <code>useradd</code> et <code>groupadd</code>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat /etc/default/useradd
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>HOME<span style="color:#f92672">=</span>/home/ANTITERRE
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ol>
+<h3 id="pour-les-nouveaux-utilisateurs-dans-ldap">pour les nouveaux utilisateurs dans LDAP</h3>
+<p>La commande <code>ldapadduser</code> utilise le chemin du dossier personnel qui est défini dans le fichier <code>/etc/adduser.conf</code> de la machine local.  Donc il faut configurer ce fichier sur <code>galatograd</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ubuntu@galatograd:~$ cat /etc/adduser.conf
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>DHOME<span style="color:#f92672">=</span>/home/ANTITERRE
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div>
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

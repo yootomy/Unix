@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Service réseau - Cas d&#39;études</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+            <li><a href="/cours/tags/int_sys1_nix/">INT_SYS1_NIX</a></li>
+            
+            <li><a href="/cours/tags/services-r%C3%A9seaux/">Services Réseaux</a></li>
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/services-reseaux/cas-etude/">Service réseau - Cas d&#39;études</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>19.08.2020 11:20</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#origine">Origine</a></li>
+    <li><a href="#infrastructure-actuelle">Infrastructure actuelle</a>
+      <ul>
+        <li><a href="#liste-des-services-actuels">Liste des services actuels</a></li>
+      </ul>
+    </li>
+    <li><a href="#stratégie-de-réalisation">Stratégie de réalisation</a></li>
+    <li><a href="#choix-des-produits">Choix des produits</a></li>
+    <li><a href="#marche-à-suivre">Marche à suivre</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="origine">Origine</h2>
+<p>La fédération des villes de l&rsquo;Anti-Terre charge leurs départements informatiques d&rsquo;étudier le remplacement des produits propriétaires utilisés dans l&rsquo;infrastructure informatique actuelle par des produits libres et Open Source.</p>
+<h2 id="infrastructure-actuelle">Infrastructure actuelle</h2>
+<p>Chaque employé de l&rsquo;administration de la fédération des villes de l&rsquo;Anti-Terre possède un identifiant et un mot de passe qui lui permettent de s&rsquo;identifier sur n&rsquo;importe quelle machine de l&rsquo;infrastructure.</p>
+<p>Une fois identifié, l&rsquo;utilisateur retrouve l&rsquo;ensemble de ses documents de travail et ne doit en principe plus ressaisir son identifiant pour utiliser un service particulier.</p>
+<h3 id="liste-des-services-actuels">Liste des services actuels</h3>
+<ul>
+<li>Service d&rsquo;authentification - AS (authentification Server)</li>
+<li>Serveur de fichiers - FS (File Server)</li>
+<li>Service de résolution de nom - NS (Name Server)</li>
+<li>Service de distribution d&rsquo;adresses IP (DHCP)</li>
+</ul>
+<pre tabindex="0"><code>-------+-------------------------+------------+-----------+-----------+----------+---------antibr0 192.168.100.0/24
+       |                         |            |           |           |          |         réseau avec nat
+       |                         |            |           |           |          |         sans DHCP
+       |                         |            |           |           |ip        |ip
+     .1|                         |.10         |.20        |.30        |dynamique |dynamique
+     .-+--+-.                  .-+--+-.     .-+----.    .-+----.    .-+----.   .-+----.
+ NAT |      |                  |      |DNS  |      |AS  |      |FS  |      |   |      |
+     | hôte |                  |cont. |DHCP |cont. |    |  vm  |    |  vm  |   |  vm  |
+     |      |                  |      |     |      |    |      |    |      |   |      |
+     `--+---&#39;                  `------&#39;     `------&#39;    `------&#39;    `------&#39;   `------&#39;
+        |eth0               blossfeldtstad galatograd   urbicande     cavi       luna
+        |                       serveur      serveur     serveur     desktop    desktop
+        |
+ -------+----------------------------------------S2 157.26.229.0/24
+</code></pre><h2 id="stratégie-de-réalisation">Stratégie de réalisation</h2>
+<p>Les départements informatiques décident de mettre en place une infrastructure virtuelle intégrant tous les services réseaux actuellement présents dans l&rsquo;infrastructure en service.</p>
+<p>Cette démarche permet d&rsquo;atteindre deux objectifs : le premier objectif consiste à valider le choix des produits et le second est d&rsquo;avoir une plate forme d&rsquo;essai pour la formation des équipes responsables de la maintenance de l&rsquo;infrastructure informatique.</p>
+<h2 id="choix-des-produits">Choix des produits</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Fonction</th>
+          <th>Produit</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Système d&rsquo;exploitation pour les serveurs</td>
+          <td>GNU linux\ distribution Ubuntu Server</td>
+      </tr>
+      <tr>
+          <td>Système d&rsquo;exploitation pour les postes de travail</td>
+          <td>GNU linux \ distribution Ubuntu Desktop</td>
+      </tr>
+      <tr>
+          <td>Service d&rsquo;authentification</td>
+          <td>Kerberos + OpenLDAP</td>
+      </tr>
+      <tr>
+          <td>Serveur de fichiers</td>
+          <td>NFS4</td>
+      </tr>
+      <tr>
+          <td>Service de résolution de nom (DNS)</td>
+          <td>BIND</td>
+      </tr>
+      <tr>
+          <td>Service de synchronisation du temps</td>
+          <td>NTP</td>
+      </tr>
+      <tr>
+          <td>Service de distribution d&rsquo;adresses IP</td>
+          <td>DHCP</td>
+      </tr>
+      <tr>
+          <td>Serveur de virtualisation</td>
+          <td>LXD (conteneur et vm)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="marche-à-suivre">Marche à suivre</h2>
+<ol>
+<li>Mise en place du serveur de virtualisation et création d&rsquo;une machine virtuelle de base avec un système d&rsquo;exploitation serveur et d&rsquo;une autre machine virtuelle de base avec un système d&rsquo;exploitation de bureau (desktop)</li>
+<li>Mise en place des serveurs virtuels
+<ol>
+<li>un serveur pour héberger les services DHCP, DNS%%strike , service d&rsquo;heures NTP/%</li>
+<li>un serveur pour héberger le service d&rsquo;authentification</li>
+<li>un serveur pour héberger le serveur de fichiers</li>
+</ol>
+</li>
+<li>Mise en place de deux postes de travail de test</li>
+<li>Mise en réseau
+<ol>
+<li>Configuration des serveurs</li>
+<li><del>Configuration du service NTP</del></li>
+<li>Configuration du service DHCP</li>
+<li>Configuration du service DNS</li>
+</ol>
+</li>
+<li>Service d&rsquo;authentification
+<ol>
+<li>Configuration du service d&rsquo;authentification</li>
+<li>Configuration de l&rsquo;authentification du poste de travail</li>
+</ol>
+</li>
+<li>Serveur de fichiers
+<ol>
+<li>Configuration du serveur de fichiers</li>
+<li>Configuration de l&rsquo;accès aux documents de personnes depuis le poste de travail</li>
+</ol>
+</li>
+</ol>
+<h2 id="références">Références</h2>
+<ol>
+<li><a href="http://fr.wikipedia.org/wiki/Les_Cit%C3%A9s_obscures">Les Cités obscures</a>]</li>
+<li><a href="http://www.ubuntu.com/server">Ubuntu Server Edition</a></li>
+<li><a href="http://www.ubuntu.com/desktop">Ubuntu Desktop Edition</a></li>
+<li><a href="http://web.mit.edu/kerberos/www/">Kerberos: The Network Authentication Protocol</a></li>
+<li><a href="http://www.openldap.org/">OpenLDAP Software</a></li>
+<li><a href="http://tools.ietf.org/html/rfc3530">Network File System (NFS) version 4 Protocol</a></li>
+<li><a href="http://www.isc.org/software/bind">BIND</a></li>
+<li><a href="https://www.altaplana.be/fr/start">Les cités obscures</a></li>
+<li><a href="https://mylos.s2.rpn.ch/gitlab/dhu.infrastructure/antiterre">Projet antiterre - provisionnement et configuration avec <code>Ansible</code> et <code>Terraform</code></a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/services-reseaux/">Services réseaux</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

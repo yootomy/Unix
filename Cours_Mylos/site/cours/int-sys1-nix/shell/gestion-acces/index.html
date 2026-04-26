@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Gestion des permissions</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/gestion-acces/">Gestion des permissions</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 17:13</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#commandes">Commandes</a></li>
+    <li><a href="#manuels">Manuels</a></li>
+    <li><a href="#id---numéro-didentification"><code>id</code> - numéro d’identification</a></li>
+    <li><a href="#afficher-les-droits">Afficher les droits</a></li>
+    <li><a href="#type-de-fichier-1er-colonne">Type de fichier (1er colonne)</a></li>
+    <li><a href="#liste-des-permission">Liste des permission</a></li>
+    <li><a href="#permissions-spéciales">Permissions Spéciales</a></li>
+    <li><a href="#signification-des-permissions">Signification des permissions</a></li>
+    <li><a href="#permission-en-octal">Permission en octal</a></li>
+    <li><a href="#changer-les-permissions">Changer les permissions</a></li>
+    <li><a href="#changer-les-permissions-en-octal">Changer les permissions en octal</a></li>
+    <li><a href="#droits-minimums">Droits minimums</a></li>
+    <li><a href="#permission-par-défaut-exemple-0">Permission par défaut (Exemple 0)</a></li>
+    <li><a href="#permission-par-défaut-exemple-1">Permission par défaut (Exemple 1)</a></li>
+    <li><a href="#permission-par-défaut-exemple-2">Permission par défaut (Exemple 2)</a></li>
+    <li><a href="#permission-par-défaut-exemple-3">Permission par défaut (Exemple 3)</a></li>
+    <li><a href="#changement-didentité">Changement d&rsquo;identité</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="commandes">Commandes</h2>
+<p>Dans TLCL voir [<a href="http://linuxcommand.org/tlcl.php">1</a>]</p>
+<pre tabindex="0"><code>id  - Afficher les identifiants d&#39;utilisateur et de groupe effectifs et réels
+chmod - Modifier les bits de comportement de fichier
+umask - Display or set file mode mask
+su - change user ID or become superuser
+sudo - sudo, sudoedit - execute a command as another user
+chown - Modifier le propriétaire et le groupe d&#39;un fichier
+chgrp - Changer le groupe propriétaire d&#39;un fichier
+passwd - Changer le mot de passe
+</code></pre><h2 id="manuels">Manuels</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ man id
+
+ID(1)                              Commandes                             ID(1)
+
+NOM
+       id  - Afficher les identifiants d&#39;utilisateur et de groupe effectifs et
+       réels
+
+SYNOPSIS
+       id [OPTION]... [UTILISATEUR]
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man chmod
+
+CHMOD(1)                           Commandes                          CHMOD(1)
+
+NOM
+       chmod - Modifier les bits de comportement de fichier
+
+SYNOPSIS
+       chmod [OPTION]... MODE[,MODE]... FICHIER...
+       chmod [OPTION]... MODE-OCTAL FICHIER
+       chmod [OPTION]... --reference=FICHIER-R FICHIER
+</code></pre><pre tabindex="0"><code>$ help umask
+umask: umask [-p] [-S] [mode]
+    Display or set file mode mask.
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man su
+
+SU(1)                        Commandes utilisateur                       SU(1)
+
+NOM
+       su - change user ID or become superuser
+
+SYNOPSIS
+       su [options] [nom_utilisateur]
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man sudo
+
+SUDO(8)                      MAINTENANCE COMMANDS                      SUDO(8)
+
+NAME
+       sudo, sudoedit - execute a command as another user
+
+SYNOPSIS
+       sudo -h | -K | -k | -L | -V
+
+       sudo -v [-AknS] [-a auth_type] [-p prompt]
+
+       sudo -l[l] [-AknS] [-a auth_type] [-g groupname|#gid] [-p prompt]
+       [-U username] [-u username|#uid] [command]
+
+       sudo [-AbEHnPS] [-a auth_type] [-C fd] [-c class|-] [-g groupname|#gid]
+       [-p prompt] [-r role] [-t type] [-u username|#uid] [VAR=value]
+       [-i | -s] [command]
+
+       sudoedit [-AnS] [-a auth_type] [-C fd] [-c class|-] [-g groupname|#gid]
+       [-p prompt] [-u username|#uid] file ...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man chown
+
+CHOWN(1)                           Commandes                          CHOWN(1)
+
+NOM
+       chown - Modifier le propriétaire et le groupe d&#39;un fichier
+
+SYNOPSIS
+       chown [OPTION]... [PROPRIÉTAIRE][:[GROUPE]] FICHIER...
+       chown [OPTION]... --reference=FICHIER-R FICHIER...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man chgrp
+
+CHGRP(1)                           Commandes                          CHGRP(1)
+
+NOM
+       chgrp - Changer le groupe propriétaire d&#39;un fichier
+
+SYNOPSIS
+       chgrp [OPTION]... GROUPE FICHIER...
+       chgrp [OPTION]... --reference=FICHIER-R FICHIER...
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ man passwd
+
+PASSWD(1)                    Commandes utilisateur                   PASSWD(1)
+
+NOM
+       passwd - Modifier le mot de passe dun utilisateur
+
+SYNOPSIS
+       passwd [options] [LOGIN]
+</code></pre><h2 id="id---numéro-didentification"><code>id</code> - numéro d&rsquo;identification</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ id
+uid=10250(huguenindo) gid=10005(domain users) groupes=10005(domain users),
+10006,10007,10008,10009,10010,10011,10012,10013,10014,10015,10016,10017,
+10018,10019,10020,10021,10022,10023,10024,10025,10026,10027,10028,10029,
+10030,10031,10032,10033,10034,10035,10036,10037,10038,10039(web_ged_lire)
+</code></pre><ul>
+<li>uid, id de l&rsquo;utilisateur</li>
+<li>gid, id du groupe</li>
+</ul>
+<h2 id="afficher-les-droits">Afficher les droits</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ &gt; foo.txt
+huguenindo@lozan:~$ ls -l foo.txt 
+-rw------- 1  huguenindo domain users    0 2010-10-25 16:16 foo.txt
+</code></pre><h2 id="type-de-fichier-1er-colonne">Type de fichier (1er colonne)</h2>
+<pre tabindex="0"><code>-rw------- 1  huguenindo domain users 0 2010-10-25 16:16    foo.txt
+drwxr-xr-x 22 root       root         4740 2010-10-25 07:49 /dev
+lrwxrwxrwx 1  root       root           15 2010-10-25 07:49 S04saned -&gt; ../init.d/saned
+crw-rw---- 1  root       dialout 4,     64 2010-10-25 07:49 /dev/ttyS0
+brw-rw---- 1  root       disk 8,         0 2010-10-25 07:49 /dev/sda
+</code></pre><ul>
+<li><code>-</code> : fichier ordinaire</li>
+<li><code>d</code> : dossier, répertoire</li>
+<li><code>l</code> : lien</li>
+<li><code>b</code> : périphérique block (disque)</li>
+<li><code>c</code> : périphérique caractère (clavier)</li>
+</ul>
+<h2 id="liste-des-permission">Liste des permission</h2>
+<pre tabindex="0"><code>-rwxrwxr-x 1 dom dom 1306 fév 16  2017 backup
+</code></pre><p>3 classes, utilisateur-groupes-autres (u:user, g:group, o:other)</p>
+<ul>
+<li><code>r</code> : lecture</li>
+<li><code>w</code> : écriture</li>
+<li><code>x</code> : exécution</li>
+<li><code>-</code> pas de droits</li>
+</ul>
+<h2 id="permissions-spéciales">Permissions Spéciales</h2>
+<p>tiré du <code>man chmod</code></p>
+<blockquote>
+<p>Les lettres <strong>rwxXst</strong> sélectionnent les bits de  comportement  de  fichier des  utilisateurs  concernés : lecture (<strong>r</strong>), écriture (<strong>w</strong>), exécution (ou recherche pour les répertoires) (<strong>x</strong>), exécution/recherche uniquement  si le  fichier  est un répertoire ou s&rsquo;il a déjà une autorisation d&rsquo;exécution pour  une  des  catégories  d&rsquo;utilisateur  (<strong>X</strong>),  spécification  de l&rsquo;identifiant du propriétaire ou du groupe propriétaire du fichier lors de l&rsquo;exécution (<strong>s</strong>), du drapeau de suppression restreinte ou du bit sticky  (<strong>t</strong>).</p>
+</blockquote>
+<p>Le Sticky bits  (<strong>t</strong>) permet:</p>
+<ul>
+<li>lorsqu&rsquo;on l&rsquo;<strong>applique à un exécutable</strong>, de le garder en mémoire lors de sa première exécution</li>
+<li>lorsqu&rsquo;on l&rsquo;<strong>applique à un répertoire</strong>, seul le propriétaire du fichier ou le propriétaire du répertoire a le droit d&rsquo;effacer les fichiers.</li>
+</ul>
+<p>Le SUID, le SGID (<strong>s</strong>) d&rsquo;avoir accès aux droits du propriétaire à l&rsquo;intérieur du programme, pour avoir accès aux fichiers de configuration, par exemple.</p>
+<h2 id="signification-des-permissions">Signification des permissions</h2>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>r</th>
+          <th>w</th>
+          <th>x</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>fichiers (ordinaire, spéciaux, liens hardware)</td>
+          <td>lecture, <code>cat</code></td>
+          <td>écriture <code>echo</code></td>
+          <td>exécution</td>
+      </tr>
+      <tr>
+          <td>Dossiers</td>
+          <td>lister, <code>ls</code></td>
+          <td>ajouter, supprimer <code>touch, rm, mkdir, rmdir,ln</code></td>
+          <td>traverser, <code>cd</code></td>
+      </tr>
+      <tr>
+          <td>Liens symboliques</td>
+          <td>aucune signification</td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="permission-en-octal">Permission en octal</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Octal</th>
+          <th>Binaire</th>
+          <th>Mode</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0</td>
+          <td><code>000</code></td>
+          <td><code>---</code></td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td><code>001</code></td>
+          <td><code>--x</code></td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td><code>010</code></td>
+          <td><code>-w-</code></td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><code>011</code></td>
+          <td><code>-wx</code></td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><code>100</code></td>
+          <td><code>r--</code></td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td><code>101</code></td>
+          <td><code>r-x</code></td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td><code>110</code></td>
+          <td><code>rw-</code></td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td><code>111</code></td>
+          <td><code>rwx</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="changer-les-permissions">Changer les permissions</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ chmod u+x,g-w,o= foo.txt 
+huguenindo@lozan:~$ ls -l foo.txt 
+-rwxr----- 1 huguenindo domain users 0 2010-10-25 16:16 foo.txt
+</code></pre><pre tabindex="0"><code>huguenindo@lozan:~$ chmod a=rw foo.txt 
+huguenindo@lozan:~$ ls -l foo.txt 
+-rw-rw-rw- 1 huguenindo domain users 0 2010-10-25 16:16 foo.txt
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>Symbole</th>
+          <th>Description</th>
+          <th>&mdash;&mdash;-</th>
+          <th>Symbole</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>u</code></td>
+          <td>propriétaire <code>u</code>ser</td>
+          <td></td>
+          <td><code>=</code></td>
+          <td>la permission devient la nouvelle permission</td>
+      </tr>
+      <tr>
+          <td><code>g</code></td>
+          <td>groupe propriétaire <code>g</code>roup</td>
+          <td></td>
+          <td><code>+</code></td>
+          <td>le droit est ajouté à la permission actuel</td>
+      </tr>
+      <tr>
+          <td><code>o</code></td>
+          <td>le reste du monde <code>o</code>ther</td>
+          <td></td>
+          <td><code>-</code></td>
+          <td>le droit est retiré  à la permission actuel</td>
+      </tr>
+      <tr>
+          <td><code>a</code></td>
+          <td>tous <code>a</code>ll, combinaison du <code>u</code>, <code>g</code>, <code>o</code></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="changer-les-permissions-en-octal">Changer les permissions en octal</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ chmod 0664 foo.txt 
+huguenindo@lozan:~$ ls -l foo.txt 
+-rw-rw-r-- 1 huguenindo domain users 0 2010-10-25 16:16 foo.txt
+</code></pre><h2 id="droits-minimums">Droits minimums</h2>
+<p>Quelles sont les droits d&rsquo;accès minimum à poser pour effectuer les commandes ci-dessous:</p>
+<pre tabindex="0"><code>.
++-tmp       ---
+| `foo.txt  ---
+|  
++-tmp2      ---
+</code></pre><pre tabindex="0"><code>cp ./tmp/foo.txt ./tmp2
+</code></pre><pre tabindex="0"><code>chmod u+x ./tmp
+chmod u+r ./tmp/foo.txt
+chmod u=wx ./tmp2
+</code></pre><pre tabindex="0"><code>.
++-tmp       --x
+| `foo.txt  r--
+|  
++-tmp2      -wx
+</code></pre><pre tabindex="0"><code>.
++-tmp       ---
+| `foo.txt  ---
+|  
++-tmp2      ---
+</code></pre><pre tabindex="0"><code>mv ./tmp/foo.txt ./tmp2
+</code></pre><pre tabindex="0"><code>mv == cp + rm
+
+chmod u+wx ./tmp
+chmod u+r ./tmp/foo.txt
+chmod u=wx ./tmp2
+</code></pre><pre tabindex="0"><code>.
++-tmp       -wx
+| `foo.txt  r--
+|  
++-tmp2      -wx
+</code></pre><h2 id="permission-par-défaut-exemple-0">Permission par défaut (Exemple 0)</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ umask 0000
+huguenindo@lozan:~$ umask
+0000
+huguenindo@lozan:~$ &gt; foo.txt
+huguenindo@lozan:~$ ls -l foo.txt
+-rw-rw-rw- 1 huguenindo domain users 0 nov 20 14:21 foo.txt
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>Droit de base</th>
+          <th><code>--- rw- rw- rw-</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Mask</td>
+          <td><code>000 000 000 000</code></td>
+      </tr>
+      <tr>
+          <td>Résultat</td>
+          <td><code>--- rw- rw- rw-</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="permission-par-défaut-exemple-1">Permission par défaut (Exemple 1)</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ umask
+0077
+huguenindo@lozan:~$ &gt; foo.txt
+huguenindo@lozan:~$ ls -l foo.txt 
+-rw------- 1 huguenindo domain users 0 2010-11-25 08:49 foo.txt
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>Droit de base</th>
+          <th><code>--- rw- rw- rw-</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Mask</td>
+          <td><code>000 000 111 111</code></td>
+      </tr>
+      <tr>
+          <td>Résultat</td>
+          <td><code>--- rw- --- ---</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="permission-par-défaut-exemple-2">Permission par défaut (Exemple 2)</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ umask 0022
+huguenindo@lozan:~$ &gt; foo.txt
+huguenindo@lozan:~$ ls -l foo.txt 
+-rw-r--r-- 1 huguenindo domain users 0 2010-11-25 08:52 foo.txt
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>Droit de base</th>
+          <th><code>--- rw- rw- rw-</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Mask</td>
+          <td><code>000 000 010 010</code></td>
+      </tr>
+      <tr>
+          <td>Résultat</td>
+          <td><code>--- rw- r-- r--</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="permission-par-défaut-exemple-3">Permission par défaut (Exemple 3)</h2>
+<pre tabindex="0"><code>huguenindo@lozan:~$ umask 0022
+huguenindo@lozan:~$ mkdir fooDir
+huguenindo@lozan:test$ ls -ld fooDir/
+drwx--x--x 2 huguenindo domain users 4096 déc  6 10:46 fooDir/
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>Droit de base</th>
+          <th><code>--- rwx rwx rwx</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Mask</td>
+          <td><code>000 000 010 010</code></td>
+      </tr>
+      <tr>
+          <td>Résultat</td>
+          <td><code>--- rwx r-x r-x</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="changement-didentité">Changement d&rsquo;identité</h2>
+<ul>
+<li>s&rsquo;identifier en tant qu&rsquo;autre utilisateur</li>
+</ul>
+<pre tabindex="0"><code>huguenindo@lozan:~$ whoami
+huguenindo
+huguenindo@lozan:~$ su ubuntu
+Password: [mot de passe de l&#39;utilisateur ubuntu]
+ubuntu@lozan:/home/S2/huguenindo$ whoami
+ubuntu
+ubuntu@lozan:/home/S2/huguenindo$ exit
+exit
+</code></pre><ul>
+<li>exécuter une commande en tant qu&rsquo;un autre utilisateur. L&rsquo;utilisateur de départ (ubuntu) doit avoir les droits d&rsquo;exécuter la commande <code>sudo</code></li>
+</ul>
+<pre tabindex="0"><code>ubuntu@lozan:~$ whoami
+ubuntu
+ubuntu@lozan:~$ sudo -u huguenindo whoami
+Password: [mot de passe de l&#39;utilisateur ubuntu]
+huguenindo
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>10-Permissions, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>9-Advanced Keyboard Tricks, The Linux Commande Line, <a href="http://linuxcommand.org/tlcl.php">http://linuxcommand.org/tlcl.php</a></li>
+<li>Permissions UNIX — Wikipédia, <a href="https://fr.wikipedia.org/wiki/Permissions_UNIX">https://fr.wikipedia.org/wiki/Permissions_UNIX</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

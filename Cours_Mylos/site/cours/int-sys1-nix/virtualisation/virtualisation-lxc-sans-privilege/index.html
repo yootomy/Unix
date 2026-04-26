@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Virtualisation - LXC - unprivileged container - conteneur sans privilège</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/virtualisation/virtualisation-lxc-sans-privilege/">Virtualisation - LXC - unprivileged container - conteneur sans privilège</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>14.08.2020 10:09</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#définition">Définition</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration">Configuration</a>
+      <ul>
+        <li><a href="#définir-des-ids-et-gids-subordonnées">Définir des ids et gids subordonnées</a></li>
+        <li><a href="#autorisation-du-réseau-pour-lutilisateur">Autorisation du réseau pour l&rsquo;utilisateur</a></li>
+        <li><a href="#configuration-par-défaut-du-conteneur">Configuration par défaut du conteneur</a></li>
+        <li><a href="#création-dun-conteneur-sans-privilège">Création d&rsquo;un conteneur sans privilège</a></li>
+      </ul>
+    </li>
+    <li><a href="#visualisation-des-processus-du-conteneur-sur-lhôte">Visualisation des processus du conteneur sur l&rsquo;hôte</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="introduction">Introduction</h2>
+<p>Un conteneur LXC sans privilège est un conteneur s&rsquo;exécutant dans le contexte d&rsquo;un utilisateur non-root.</p>
+<h3 id="définition">Définition</h3>
+<ul>
+<li>subuid</li>
+</ul>
+<pre tabindex="0"><code>SUBUID(5)                File Formats and Conversions
+
+NAME
+       subuid - the subordinate uid file
+
+DESCRIPTION
+       Each line in /etc/subuid contains a user id and a range of suboridinate
+       user ids that user is allowed to use. This is specified with three
+       fields delimited by colons (“:”). These fields are:
+
+       ·   login name
+
+       ·   numerical subordinate user ID
+
+       ·   numerical subordinate user ID count
+
+       This file specifies the user IDs to be that each user may use with the
+       newuidmap command that ordinary users can use to configure uid mapping
+       in a user namespace.
+
+       Multiple ranges may be specified per user ID.
+</code></pre><h2 id="configuration">Configuration</h2>
+<h3 id="définir-des-ids-et-gids-subordonnées">Définir des ids et gids subordonnées</h3>
+<pre tabindex="0"><code>$ grep ${USER} /etc/sub* 2&gt;/dev/null
+/etc/subgid:dhu:100000:65536
+/etc/subuid:dhu:100000:65536
+</code></pre><pre tabindex="0"><code>sudo usermod --add-subuids 100000-165536 $USER
+sudo usermod --add-subgids 100000-165536 $USER
+</code></pre><blockquote>
+<p>Après la commande usermod, ouvrir une nouvelle session pour prendre en compte de modification</p>
+</blockquote>
+<h3 id="autorisation-du-réseau-pour-lutilisateur">Autorisation du réseau pour l&rsquo;utilisateur</h3>
+<pre tabindex="0"><code>$ cat /etc/lxc/lxc-usernet 
+# USERNAME TYPE BRIDGE COUNT
+dhu veth virbr0 10
+dhu veth lxcbr0 10
+</code></pre><h3 id="configuration-par-défaut-du-conteneur">Configuration par défaut du conteneur</h3>
+<ul>
+<li>Créer le dossier <code>~/.config/lxc</code></li>
+</ul>
+<pre tabindex="0"><code>$ mkdir -p ~/.config/lxc
+</code></pre><ul>
+<li>Créer le fichier <code>~/.config/lxc/default.conf</code></li>
+</ul>
+<pre tabindex="0"><code>$ vim ~/.config/lxc/default.conf 
+</code></pre><pre tabindex="0"><code>lxc.net.0.type = veth
+lxc.net.0.link = lxcbr0
+lxc.net.0.flags = up
+lxc.net.0.hwaddr = 00:16:3e:xx:xx:xx
+lxc.idmap = u 0 100000 65536
+lxc.idmap = g 0 100000 65536
+</code></pre><blockquote>
+<p>Le fichier <code>~/.config/lxc/default.conf</code> prend comme base le contenu du fichier <code>/etc/lxc/default.conf</code>.</p>
+<p>pour plus de détail <code>man lxc.container.conf</code></p>
+</blockquote>
+<h3 id="création-dun-conteneur-sans-privilège">Création d&rsquo;un conteneur sans privilège</h3>
+<pre tabindex="0"><code>$ lxc-create -t download -n p1 -- -d ubuntu -r bionic -a amd64
+</code></pre><pre tabindex="0"><code>$ tree -L 2 .local/share/lxc/ 
+.local/share/lxc/
+├── lxc-monitord.log
+└── p1
+    ├── config
+    └── rootfs
+</code></pre><blockquote>
+<p><strong>ATTENTION</strong></p>
+<p>Les dossiers ~/.local et ~/.local/share doivent avoir le droit x pour tous le monde.</p>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ chmod go+x ~/.local
+huguenindo@mc0-0315-dhu:~$ chmod go+x ~/.local/share
+</code></pre><pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ ls -ld ~/.local
+drwx--x--x 3 huguenindo huguenindo 4096 nov  9 15:12 /home/huguenindo/.local
+huguenindo@mc0-0315-dhu:~$ ls -ld ~/.local/share
+drwx--x--x 25 huguenindo huguenindo 4096 fév 19 09:59 /home/huguenindo/.local/share
+</code></pre><p>Lors de problème avec un conteneur, il est possible de démarrer le conteneur avec une journalisation.</p>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ lxc-start -n p1 --logfile p1.log
+huguenindo@mc0-0315-dhu:~$ cat p1.log
+lxc-start p1 20190219093140.213 ERROR    start - start.c:print_top_failing_dir:125 - Permission denied - 
+   Could not access /home/&gt;huguenindo/.local. Please grant it x access, or add an ACL for the container root
+lxc-start p1 20190219093140.213 ERROR    sync - sync.c:__sync_wait:62 - An error occurred in another process 
+   (expected sequence &gt;number 3)
+lxc-start p1 20190219093140.213 ERROR    lxccontainer - lxccontainer.c:wait_on_daemonized_start:842 - 
+    Received container state &gt;&#34;ABORTING&#34; instead of &#34;RUNNING&#34;
+</code></pre></blockquote>
+<h2 id="visualisation-des-processus-du-conteneur-sur-lhôte">Visualisation des processus du conteneur sur l&rsquo;hôte</h2>
+<p>Dans le conteneur:</p>
+<pre tabindex="0"><code>ubuntu@p1:~$ cat &lt; /dev/zero &gt; /dev/null
+</code></pre><p>Sur l&rsquo;hôte:</p>
+<pre tabindex="0"><code>huguenindo@mc0-0315-dhu:~$ ps -ef | grep cat
+...
+101000    9027  9013 99 10:47 pts/4    00:04:11 cat
+...
+</code></pre><h2 id="références">Références</h2>
+<ol>
+<li>LXC 1.0: Unprivileged containers 7/10 | Stéphane Graber&rsquo;s website, <a href="https://www.stgraber.org/2014/01/17/lxc-1-0-unprivileged-containers/">https://www.stgraber.org/2014/01/17/lxc-1-0-unprivileged-containers/</a></li>
+<li>Linux Isolation Basics, <a href="https://deis.com/blog/2015/linux-containers-isolation">https://deis.com/blog/2015/linux-containers-isolation</a></li>
+<li>solation with Linux Containers, <a href="https://deis.com/blog/2015/isolation-linux-containers">https://deis.com/blog/2015/isolation-linux-containers</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/virtualisation/">Virtualisation</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

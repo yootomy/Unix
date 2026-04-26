@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr-ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Rappel et définitions</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content=".Keywords"/>
+	<meta name="author" content="dominique huguenin (dominique.huguenin@rpn.ch)"/>
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/normalize.css" />    
+    <link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/asciinema-player.css" />    
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/main.css" />   
+	<link rel="stylesheet" type="text/css" href="https://mylos.s2.rpn.ch/cours/css/recherche.css" />   
+	<link rel="stylesheet" type="text/css" media="print" href="https://mylos.s2.rpn.ch/cours/css/print.css">	 
+</head>
+<body>
+	<nav id="global-nav">
+    <div>
+        <img src="https://mylos.s2.rpn.ch/cours/images/esne.png"  alt="logo de l'école supérieur "/>
+    </div>
+
+    
+    
+        
+            <div>
+                <span>Cours</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/int-bas-db/">INT_BAS_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-ap1/">INT_PROG1_AP1</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog1-db/">INT_PROG1_DB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-aps/">INT_PROG2_APS</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-prog2-apw/">INT_PROG2_APW</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-sys2-iweb/">INT_SYS2_IWEB</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/int-lab/">INT_LAB</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+        
+            <div>
+                <span>Divers</span>
+            <ul>
+                
+                    <li>
+                        <a href="/cours/plateforme-java/">Plateforme Java</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/billets/">Billets</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/casts/">Casts</a>
+                    </li>
+                
+                    <li>
+                        <a href="/cours/tags/">Tags</a>
+                    </li>
+                
+            </ul>
+            </div>
+        
+    
+
+
+
+    <form onsubmit="validateForm(event)">
+        <input id="search-query" type="text" class="search-input" placeholder="Rechercher..." aria-label="Champ de recherche"/>
+    </form>
+
+</nav>
+<header id="site-title">
+<p>Notes de cours pour la formation ES en informatique</p>
+</header>
+<hr/>
+<nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+<hr/>
+
+	
+<article>
+	<header>
+    <nav id="taxonomies-nav">
+    
+    <ul>
+        
+        
+            
+        
+        
+    </ul>
+    </nav>
+    <h1><a href="/cours/int-sys1-nix/shell/rappel-definition/">Rappel et définitions</a></h1>
+    <p></p>
+    <small>
+        dominique huguenin (dominique.huguenin@rpn.ch)  - 
+        <time>07.08.2020 13:54</time>
+    </small>
+</header>
+
+
+    
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#système-dexploitation">Système d&rsquo;exploitation</a></li>
+    <li><a href="#unix">Unix</a></li>
+    <li><a href="#les-objets-dunix">Les objets d&rsquo;UNIX</a></li>
+    <li><a href="#posix">POSIX</a></li>
+    <li><a href="#projet-gnu">Projet GNU</a></li>
+    <li><a href="#free-software-foundation">Free Software Foundation</a></li>
+    <li><a href="#noyau-linux">Noyau Linux</a></li>
+    <li><a href="#gnulinux">GNU/Linux</a></li>
+    <li><a href="#distribution-linux">Distribution Linux</a></li>
+    <li><a href="#références">Références</a></li>
+  </ul>
+</nav>
+    
+
+    <h2 id="système-dexploitation">Système d&rsquo;exploitation</h2>
+<p>En informatique, un <strong>système d&rsquo;exploitation</strong> (souvent appelé OS pour Operating System, le terme anglophone) est un ensemble de programmes qui <strong>dirige l&rsquo;utilisation des capacités d&rsquo;un ordinateur</strong> par des logiciels applicatifs.</p>
+<p><img src="../../images/Operating_system_placement-fr.svg" alt="Image"></p>
+<p>Tiré de [<a href="https://fr.wikipedia.org/wiki/Syst%C3%A8me_d%27exploitation">8</a>].</p>
+<p>Il reçoit de la part des logiciels applicatifs des demandes d&rsquo;utilisation des capacités de l&rsquo;ordinateur — capacité de stockage des mémoires et des disques durs, capacité de calcul du processeur. Le système d&rsquo;exploitation accepte ou refuse de telles demandes, puis réserve les ressources en question pour éviter que leur utilisation n&rsquo;interfère avec d&rsquo;autres demandes provenant d&rsquo;autres logiciels.</p>
+<p>Le système d&rsquo;exploitation est le premier programme exécuté lors de la mise en marche de l&rsquo;ordinateur, après l’amorçage. Il offre une suite de services généraux qui facilitent la création de logiciels applicatifs et sert d&rsquo;intermédiaire entre ces logiciels et le matériel informatique. Un système d&rsquo;exploitation apporte commodité, efficacité et capacité d&rsquo;évolution, permettant d&rsquo;introduire de nouvelles fonctions et du nouveau matériel sans remettre en cause les logiciels.</p>
+<p>Il existe sur le marché des dizaines de systèmes d&rsquo;exploitation différents. Ils sont souvent livrés avec l&rsquo;appareil informatique — c&rsquo;est le cas de Windows, Mac OS, Irix, Symbian OS, Ubuntu et Android. Les fonctionnalités offertes diffèrent d&rsquo;un modèle à l&rsquo;autre, et sont typiquement en rapport avec l&rsquo;exécution des programmes, l&rsquo;utilisation de la mémoire centrale, des périphériques, la manipulation des systèmes de fichiers, la communication, ou la détection d&rsquo;erreurs.</p>
+<p>La définition des systèmes d&rsquo;exploitation est rendue floue par le fait que les vendeurs de tels produits considèrent comme étant le système d&rsquo;exploitation la totalité du contenu de leur produit, y compris les vidéos, les images et les logiciels applicatifs qui l&rsquo;accompagnent.</p>
+<p>En 2012, les deux familles de systèmes d&rsquo;exploitation les plus populaires sont la famille Unix (dont Mac OS X, GNU/Linux, iOS et Android) et la famille Windows, celle-ci détenant un quasi-monopole sur les ordinateurs personnels, avec près de 90 % de part de marché depuis 15 ans.</p>
+<h2 id="unix">Unix</h2>
+<p>Unix, officiellement UNIX (parfois écrit « Unix », avec des petites capitales), est un système d&rsquo;exploitation multitâche et multi-utilisateur créé en 1969. Il est fondé sur une approche par laquelle il offre de nombreux petits outils, chacun doté d&rsquo;une mission spécifique.</p>
+<p>Tiré de [<a href="http://fr.wikipedia.org/wiki/UNIX">9</a>]</p>
+<p>Particulièrement répandu dans les milieux académiques au début des années 1980, il a été utilisé par beaucoup de start-ups fondées par des jeunes entrepreneurs à cette époque et a donné naissance à une famille de systèmes, dont les plus populaires à ce jour sont les variantes de BSD (notamment FreeBSD, NetBSD et OpenBSD), Dalvik/Linux (Android), GNU/Linux, iOS et OS X. On nomme « famille Unix », systèmes de type Unix ou simplement systèmes Unix l&rsquo;ensemble de ces systèmes. Il existe un ensemble de standards réunis sous les normes POSIX et single UNIX specification qui visent à unifier certains aspects de leur fonctionnement.</p>
+<p>Le nom « UNIX » est une marque déposée de l&rsquo;Open Group, qui autorise son utilisation pour tous les systèmes certifiés conformes à la single UNIX specification ; cependant, il est courant d&rsquo;appeler ainsi les systèmes de type Unix de façon générale. Il dérive de « Unics » (acronyme de « Uniplexed Information and Computing System »), et est un jeu de mot avec « Multics », car contrairement à ce dernier qui visait à offrir simultanément plusieurs services à un ensemble d&rsquo;utilisateurs, le système initial de Kenneth Thompson se voulait moins ambitieux et utilisable par une seule personne à la fois avec des outils réalisant une seule tâche.</p>
+<h2 id="les-objets-dunix">Les objets d&rsquo;UNIX</h2>
+<p>UNIX distingue:</p>
+<ul>
+<li>des fichiers
+<ul>
+<li>des suites ordonnées d&rsquo;octets</li>
+</ul>
+</li>
+<li>des tâches ou processus
+<ul>
+<li>programmes en cours d&rsquo;exécution</li>
+</ul>
+</li>
+<li>des flux ou stream
+<ul>
+<li>suites d&rsquo;octets produits par des fichiers ou des tâches en destination de fichiers ou de tâches</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code> 
+processus ===&gt;flux===&gt; fichier
+ 
+</code></pre><pre tabindex="0"><code> 
+processus &lt;===flux&lt;=== fichier
+ 
+</code></pre><p>Tiré de [[10]]</p>
+<p>Un fichier (file) est une suite ordonnée d&rsquo;octets. La taille maximale des fichiers est bien sûr limitée par la taille physique des mémoires qui les retiennent. Un fichier peut contenir n&rsquo;importe quelle séquence d&rsquo;octets et en particulier</p>
+<ul>
+<li>des caractères formant un texte (comme cette documentation),</li>
+<li>des programmes écrits dans un certain langage (FORTRAN, Lisp, PROLOG, Pascal, C &hellip;); ce sont aussi des textes.</li>
+<li>des instructions binaires auquel cas ce fichier représente un programme exécutable.</li>
+</ul>
+<p>Une tâche (process) est un programme en cours d&rsquo;exécution. Un même programme peut être simultanément exécuté par plusieurs tâches : par exemple, plusieurs personnes peuvent user en même temps d&rsquo;un même compilateur ou d&rsquo;un même éditeur de texte. Une tâche naît, vit puis meurt. Une tâche peut même changer de programme support (cf. exec) sans pour cela devoir perdre la vie.</p>
+<p>Une tâche effectue un certain travail en exploitant des flux (stream) pour en produire d&rsquo;autres.</p>
+<p>Un flux est une suite d&rsquo;octets produite par un fichier ou une tâche en destination d&rsquo;un fichier ou d&rsquo;une tâche.</p>
+<h2 id="posix">POSIX</h2>
+<p>POSIX est une famille de standards techniques destinés à fonctionner sur les variantes du système d&rsquo;exploitation UNIX.</p>
+<p>Les quatre premières lettres forment l’acronyme de <strong>P</strong>ortable <strong>O</strong>perating <strong>S</strong>ystem Interface (interface portable de système d&rsquo;exploitation), et le <strong>X</strong> exprime l&rsquo;héritage UNIX.</p>
+<p>Tiré de [<a href="https://fr.wikipedia.org/wiki/POSIX">6</a>]</p>
+<p>POSIX est une famille de standards techniques définie depuis 1988 par l&rsquo;Institute of Electrical and Electronics Engineers (IEEE), et formellement désignée par IEEE 1003. Ces standards ont émergé d&rsquo;un projet de standardisation des interfaces de programmation des logiciels destinés à fonctionner sur les variantes du système d&rsquo;exploitation UNIX.</p>
+<p>Le terme POSIX a été suggéré par Richard Stallman, qui faisait partie du comité qui écrivit la première version de la norme. L&rsquo;IEEE choisit de le retenir car il était facilement mémorisable. Les quatre premières lettres forment l’acronyme de Portable Operating System Interface (interface portable de système d&rsquo;exploitation), et le X exprime l&rsquo;héritage UNIX.</p>
+<h2 id="projet-gnu">Projet GNU</h2>
+<p>Le <strong>projet GNU</strong> est un projet informatique dont les premiers développements ont été réalisés en janvier 1984 par <strong>Richard Stallman</strong> pour développer le <strong>système d’exploitation GNU</strong>.</p>
+<p>Le projet est soutenu par la <strong>Free Software Foundation</strong>.</p>
+<p>Tiré de [<a href="https://fr.wikipedia.org/wiki/Projet_GNU">7</a>]</p>
+<p>Le projet GNU est un projet informatique dont les premiers développements ont été réalisés en janvier 1984 par Richard Stallman pour développer le système d’exploitation GNU. Le projet est maintenu par une communauté de hackers organisée en sous-projets. Chaque brique du projet est un logiciel libre utilisable de par sa nature dans des projets tiers, mais dont la finalité est de s’inscrire dans une logique cohérente avec l’ensemble des sous-projets en vue de la réalisation d’un système d’exploitation complet et entièrement libre, et avec pour stratégie, l’utilisation de l’existant.</p>
+<p>C’est ainsi que la première version fonctionnelle du système GNU est construite en 1992 avec l’utilisation du noyau Linux, un projet développé indépendamment du projet GNU par Linus Torvalds. Mais si la « rencontre GNU/Linux » permet l’assemblage d’un système libre, le développement d’un micro-noyau reste aujourd’hui l’un des objectifs techniques du projet.</p>
+<p>Le projet est soutenu par la Free Software Foundation, en assurant notamment sa protection légale par la gestion de ses droits d&rsquo;auteurs. Les objectifs et la philosophie du projet sont par ailleurs définis dans le manifeste GNU, lequel représente l’acte fondateur du mouvement du logiciel libre. Le projet GNU s’inscrit enfin dans une démarche sociale en plaçant les fondements philosophiques du mouvement devant les objectifs techniques du projet.</p>
+<h2 id="free-software-foundation">Free Software Foundation</h2>
+<p>La <strong>Free Software Foundation (FSF)</strong> (littéralement « Fondation pour le logiciel libre »), est une organisation américaine à but non lucratif fondée par Richard Stallman le 4 octobre 1985, dont la mission mondiale est la <strong>promotion du logiciel libre et la défense des utilisateurs</strong>.</p>
+<p>Tiré de[<a href="https://fr.wikipedia.org/wiki/Free_Software_Foundation">2</a>]</p>
+<p>La Free Software Foundation (FSF) (littéralement « Fondation pour le logiciel libre »), est une organisation américaine à but non lucratif fondée par Richard Stallman le 4 octobre 1985, dont la mission mondiale est la promotion du logiciel libre et la défense des utilisateurs.</p>
+<p>La FSF aide également au financement du projet GNU depuis l&rsquo;origine. Son nom est associé au mouvement du logiciel libre.</p>
+<h2 id="noyau-linux">Noyau Linux</h2>
+<p>Le noyau Linux est :</p>
+<ul>
+<li>un <strong>noyau de système d&rsquo;exploitation</strong> de type UNIX.</li>
+<li>un <strong>logiciel libre</strong> développé essentiellement en langage C par des milliers de bénévoles et salariés communiquant par Internet.</li>
+</ul>
+<p>Tiré de [<a href="https://fr.wikipedia.org/wiki/Noyau_Linux">5</a>]</p>
+<p>Le noyau Linux est un noyau de système d&rsquo;exploitation de type UNIX. Le noyau Linux est un logiciel libre développé essentiellement en langage C par des milliers de bénévoles et salariés communiquant par Internet.</p>
+<p>Le noyau est le cœur du système, c&rsquo;est lui qui s&rsquo;occupe de fournir aux logiciels une interface pour utiliser le matériel. Le noyau Linux a été créé en 1991 par Linus Torvalds pour les compatibles PC construits sur l&rsquo;architecture processeur x86. Depuis, il a été porté sur nombre d&rsquo;architectures dont m68k, PowerPC, StrongARM, Alpha, SPARC, MIPS, etc. Il s&rsquo;utilise dans une très large gamme de matériel, des systèmes embarqués aux superordinateurs, en passant par les ordinateurs personnels.</p>
+<p>Ses caractéristiques principales sont d&rsquo;être multitâche et multi-utilisateur. Il respecte les normes POSIX ce qui en fait un digne héritier des systèmes UNIX. Au départ, le noyau a été conçu pour être monolithique. Ce choix technique fut l&rsquo;occasion de débats enflammés entre Andrew S. Tanenbaum, professeur à l&rsquo;université libre d&rsquo;Amsterdam qui avait développé Minix, et Linus Torvalds. Andrew Tanenbaum arguant que les noyaux modernes se devaient d&rsquo;être des micro-noyaux et Linus répondant que les performances des micronoyaux n&rsquo;étaient pas bonnes. Depuis sa version 2.0, le noyau, bien que n&rsquo;étant pas un micro-noyau, est modulaire, c&rsquo;est-à-dire que certaines fonctionnalités peuvent être ajoutées ou enlevées du noyau à la volée (en cours d&rsquo;utilisation).</p>
+<h2 id="gnulinux">GNU/Linux</h2>
+<p>Un <strong>système GNU/Linux</strong> est le nom parfois donné à un système d&rsquo;exploitation associant des <strong>éléments essentiels du projet GNU</strong> et un <strong>noyau Linux</strong>.</p>
+<p>C&rsquo;est une terminologie créée par le projet Debian et reprise notamment par Richard Stallman, à l&rsquo;origine du projet collaboratif GNU qui manquait encore d&rsquo;un noyau pour en faire un système complet à la création du noyau Linux, en 1991.</p>
+<p>Tiré de [<a href="https://fr.wikipedia.org/wiki/GNU/Linux">3</a>].</p>
+<p>Des systèmes complets prêts à l&rsquo;emploi, réunissant les deux pièces, sont alors apparus, comme la distribution Debian. Dans le langage courant on trouve souvent l&rsquo;emploi du terme « Linux » seul pour désigner une distribution du système d&rsquo;exploitation GNU/Linux.</p>
+<h2 id="distribution-linux">Distribution Linux</h2>
+<p>Une distribution Linux, appelée aussi distribution GNU/Linux pour faire référence aux logiciels du projet GNU, est un ensemble cohérent de logiciels, la plupart étant logiciels libres, assemblés autour du noyau Linux.</p>
+<p><img src="../../images/Distribution_Linux.svg" alt="Image"></p>
+<p>Tiré de [<a href="https://fr.wikipedia.org/wiki/Distribution_Linux">1</a>] et [<a href="http://futurist.se/gldt/">4</a>]</p>
+<p>Il existe une très grande variété de distributions, ayant chacune des objectifs et une philosophie particulière. Les éléments différenciant principalement les distributions sont : la convivialité (facilité de mise en œuvre), l&rsquo;intégration (taille du parc de logiciels validés distribués), la notoriété (communauté informative pour résoudre les problèmes), l&rsquo;environnement de bureau (GNOME, KDE…), le type de paquet utilisé pour distribuer un logiciel (principalement deb et RPM) et le mainteneur de la distribution (généralement une entreprise ou une communauté). Le point commun est le noyau (kernel) et un certain nombre de commandes.</p>
+<h2 id="références">Références</h2>
+<ol>
+<li>Distribution Linux - Wikipédia. <a href="https://fr.wikipedia.org/wiki/Distribution_Linux">https://fr.wikipedia.org/wiki/Distribution_Linux</a></li>
+<li>Free Software Foundation - Wikipédia. <a href="https://fr.wikipedia.org/wiki/Free_Software_Foundation">https://fr.wikipedia.org/wiki/Free_Software_Foundation</a></li>
+<li>GNU/Linux - Wikipédia. <a href="https://fr.wikipedia.org/wiki/GNU/Linux">https://fr.wikipedia.org/wiki/GNU/Linux</a></li>
+<li>GNU/Linux Distribution Timeline. <a href="http://futurist.se/gldt/">http://futurist.se/gldt/</a></li>
+<li>Noyau Linux - Wikipédia. <a href="https://fr.wikipedia.org/wiki/Noyau_Linux">https://fr.wikipedia.org/wiki/Noyau_Linux</a></li>
+<li>POSIX - Wikipédia. <a href="https://fr.wikipedia.org/wiki/POSIX">https://fr.wikipedia.org/wiki/POSIX</a></li>
+<li>Projet GNU - Wikipédia. <a href="https://fr.wikipedia.org/wiki/Projet_GNU">https://fr.wikipedia.org/wiki/Projet_GNU</a></li>
+<li>Système d’exploitation - Wikipédia. <a href="https://fr.wikipedia.org/wiki/Syst%C3%A8me_d%27exploitation">https://fr.wikipedia.org/wiki/Syst%C3%A8me_d%27exploitation</a></li>
+<li>Wikipedia - Unix. <a href="http://fr.wikipedia.org/wiki/UNIX">http://fr.wikipedia.org/wiki/UNIX</a></li>
+</ol>
+
+
+</article>
+
+
+	<footer>
+    <hr/>
+    <nav class="breadcrumb">
+<ol>
+	
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><a href="/cours/">Notes de cours</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/">INT_SYS1_NIX</a></li>
+  
+
+  
+  
+  <li><a href="/cours/int-sys1-nix/shell/">Shell</a></li>
+  
+
+  
+  
+
+</ol>
+</nav>
+
+
+
+    <hr/>
+
+    <small>
+        <center>
+            <a href="mailto:dominique.huguenin@rpn.ch">dominique huguenin (dominique.huguenin AT rpn.ch)</a> - dernière mise à jour 2026-03-23T18:16:59Z<br/>
+  Sauf mention contraire, le contenu de cette page est sous <a class="external" href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr">contrat Creative Commons</a><br/>
+            <img src="https://mylos.s2.rpn.ch/cours/images/by-sa.svg" alt="CC BY-SA 3.0" />
+        </center>
+  </small>
+</footer>
+		
+    <script src="https://mylos.s2.rpn.ch/cours/js/asciinema-player.js"></script>
+	 <script src="https://mylos.s2.rpn.ch/cours/js/recherche.js"></script>			 
+	 <script>
+		function validateForm(event) {
+			 event.preventDefault();
+			 var inputField = document.getElementById('search-query').value;
+			 if (inputField.trim() === '') {
+				  return false;
+			 }
+			 
+			 var encodedInput = encodeURIComponent(inputField);
+			 
+			 window.location.href = 'https:\/\/mylos.s2.rpn.ch\/cours\/recherche?input=' + encodedInput;
+		}
+  </script>
+
+</body>
+</html>

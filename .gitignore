@@ -1,0 +1,18 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+*.tmp
+*.bak
+
+# Obsidian local state and local-only extensions
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/plugins/obsidian-local-rest-api/
+.obsidian/themes/
+.trash/

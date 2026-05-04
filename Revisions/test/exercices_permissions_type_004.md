@@ -24,14 +24,14 @@ Mettre les droits d'acces sur les dossiers et fichiers de l'arborescence ci-dess
 Arborescence de depart :
 
 ```text
-alpha
-├── docs
-│   ├── doc1.txt
-│   ├── doc2.txt
-│   └── doc3.txt
-└── drop
-    ├── old1.txt
-    └── old2.txt
+alpha drwx --x ---
+├── docs drwx r-x ---
+│   ├── doc1.txt rw- r-- ---
+│   ├── doc2.txt rw- r-- ---
+│   └── doc3.txt rw- r-- ---
+└── drop drwx -wx ---
+    ├── old1.txt rw- --- ---
+    └── old2.txt rw- --- ---
 ```
 
 Questions :
@@ -39,6 +39,20 @@ Questions :
 1. Donner l'arborescence avec les droits attendus.
 2. Donner les commandes `chmod`.
 3. Donner des commandes de test pour verifier les acces autorises et refuses.
+
+***les commandes chmod*** :
+```
+chmod 710 ./alpha
+chmod 750 ./alpha/docs
+chmod 640 ./alpha/docs/doc1.txt
+chmod 640 ./alpha/docs/doc2.txt
+chmod 640 ./alpha/docs/doc3.txt
+chmod 730 ./alpha/drop
+chmod 600 ./alpha/drop/old1.txt
+chmod 600 ./alpha/drop/old2.txt
+```
+
+
 
 ---
 
@@ -58,17 +72,17 @@ Mettre les droits d'acces sur les dossiers et fichiers de l'arborescence ci-dess
 Arborescence de depart :
 
 ```text
-beta
-├── edit
-│   ├── page1.txt
-│   └── page2.txt
-├── public
-│   ├── name1.txt
-│   ├── name2.txt
-│   └── name3.txt
-└── secret
-    ├── key1.txt
-    └── key2.txt
+beta drwx--x---
+├── edit drwx--x---
+│   ├── page1.txt rw-rw----
+│   └── page2.txt rw-rw----
+├── public drwxr-x---
+│   ├── name1.txt rw-------
+│   ├── name2.txt rw-------
+│   └── name3.txt rw-------
+└── secret drwx--x---
+    ├── key1.txt rw-r----
+    └── key2.txt rw-r----
 ```
 
 Questions :
@@ -95,18 +109,18 @@ Mettre les droits d'acces sur les dossiers et fichiers de l'arborescence ci-dess
 Arborescence de depart :
 
 ```text
-gamma
-└── projet
-    ├── build
-    │   ├── bin1.txt
-    │   └── bin2.txt
-    ├── logs
-    │   ├── app1.log
-    │   └── app2.log
-    └── src
-        ├── file1.txt
-        ├── file2.txt
-        └── file3.txt
+gamma drwx--x---
+└── projet drwx--x---
+    ├── build drwx-wx---
+    │   ├── bin1.txt rw-------
+    │   └── bin2.txt rw-------
+    ├── logs drwx--x---
+    │   ├── app1.log rw-rw----
+    │   └── app2.log rw-rw----
+    └── src drwxr-x---
+        ├── file1.txt rw-r-----
+        ├── file2.txt rw-r-----
+        └── file3.txt rw-r-----
 ```
 
 Questions :
@@ -114,6 +128,24 @@ Questions :
 1. Donner l'arborescence avec les droits attendus.
 2. Donner les commandes `chmod`.
 3. Donner des commandes de test pour verifier les acces autorises et refuses.
+
+
+```
+chmod 710 ./gamma
+chmod 710 ./gamma/projet
+chmod 730 ./gamma/projet/build
+chmod 600 ./gamma/projet/build/bin1.txt
+chmod 600 ./gamma/projet/build/bin2.txt
+chmod 710 ./gamma/projet/logs
+chmod 660 ./gamma/projet/logs/app1.log
+chmod 660 ./gamma/projet/logs/app2.log
+chmod 750 ./gamma/projet/src
+chmod 640 ./gamma/projet/src/file1.txt
+chmod 640 ./gamma/projet/src/file2.txt
+chmod 640 ./gamma/projet/src/file3.txt
+
+```
+
 
 ---
 
@@ -130,21 +162,21 @@ Mettre les droits d'acces sur les dossiers et fichiers de l'arborescence ci-dess
    4. lister, lire, modifier, ajouter et effacer des fichiers dans `./delta/partage`.
 4. Les autres utilisateurs n'ont aucun droit dans l'arborescence.
 
-Arborescence de depart :
+Arborescence de départ :
 
 ```text
-delta
-├── archives
-│   └── 2026
-│       ├── archive1.txt
-│       ├── archive2.txt
-│       └── archive3.txt
-├── lecture-cachee
-│   ├── secret1.txt
-│   └── secret2.txt
-└── partage
-    ├── travail1.txt
-    └── travail2.txt
+delta drwx--x---
+├── archives drwxr-x---
+│   └── 2026 drwxr-x---
+│       ├── archive1.txt rw-r-----
+│       ├── archive2.txt rw-r-----
+│       └── archive3.txt rw-r-----
+├── lecture-cachee drwx--x---
+│   ├── secret1.txt rw-r-----
+│   └── secret2.txt rw-r-----
+└── partage drwxrwx---
+    ├── travail1.txt rw-rw----
+    └── travail2.txt rw-rw----
 ```
 
 Questions :
@@ -172,21 +204,21 @@ Mettre les droits d'acces sur les dossiers et fichiers de l'arborescence ci-dess
 Arborescence de depart :
 
 ```text
-omega
-├── in
-│   ├── depot1.txt
-│   └── depot2.txt
-├── index
-│   ├── item1.txt
-│   ├── item2.txt
-│   └── item3.txt
-├── out
-│   ├── result1.txt
-│   ├── result2.txt
-│   └── result3.txt
-└── work
-    ├── task1.txt
-    └── task2.txt
+omega drwx--x---
+├── in drwx-wx---
+│   ├── depot1.txt rw-------
+│   └── depot2.txt rw-------
+├── index drwxr-x---
+│   ├── item1.txt rw-------
+│   ├── item2.txt rw-------
+│   └── item3.txt rw-------
+├── out drwxr-x---
+│   ├── result1.txt rw-r-----
+│   ├── result2.txt rw-r-----
+│   └── result3.txt rw-r-----
+└── work drwx--x---
+    ├── task1.txt rw-rw----
+    └── task2.txt rw-rw----
 ```
 
 Questions :

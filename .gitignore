@@ -9,9 +9,3 @@ Thumbs.db
 tmp/
 *.tmp
 *.bak
-
-# Local app/config state
-.claude/
-.obsidian/
-.space/
-.trash/

@@ -39,23 +39,30 @@ Répondez brièvement, mais avec les mots techniques corrects.
 
 **1.1** (3 pts) Expliquez le rôle de chacun :
 
-- KVM
-- QEMU
-- libvirt
-- `virt-install`
-- `virsh`
+- KVM - module noyau linux fournissant la virtualisation materielle
+- QEMU - emulation et modelisation du material virtuel
+- libvirt - couche d'administration commune
+- `virt-install` - creation de vm en ligne de commande
+- `virsh` - CLI de libvirt
 
 **1.2** (2 pts) Quelle différence faites-vous entre une machine virtuelle, un conteneur et un hyperviseur ?
 
+*Une machine virtuelle c'est un ensemble de processus systeme + des processus tiers, un conteneur va lui uniquement contenir un des applications et utiliser les ressources de la machine hotes. et un hyperviseur c'est directement attaché au noyau ? je sais plus trop bien*
+
 **1.3** (2 pts) Quelle différence pratique y a-t-il entre un disque virtuel `raw` et un disque `qcow2` ? Donnez un avantage et un inconvénient du format `raw`.
+
+- raw : simple, rapide, taille fixe, pas de snapshots
+- qcow2 : allocation dynamique, snapshots, leger surcout
 
 **1.4** (3 pts) Expliquez la différence entre :
 
-- le réseau libvirt `default` ;
-- un réseau virtuel isolé ;
-- un pont réseau vers le réseau physique.
+- le réseau libvirt `default` ; c'est le réseau par défaut libvirt
+- un réseau virtuel isolé ; c'est un réseau qui n'est pas automatiquement connecté a l'hote
+- un pont réseau vers le réseau physique. ça permet de faire la connexion entre un réseau comme le "default" à celui "isolé"
 
 **1.5** (2 pts) Pourquoi faut-il parfois configurer une console série dans une VM KVM ? Quelle différence avec un accès SSH ?
+
+Car la console serie, on a accès directement au terminal de la machine
 
 **1.6** (3 pts) Expliquez les notions LVM suivantes :
 

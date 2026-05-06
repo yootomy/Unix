@@ -39,13 +39,13 @@ Dans le machine vmLvm3,
 ## Créer un nouveau volume logique __data__
 
 
-```
+```bash
 ubuntu@vmlvm3:~$ sudo lvcreate -L 500M -n data vmLvm3-vg
   Logical volume "data" created.
 ```
 
 
-```
+```bash
 ubuntu@vmlvm3:~$ sudo lvdisplay /dev/vmLvm3-vg/data
   --- Logical volume ---
   LV Path                /dev/vmLvm3-vg/data
@@ -66,7 +66,7 @@ ubuntu@vmlvm3:~$ sudo lvdisplay /dev/vmLvm3-vg/data
 ```
 
 
-```
+```bash
 ubuntu@vmlvm3:~$ sudo vgdisplay -v
     Using volume group(s) on command line.
   --- Volume group ---
@@ -156,7 +156,7 @@ ubuntu@vmlvm3:~$ sudo vgdisplay -v
 ## Formater ce volume logique en __ext4__
 
 
-```
+```bash
 ubuntu@vmlvm3:~$ sudo mkfs.ext4 /dev/vmLvm3-vg/data
 mke2fs 1.42.13 (17-May-2015)
 En train de créer un système de fichiers avec 512000 1k blocs et 128016 i-noeuds.

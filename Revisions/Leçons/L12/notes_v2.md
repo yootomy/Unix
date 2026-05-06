@@ -6,10 +6,44 @@
 <p class="cover-meta"><strong>Format</strong> : cours structure, commandes, notions et pieges integres</p>
 </div>
 
-## Sommaire
+## Sommaire {.toc-page}
 
-1. PARTIE 1 - SHELL
-2. PARTIE 2 - VIRTUALISATION
+**PARTIE 1 — SHELL**
+
+1. Unix, shell et aide
+2. Commandes de base, chemins et fichiers
+3. Ordre de recherche des commandes, PATH et historique
+4. Expansions, quoting et globbing
+5. Redirections, pipes et code de sortie
+6. Filtres de texte
+7. Recherche avec `find`
+8. Permissions et droits d'accès
+9. Processus et jobs
+10. Variables, environnement et alias
+11. Scripts Bash robustes
+12. Utilisateurs et groupes
+
+**PARTIE 2 — VIRTUALISATION**
+
+1. Concepts
+2. Installation, vérification et accès libvirt
+3. VM de référence pour l'évaluation
+4. Administration des VM avec `virsh`
+5. Création de VM avec `virt-install`
+6. Stockage, formats, pools et volumes
+7. Clonage et post-installation
+8. Console série
+9. LVM, extension et snapshots
+10. Réseaux virtuels libvirt
+11. Topologie vm1, vm2, vm3 et passerelle
+12. Configuration réseau dans une VM
+13. SSH, clés, jump host et tunnel
+14. Post-installation et contrôles finaux
+
+**ANNEXES**
+
+- Cheatsheet 1 page — commandes probables au test
+- Pièges fréquents au test
 
 # PARTIE 1 - SHELL
 
